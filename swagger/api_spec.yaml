@@ -20,7 +20,19 @@ produces:
   - application/json
 
 paths:
-
+  /audio:
+    post:
+      summary: "Upload an audio file"
+      consumes:
+        - multipart/form-data
+      parameters:
+        - in: formData
+          name: audioFile
+          type: file
+          required: true
+      responses:
+        201:
+          description: success
 
   /utterance:
     post:
