@@ -130,9 +130,6 @@ definitions:
       name:
         type: "string"
         example: "recording_123.wav"
-      manuallyGenerated:
-        type: boolean
-        description: "Flag if this file was generated manually. Useful for keeping track of training files"
       fileURL:
         type: "string"
         example: "/path/to/file/recording_123.wav"
@@ -148,6 +145,9 @@ definitions:
       name:
         type: "string"
         example: "transcription.txt"
+      manuallyGenerated:
+        type: boolean
+        description: "Flag if this file was generated manually. Useful for keeping track of training files"
       fileURL:
         type: "string"
         example: "/path/to/file/transcription.txt"
