@@ -105,6 +105,18 @@ paths:
         201:
           description: success
 
+  /model:
+    get:
+      summary: "Retrieve all models that are currently available"
+      responses:
+        200:
+          description: success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/modelInformation"
+
+
 definitions:
   audioFileInformation:
     type: "object"
@@ -139,3 +151,12 @@ definitions:
       fileURL:
         type: "string"
         example: "/path/to/file/transcription.txt"
+  modelInformation:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+        example: "na_example_small"
