@@ -131,6 +131,8 @@ paths:
       responses:
         201:
           description: success
+          schema:
+            $ref: "#/definitions/utteranceInformation"
 
 definitions:
   audioFileInformation:
