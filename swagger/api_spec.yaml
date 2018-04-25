@@ -52,6 +52,14 @@ paths:
             $ref: "#/definitions/audioFileInformation"
         404:
           description: "Audio file ID not found"
+  /backend:
+    get:
+      summary: "Get information about the backend package processing transcriptions"
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/backendInformation"
   /corpus:
     get:
       summary: "Retrieve all models that are currently available"
@@ -62,6 +70,16 @@ paths:
             type: array
             items:
               $ref: "#/definitions/corpusInformation"
+  /model:
+    get:
+      summary: "Retrieve all models that are currently available"
+      responses:
+        200:
+          description: success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/modelInformation"
   /transcription:
     post:
       summary: "Upload an transcription file"
@@ -114,25 +132,6 @@ paths:
         201:
           description: success
 
-  /model:
-    get:
-      summary: "Retrieve all models that are currently available"
-      responses:
-        200:
-          description: success
-          schema:
-            type: array
-            items:
-              $ref: "#/definitions/modelInformation"
-  /backend:
-    get:
-      summary: "Get information about the backend package processing transcriptions"
-      responses:
-        200:
-          description: success
-          schema:
-            $ref: "#/definitions/backendInformation"
-
 definitions:
   audioFileInformation:
     type: "object"
@@ -179,6 +178,15 @@ definitions:
         items:
           $ref: "#/definitions/utteranceInformation"
         description: "All utterances that this corpus contains"
+  modelInformation:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+        example: "na_example_small"
   transcriptionFileInformation:
     type: "object"
     required:
@@ -197,14 +205,13 @@ definitions:
       fileURL:
         type: "string"
         example: "/path/to/file/transcription.txt"
-  modelInformation:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      name:
-        type: "string"
-        example: "na_example_small"
   utteranceInformation:
     type: "object"
+    properties:
+      audio:
+        $ref: "#/definitions/audioFileInformation"
+      transcription:
+        $ref: "#/definitions/transcriptionFileInformation"
+    required:
+    - "audio"
+    - "transcription"
