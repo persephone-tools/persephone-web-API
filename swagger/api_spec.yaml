@@ -52,7 +52,16 @@ paths:
             $ref: "#/definitions/audioFileInformation"
         404:
           description: "Audio file ID not found"
-
+  /corpus:
+    get:
+      summary: "Retrieve all models that are currently available"
+      responses:
+        200:
+          description: success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/corpusInformation"
   /transcription:
     post:
       summary: "Upload an transcription file"
@@ -157,6 +166,19 @@ definitions:
         type: "string"
         example: "http://persephone.readthedocs.io/en/latest/"
         description: "URL for this project"
+  corpusInformation:
+    type: "object"
+    required:
+    - "name"
+    properties:
+      name:
+        type: "string"
+        description: "The name of this corpus"
+      utterances:
+        type: array
+        items:
+          $ref: "#/definitions/utteranceInformation"
+        description: "All utterances that this corpus contains"
   transcriptionFileInformation:
     type: "object"
     required:
@@ -184,3 +206,5 @@ definitions:
       name:
         type: "string"
         example: "na_example_small"
+  utteranceInformation:
+    type: "object"
