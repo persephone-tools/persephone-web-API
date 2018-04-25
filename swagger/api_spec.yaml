@@ -105,6 +105,18 @@ paths:
         201:
           description: success
 
+  /model:
+    get:
+      summary: "Retrieve all models that are currently available"
+      responses:
+        200:
+          description: success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/modelInformation"
+
+
 definitions:
   audioFileInformation:
     type: "object"
@@ -118,9 +130,6 @@ definitions:
       name:
         type: "string"
         example: "recording_123.wav"
-      manuallyGenerated:
-        type: boolean
-        description: "Flag if this file was generated manually. Useful for keeping track of training files"
       fileURL:
         type: "string"
         example: "/path/to/file/recording_123.wav"
@@ -136,6 +145,18 @@ definitions:
       name:
         type: "string"
         example: "transcription.txt"
+      manuallyGenerated:
+        type: boolean
+        description: "Flag if this file was generated manually. Useful for keeping track of training files"
       fileURL:
         type: "string"
         example: "/path/to/file/transcription.txt"
+  modelInformation:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+        example: "na_example_small"
