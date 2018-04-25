@@ -115,7 +115,14 @@ paths:
             type: array
             items:
               $ref: "#/definitions/modelInformation"
-
+  /backend:
+    get:
+      summary: "Get information about the backend package processing transcriptions"
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/backendInformation"
 
 definitions:
   audioFileInformation:
@@ -133,6 +140,23 @@ definitions:
       fileURL:
         type: "string"
         example: "/path/to/file/recording_123.wav"
+  backendInformation:
+    type: "object"
+    required:
+    - "name"
+    - "version"
+    properties:
+      name:
+        type: "string"
+        example: "Persephone"
+        description: "Name of backend software package performing the transcription"
+      version:
+        type: "string"
+        description: "Version of backend software package performing the transcription"
+      projectURL:
+        type: "string"
+        example: "http://persephone.readthedocs.io/en/latest/"
+        description: "URL for this project"
   transcriptionFileInformation:
     type: "object"
     required:
