@@ -153,6 +153,10 @@ definitions:
       version:
         type: "string"
         description: "Version of backend software package performing the transcription"
+      projectURL:
+        type: "string"
+        example: "http://persephone.readthedocs.io/en/latest/"
+        description: "URL for this project"
   transcriptionFileInformation:
     type: "object"
     required:

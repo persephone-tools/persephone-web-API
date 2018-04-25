@@ -11,5 +11,6 @@ def search():
     persephone_information = {
         "name": "Persephone",
         "version": persephone.__version__,
+        "projectURL": "https://persephone.readthedocs.io/en/latest/",
     }
     return persephone_information, 200
