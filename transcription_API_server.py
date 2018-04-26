@@ -3,6 +3,8 @@ from connexion.resolver import RestyResolver
 
 from flask_uploads import patch_request_class
 
+from api.upload_config import configure_uploads
+
 import api
 
 app = connexion.FlaskApp(__name__, specification_dir='swagger/')
@@ -18,6 +20,7 @@ def index():
 
 flask_app = app.app
 flask_app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024 #max 64 MB file upload
+configure_uploads(flask_app)
 
 app.run(port=8080)
 
