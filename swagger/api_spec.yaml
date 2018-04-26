@@ -70,6 +70,23 @@ paths:
             type: array
             items:
               $ref: "#/definitions/corpusInformation"
+  /corpus/fromZip:
+    post:
+      summary: "Create a corpus from a Zip file"
+      operationId: api.corpus.create_from_zip
+      consumes:
+        - multipart/form-data
+      parameters:
+        - in: formData
+          name: zippedFile
+          type: file
+          required: true
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/corpusInformation"
+
   /model:
     get:
       summary: "Retrieve all models that are currently available"
