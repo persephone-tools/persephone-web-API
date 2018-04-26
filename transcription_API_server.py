@@ -17,7 +17,7 @@ def index():
 """.format(version="v0.1")
 
 flask_app = app.app
-flask_app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024 #max 32 MB file upload
+flask_app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024 #max 64 MB file upload
 
 app.run(port=8080)
 
