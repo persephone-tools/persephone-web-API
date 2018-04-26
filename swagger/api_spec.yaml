@@ -33,6 +33,8 @@ paths:
       responses:
         201:
           description: success
+        415:
+          description: "Bad filetype"
   /audio/{audioID}:
     get:
       summary: "Get information about an uploaded audio file"
