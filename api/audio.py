@@ -2,10 +2,17 @@
 API endpoints for /audio
 This deals with the API access for audio files uploading/downloading.
 """
+import flask_uploads
+
+from .upload_config import audio_files
 
 def post(audioFile):
     """handle POST request for audio file"""
     print("Got {}".format(audioFile))
+    try:
+        audio_files.save(audioFile)
+    except flask_uploads.UploadNotAllowed:
+        return "Invalid upload format, must be an audio file", 415
     return "Audio upload not implemented", 501
 
 
