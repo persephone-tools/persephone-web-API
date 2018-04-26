@@ -86,6 +86,8 @@ paths:
           description: success
           schema:
             $ref: "#/definitions/corpusInformation"
+        415:
+          description: "Bad filetype"
 
   /model:
     get:
