@@ -2,10 +2,14 @@ import connexion
 from connexion.resolver import RestyResolver
 
 from flask_uploads import patch_request_class
+from sqlalchemy import create_engine
 
 from api.upload_config import configure_uploads
 
 import api
+
+#in-memory sqlite DB for development purposes, will need file backing for persistence
+engine = create_engine('sqlite:///:memory:', echo=True)
 
 app = connexion.FlaskApp(__name__, specification_dir='swagger/')
 app.add_api('api_spec.yaml', resolver=RestyResolver('api'))
