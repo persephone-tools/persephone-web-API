@@ -5,6 +5,8 @@ This deals with the API access for transcription files uploading/downloading.
 from sqlalchemy import Column, Integer, String
 from .orm_base import Base
 
+from .upload_config import text_files
+
 class Transcription(Base):
     """Database ORM definition for Transcription files"""
     __tablename__ = 'transcription'
@@ -20,6 +22,10 @@ class Transcription(Base):
 def post(transcriptionFile):
     """handle POST request for transcription file"""
     print("Got {}".format(transcriptionFile))
+    try:
+        filename = text_files.save(audioFile)
+    except flask_uploads.UploadNotAllowed:
+        return "Invalid upload format, must be a text file", 415
     return "transcription upload not implemented", 501
 
 def get(transcriptionID):

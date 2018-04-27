@@ -114,6 +114,9 @@ paths:
       responses:
         201:
           description: success
+        415:
+          description: "Bad filetype"
+
 
   /transcription/{transcriptionID}:
     get:
