@@ -31,6 +31,10 @@ flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 from api import db
 db.init_app(flask_app)
 
+# create DB tables
+with flask_app.app_context():
+    db.create_all()
+
 # configure upload paths
 flask_app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024 #max 64 MB file upload
 configure_uploads(flask_app)
