@@ -3,22 +3,8 @@ API endpoints for /audio
 This deals with the API access for audio files uploading/downloading.
 """
 import flask_uploads
-from sqlalchemy import Column, Integer, String
 
 from .upload_config import audio_files
-from .orm_base import Base
-
-class Audio(Base):
-    """Database ORM definition for Audio files"""
-    __tablename__ = 'audio'
-
-    id = Column(Integer, primary_key=True)
-    filename = Column(String)
-    url = Column(String)
-
-    def __repr__(self):
-        return "<Audio(filename={}, url={})>".format(self.filename, self.url)
-
 
 def post(audioFile):
     """handle POST request for audio file"""
