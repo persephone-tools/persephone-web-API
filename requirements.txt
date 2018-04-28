@@ -2,3 +2,4 @@ connexion
 persephone
 flask-uploads
 sqlalchemy>1.2
+flask_sqlalchemy
