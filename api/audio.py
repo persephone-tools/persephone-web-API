@@ -6,14 +6,28 @@ import flask_uploads
 
 from .upload_config import audio_files
 
+from .db_models import Audio
+
+from . import db
+
 def post(audioFile):
     """handle POST request for audio file"""
-    print("Got {}".format(audioFile))
     try:
-        audio_files.save(audioFile)
+        filename = audio_files.save(audioFile)
     except flask_uploads.UploadNotAllowed:
         return "Invalid upload format, must be an audio file", 415
-    return "Audio upload not implemented", 501
+    else:
+        file_url = "" #TODO: create URL location
+        current_file = Audio(filename=filename, url=file_url)
+        db.session.add(current_file)
+        db.session.commit()
+
+    result = {
+        "id": current_file.id,
+        "fileURL": current_file.url,
+        "fileName" : current_file.filename,
+    }
+    return result, 201
 
 
 def get(audioID):
