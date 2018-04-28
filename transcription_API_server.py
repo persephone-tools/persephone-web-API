@@ -21,12 +21,18 @@ def index():
 <a href="/{version}/ui/">/{version}/ui/</a>, this is the best place to explore the API.
 """.format(version="v0.1")
 
+# fetch underlying flask app from the connexion app
 flask_app = app.app
 
+# configure the DB
 flask_app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+from api import db
+db.init_app(flask_app)
+
+# configure upload paths
 flask_app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024 #max 64 MB file upload
 configure_uploads(flask_app)
-
 app.run(port=8080)
 
