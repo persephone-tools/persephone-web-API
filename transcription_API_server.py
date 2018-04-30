@@ -9,9 +9,6 @@ from flask_uploads import patch_request_class
 from api.upload_config import configure_uploads
 import api
 
-#in-memory sqlite DB for development purposes, will need file backing for persistence
-#engine = create_engine('sqlite:///:memory:', echo=True)
-
 
 # Create the API endpoints from YAML specification
 app = connexion.FlaskApp(__name__, specification_dir='swagger/')
@@ -27,6 +24,7 @@ def index():
 flask_app = app.app
 
 # configure the DB
+# in-memory sqlite DB for development purposes, will need file backing for persistence
 flask_app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
 flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
