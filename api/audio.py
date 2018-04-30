@@ -36,7 +36,6 @@ def get(audioID):
     rather a JSON object with the relevant information.
     This allows the flexibility of file storage being handled
     by another service that is outside this API service."""
-    import pdb; pdb.set_trace()
     results = []
     for row in Audio.query.filter(Audio.id==audioID):
         results.append(row)
