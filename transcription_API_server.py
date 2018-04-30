@@ -1,10 +1,12 @@
+import os
+
 import connexion
 from connexion.resolver import RestyResolver
 
+from flask import send_from_directory
 from flask_uploads import patch_request_class
 
 from api.upload_config import configure_uploads
-
 import api
 
 #in-memory sqlite DB for development purposes, will need file backing for persistence
@@ -37,6 +39,17 @@ with flask_app.app_context():
 
 # configure upload paths
 flask_app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024 #max 64 MB file upload
+flask_app.config['BASE_UPLOAD_DIRECTORY'] = os.path.join(os.getcwd(), 'user_uploads')
 configure_uploads(flask_app)
+
+
+@flask_app.route('/uploads/<path:path>')
+def uploaded_file(path):
+    """Serve uploaded files for development purposes
+    Note this is for development only, serve these files with Apache/nginx in production environments.
+    """
+    return send_from_directory(flask_app.config['BASE_UPLOAD_DIRECTORY'],
+                               path)
+
 app.run(port=8080)
 
