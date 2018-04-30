@@ -143,18 +143,24 @@ paths:
 
   /utterance:
     post:
-      summary: "Upload a new utterance"
+      summary: "Create a new utterance"
       consumes:
-        - multipart/form-data
+        - application/json
       parameters:
-        - in: formData
-          name: wavFile
-          type: file
-          required: true
-        - in: formData
-          name: transcriptionFile
-          type: file
-          required: true
+        - in: body
+          name: utteranceInfo
+          schema:
+            type: object
+            required:
+              - audioId
+              - transcriptionId
+            properties:
+              audioId:
+                type: integer
+                format: "int64"
+              transcriptionId:
+                type: integer
+                format: "int64"
       responses:
         201:
           description: success
