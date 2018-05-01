@@ -33,6 +33,10 @@ paths:
       responses:
         201:
           description: success
+          schema:
+            $ref: "#/definitions/audioFileInformation"
+        415:
+          description: "Bad filetype"
   /audio/{audioID}:
     get:
       summary: "Get information about an uploaded audio file"
@@ -52,7 +56,53 @@ paths:
             $ref: "#/definitions/audioFileInformation"
         404:
           description: "Audio file ID not found"
+  /backend:
+    get:
+      summary: "Get information about the backend package processing transcriptions"
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/backendInformation"
+  /corpus:
+    get:
+      summary: "Retrieve all models that are currently available"
+      responses:
+        200:
+          description: success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/corpusInformation"
+  /corpus/fromZip:
+    post:
+      summary: "Create a corpus from a Zip file"
+      operationId: api.corpus.create_from_zip
+      consumes:
+        - multipart/form-data
+      parameters:
+        - in: formData
+          name: zippedFile
+          type: file
+          required: true
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/corpusInformation"
+        415:
+          description: "Bad filetype"
 
+  /model:
+    get:
+      summary: "Retrieve all models that are currently available"
+      responses:
+        200:
+          description: success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/modelInformation"
   /transcription:
     post:
       summary: "Upload an transcription file"
@@ -66,6 +116,10 @@ paths:
       responses:
         201:
           description: success
+          schema:
+            $ref: "#/definitions/transcriptionFileInformation"
+        415:
+          description: "Bad filetype"
 
   /transcription/{transcriptionID}:
     get:
@@ -89,40 +143,29 @@ paths:
 
   /utterance:
     post:
-      summary: "Upload a new utterance"
+      summary: "Create a new utterance"
       consumes:
-        - multipart/form-data
+        - application/json
       parameters:
-        - in: formData
-          name: wavFile
-          type: file
-          required: true
-        - in: formData
-          name: transcriptionFile
-          type: file
-          required: true
+        - in: body
+          name: utteranceInfo
+          schema:
+            type: object
+            required:
+              - audioId
+              - transcriptionId
+            properties:
+              audioId:
+                type: integer
+                format: "int64"
+              transcriptionId:
+                type: integer
+                format: "int64"
       responses:
         201:
           description: success
-
-  /model:
-    get:
-      summary: "Retrieve all models that are currently available"
-      responses:
-        200:
-          description: success
           schema:
-            type: array
-            items:
-              $ref: "#/definitions/modelInformation"
-  /backend:
-    get:
-      summary: "Get information about the backend package processing transcriptions"
-      responses:
-        200:
-          description: success
-          schema:
-            $ref: "#/definitions/backendInformation"
+            $ref: "#/definitions/utteranceInformation"
 
 definitions:
   audioFileInformation:
@@ -157,6 +200,28 @@ definitions:
         type: "string"
         example: "http://persephone.readthedocs.io/en/latest/"
         description: "URL for this project"
+  corpusInformation:
+    type: "object"
+    required:
+    - "name"
+    properties:
+      name:
+        type: "string"
+        description: "The name of this corpus"
+      utterances:
+        type: array
+        items:
+          $ref: "#/definitions/utteranceInformation"
+        description: "All utterances that this corpus contains"
+  modelInformation:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+        example: "na_example_small"
   transcriptionFileInformation:
     type: "object"
     required:
@@ -175,12 +240,16 @@ definitions:
       fileURL:
         type: "string"
         example: "/path/to/file/transcription.txt"
-  modelInformation:
+  utteranceInformation:
     type: "object"
     properties:
       id:
         type: "integer"
         format: "int64"
-      name:
-        type: "string"
-        example: "na_example_small"
+      audio:
+        $ref: "#/definitions/audioFileInformation"
+      transcription:
+        $ref: "#/definitions/transcriptionFileInformation"
+    required:
+    - "audio"
+    - "transcription"
