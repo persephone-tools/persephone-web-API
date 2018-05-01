@@ -5,6 +5,8 @@ from .db_models import Utterance
 
 from . import db
 
+from .serialization import AudioSchema, TranscriptionSchema
+
 def post(utteranceInfo):
     """POST request"""
     audioId = utteranceInfo['audioId']
@@ -18,5 +20,7 @@ def post(utteranceInfo):
 
     result = {
         "id" : current_utterance.id,
+        "audio" : AudioSchema().dump(current_utterance.audio).data,
+        "transcription" : TranscriptionSchema().dump(current_utterance.transcription).data,
     }
     return result, 201
