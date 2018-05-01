@@ -31,11 +31,20 @@ class Utterance(db.Model):
     __tablename__ = 'utterance'
 
     id = db.Column(db.Integer, primary_key=True)
-    audio_id = db.Column(db.Integer, db.ForeignKey(Audio.id), primary_key=True)
-    transcription_id = db.Column(db.Integer, db.ForeignKey(Transcription.id), primary_key=True)
 
-    audio = db.relationship('Audio', foreign_keys='Audio.id')
-    transcription = db.relationship('Transcription', foreign_keys='Transcription.id')
+    audio_id = db.Column(
+        db.Integer,
+        db.ForeignKey('audio.id', ondelete='CASCADE'),
+        nullable=False,
+    )
+    audio = db.relationship('Audio', backref='utterances')
+
+    transcription_id = db.Column(
+        db.Integer,
+        db.ForeignKey('transcription.id', ondelete='CASCADE'),
+        nullable=False,
+    )
+    transcription = db.relationship('Transcription', backref='utterances')
 
     def __repr__(self):
         return "<Utterance(audio={}, transcription={})>".format(self.audio, self.transcription)
