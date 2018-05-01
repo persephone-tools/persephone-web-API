@@ -2,7 +2,7 @@ import flask_uploads
 import os
 
 audio_files = flask_uploads.UploadSet(name="audio", extensions=("wav", "wave", "mp3"))
-text_files =  flask_uploads.UploadSet(name="text", extensions=("txt"))
+text_files =  flask_uploads.UploadSet(name="text", extensions=("txt", "phonemes", "phonemes_and_tones"))
 
 
 # URL of files being served by this app
