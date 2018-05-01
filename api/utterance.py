@@ -1,6 +1,9 @@
 """
 API endpoints for /utterance
 """
+from .db_models import Utterance
+
+from . import db
 
 def post(utteranceInfo):
     """POST request"""
@@ -8,4 +11,12 @@ def post(utteranceInfo):
     transcriptionId = utteranceInfo['transcriptionId']
     print("Got audioId {} transcriptionId {}".format(audioId, transcriptionId))
     # TODO check that ID's for audio and transcription exist
-    return "Utterance upload not implemented", 501
+
+    current_utterance = Utterance(audio_id=audioId, transcription_id=transcriptionId)
+    db.session.add(current_utterance)
+    db.session.commit()
+
+    result = {
+        "id" : current_utterance.id,
+    }
+    return result, 201
