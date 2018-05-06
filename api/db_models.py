@@ -19,6 +19,8 @@ class Audio(db.Model):
     filename = db.Column(db.String)
     url = db.Column(db.String)
 
+    in_utterances = db.relationship("Utterance", cascade="all, delete-orphan")
+
     def __repr__(self):
         return "<Audio(filename={}, url={})>".format(self.filename, self.url)
 
@@ -30,6 +32,8 @@ class Transcription(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String)
     url = db.Column(db.String)
+
+    in_utterances = db.relationship("Utterance", cascade="all, delete-orphan")
 
     def __repr__(self):
         return "<Transcription(filename={}, url={})>".format(self.filename, self.url)
@@ -45,14 +49,14 @@ class Utterance(db.Model):
 
     audio_id = db.Column(
         db.Integer,
-        db.ForeignKey('audio.id', ondelete='CASCADE'),
+        db.ForeignKey('audio.id'),
         nullable=False,
     )
     audio = db.relationship('Audio', backref='utterances')
 
     transcription_id = db.Column(
         db.Integer,
-        db.ForeignKey('transcription.id', ondelete='CASCADE'),
+        db.ForeignKey('transcription.id'),
         nullable=False,
     )
     transcription = db.relationship('Transcription', backref='utterances')
