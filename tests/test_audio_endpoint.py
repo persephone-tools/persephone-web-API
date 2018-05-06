@@ -10,7 +10,6 @@ import api
 app = connexion.FlaskApp(__name__)
 app.add_api('../swagger/api_spec.yaml', resolver=RestyResolver('api'))
 
-from api.upload_config import configure_uploads
 
 @pytest.fixture(scope='module')
 def client():
@@ -33,6 +32,8 @@ def client():
     # configure upload paths
     flask_app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024 #max 64 MB file upload
     flask_app.config['BASE_UPLOAD_DIRECTORY'] = os.path.join(os.getcwd(), 'test_uploads')
+
+    from api.upload_config import configure_uploads
     configure_uploads(flask_app)
     # !!! duplication of config ends here !!!
 
