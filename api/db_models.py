@@ -1,5 +1,16 @@
 from . import db
 
+from sqlalchemy import event
+from sqlalchemy.engine import Engine
+from sqlite3 import Connection as SQLite3Connection
+
+@event.listens_for(Engine, "connect")
+def _set_sqlite_pragma(dbapi_connection, connection_record):
+    if isinstance(dbapi_connection, SQLite3Connection):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON;")
+        cursor.close()
+
 class Audio(db.Model):
     """Database ORM definition for Audio files"""
     __tablename__ = 'audio'
@@ -7,6 +18,8 @@ class Audio(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String)
     url = db.Column(db.String)
+
+    in_utterances = db.relationship("Utterance", cascade="all, delete-orphan")
 
     def __repr__(self):
         return "<Audio(filename={}, url={})>".format(self.filename, self.url)
@@ -19,6 +32,8 @@ class Transcription(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String)
     url = db.Column(db.String)
+
+    in_utterances = db.relationship("Utterance", cascade="all, delete-orphan")
 
     def __repr__(self):
         return "<Transcription(filename={}, url={})>".format(self.filename, self.url)
@@ -34,14 +49,14 @@ class Utterance(db.Model):
 
     audio_id = db.Column(
         db.Integer,
-        db.ForeignKey('audio.id', ondelete='CASCADE'),
+        db.ForeignKey('audio.id'),
         nullable=False,
     )
     audio = db.relationship('Audio', backref='utterances')
 
     transcription_id = db.Column(
         db.Integer,
-        db.ForeignKey('transcription.id', ondelete='CASCADE'),
+        db.ForeignKey('transcription.id'),
         nullable=False,
     )
     transcription = db.relationship('Transcription', backref='utterances')
