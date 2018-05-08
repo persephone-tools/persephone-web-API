@@ -9,3 +9,7 @@ def test_audio_uploads_endpoint(client):
         content_type='multipart/form-data'
     )
     assert response.status_code == 201
+
+    import json
+    wav_response_data = json.loads(response.data.decode('utf8'))
+    assert wav_response_data['id']
