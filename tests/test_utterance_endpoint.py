@@ -66,3 +66,11 @@ def test_duplicate_utterance(client):
     initial_utterance_id = utterance_response_data['id']
     assert initial_utterance_id
 
+
+    # Duplicate utterance creation attempt
+    response = client.post(
+        '/v0.1/utterance',
+        data=json.dumps(data),
+        headers={'Content-Type': 'application/json'}
+    )
+    assert response.status_code == 409
