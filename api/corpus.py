@@ -5,11 +5,19 @@ This deals with the API access corpus model definitions and metadata
 import logging
 import zipfile
 
+from .db_models import Corpus
+from . import db
+
 logger = logging.getLogger(__name__)
 
 def search():
     print("Request for all available corpus")
     return "Get available corpus not implemented", 501
+
+
+def post():
+    """Create a Corpus"""
+    return "Corpus creation not implemented", 501
 
 def create_from_zip(zippedFile):
     if zippedFile.mimetype != 'application/zip':
