@@ -204,10 +204,12 @@ definitions:
     type: "object"
     required:
     - "name"
+    - "partition"
     properties:
       name:
         type: "string"
         description: "The name of this corpus"
+        example: "ExampleLang Corpus"
       partition:
         type: object
         description: "How utterances are assigned to datasets for use in training the model"
