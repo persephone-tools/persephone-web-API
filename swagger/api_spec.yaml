@@ -208,11 +208,25 @@ definitions:
       name:
         type: "string"
         description: "The name of this corpus"
-      utterances:
-        type: array
-        items:
-          $ref: "#/definitions/utteranceInformation"
-        description: "All utterances that this corpus contains"
+      partition:
+        type: object
+        description: "How utterances are assigned to datasets for use in training the model"
+        properties:
+          training:
+            type: array
+            items:
+              $ref: "#/definitions/utteranceInformation"
+            description: "Utterances in training set"
+          validation:
+            type: array
+            items:
+              $ref: "#/definitions/utteranceInformation"
+            description: "Utterances in validation set"
+          testing:
+            type: array
+            items:
+              $ref: "#/definitions/utteranceInformation"
+            description: "Utterances in testing set"
   modelInformation:
     type: "object"
     properties:
