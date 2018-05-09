@@ -85,7 +85,7 @@ class TrainingDataSet(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     corpus_id = db.Column(
-        db.Integer, 
+        db.Integer,
         db.ForeignKey('corpus.id'),
         nullable=False
     )
@@ -100,3 +100,49 @@ class TrainingDataSet(db.Model):
 
     def __repr__(self):
         return "<TrainingDataSet(corpus={}, utterance={})>".format(self.corpus, self.utterance)
+
+
+class ValidationDataSet(db.Model):
+    """This serves to facilitate mappings beween Utterances and Corpus as stored in the database"""
+    __tablename__ = 'validationdata'
+
+    id = db.Column(db.Integer, primary_key=True)
+    corpus_id = db.Column(
+        db.Integer,
+        db.ForeignKey('corpus.id'),
+        nullable=False
+    )
+    corpus = db.relationship(Corpus)
+
+    utterance_id = db.Column(
+        db.Integer,
+        db.ForeignKey('utterance.id'),
+        nullable=False
+    )
+    utterance = db.relationship(Utterance)
+
+    def __repr__(self):
+        return "<ValidationDataSet(corpus={}, utterance={})>".format(self.corpus, self.utterance)
+
+
+class TestingDataSet(db.Model):
+    """This serves to facilitate mappings beween Utterances and Corpus as stored in the database"""
+    __tablename__ = 'testingdata'
+
+    id = db.Column(db.Integer, primary_key=True)
+    corpus_id = db.Column(
+        db.Integer,
+        db.ForeignKey('corpus.id'),
+        nullable=False
+    )
+    corpus = db.relationship(Corpus)
+
+    utterance_id = db.Column(
+        db.Integer,
+        db.ForeignKey('utterance.id'),
+        nullable=False
+    )
+    utterance = db.relationship(Utterance)
+
+    def __repr__(self):
+        return "<TestingDataSet(corpus={}, utterance={})>".format(self.corpus, self.utterance)
