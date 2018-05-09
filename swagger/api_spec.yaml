@@ -74,6 +74,36 @@ paths:
             type: array
             items:
               $ref: "#/definitions/corpusInformation"
+    post:
+      summary: "Create a new corpus"
+      consumes:
+        - application/json
+      parameters:
+        - name: CorpusInfo
+          in: body
+          schema:
+            type: object
+            required:
+              - name
+              - training
+              - validation
+              - testing
+            properties:
+              name:
+                type: string
+                description: "The name of this corpus"
+                example: "ExampleLang Corpus 3"
+              training:
+                $ref: "#/definitions/IDarray"
+              validation:
+                $ref: "#/definitions/IDarray"
+              testing:
+                $ref: "#/definitions/IDarray"
+      responses:
+        201:
+          description: success
+          schema:
+            $ref: "#/definitions/corpusInformation"
   /corpus/fromZip:
     post:
       summary: "Create a corpus from a Zip file"
@@ -229,6 +259,12 @@ definitions:
             items:
               $ref: "#/definitions/utteranceInformation"
             description: "Utterances in testing set"
+  IDarray:
+    type: "array"
+    items:
+      type: "integer"
+      format: "int64"
+      minimum: 0
   modelInformation:
     type: "object"
     properties:
