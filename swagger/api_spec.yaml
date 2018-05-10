@@ -104,6 +104,25 @@ paths:
           description: success
           schema:
             $ref: "#/definitions/corpusInformation"
+  /corpus/{corpusID}:
+    get:
+      summary: "Get information about an uploaded corpus"
+      produces:
+        - application/json
+      parameters:
+        - name: corpusID
+          in: path
+          description: "ID of corpus to return information about"
+          required: true
+          type: integer
+          format: "int64"
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/corpusInformation"
+        404:
+          description: "Corpus not found"
   /corpus/fromZip:
     post:
       summary: "Create a corpus from a Zip file"
