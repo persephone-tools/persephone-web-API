@@ -13,3 +13,7 @@ class AudioSchema(ModelSchema):
 class TranscriptionSchema(ModelSchema):
     class Meta:
         model = db_models.Transcription
+
+class CorpusSchema(ModelSchema):
+    class Meta:
+        model = db_models.Corpus
