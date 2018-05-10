@@ -12,8 +12,12 @@ from .serialization import CorpusSchema
 logger = logging.getLogger(__name__)
 
 def search():
-    print("Request for all available corpus")
-    return "Get available corpus not implemented", 501
+    """Handle request for all available Corpus"""
+    results = [] 
+    for row in db.session.query(Corpus):
+        deserialized = CorpusSchema().dump(row).data
+        results.append(deserialized)
+    return results, 200
 
 
 def post(corpusInfo):
