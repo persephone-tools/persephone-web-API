@@ -81,7 +81,7 @@ class Corpus(db.Model):
     validation = db.relationship('ValidationDataSet')
 
     def __repr__(self):
-        return "<Corpus(name={})>".format(self.name)
+        return '<Corpus(name="{}")>'.format(self.name)
 
 
 class TrainingDataSet(db.Model):
