@@ -76,6 +76,10 @@ class Corpus(db.Model):
     # If yes we need a user supplied partition of traing/valid/test data sets flag
     # and the parameters with which the partition sizes are determined.
 
+    training = db.relationship('TrainingDataSet')
+    testing = db.relationship('TestingDataSet')
+    validation = db.relationship('ValidationDataSet')
+
     def __repr__(self):
         return "<Corpus(name={})>".format(self.name)
 
