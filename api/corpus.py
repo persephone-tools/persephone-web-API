@@ -5,8 +5,9 @@ This deals with the API access corpus model definitions and metadata
 import logging
 import zipfile
 
-from .db_models import Corpus
+from .db_models import Corpus, TestingDataSet, TrainingDataSet, ValidationDataSet
 from . import db
+from .serialization import CorpusSchema
 
 logger = logging.getLogger(__name__)
 
@@ -17,10 +18,44 @@ def search():
 
 def post(corpusInfo):
     """Create a Corpus"""
+    current_corpus = Corpus(name=corpusInfo['name'])
+    db.session.add(current_corpus)
+    db.session.flush() # Make sure that current_corpus.id exists before using as key
     training_set_IDs = corpusInfo['training']
+    for train_utterance_id in training_set_IDs:
+        db.session.add(
+            TrainingDataSet(
+                corpus_id=current_corpus.id,
+                utterance_id=train_utterance_id
+            )
+        )
+
     testing_set_IDs = corpusInfo['testing']
+    for test_utterance_id in testing_set_IDs:
+        db.session.add(
+            TestingDataSet(
+                corpus_id=current_corpus.id,
+                utterance_id=test_utterance_id
+            )
+        )
+
     validation_set_IDs = corpusInfo['validation']
-    return "Corpus creation not implemented", 501
+    for validation_utterance_id in validation_set_IDs:
+        db.session.add(
+            ValidationDataSet(
+                corpus_id=current_corpus.id,
+                utterance_id=validation_utterance_id
+            )
+        )
+
+    try:
+        db.session.commit()
+    except sqlalchemy.exc.IntegrityError:
+        return "Invalid corpus provided", 400
+    else:
+        result = CorpusSchema().dump(current_corpus).data
+        return result, 201
+
 
 def create_from_zip(zippedFile):
     if zippedFile.mimetype != 'application/zip':
