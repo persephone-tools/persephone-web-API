@@ -20,6 +20,19 @@ def search():
     return results, 200
 
 
+def get(corpusID):
+    """Get a Corpus by its ID"""
+    results = []
+    for row in Corpus.query.filter(Corpus.id==corpusID):
+        results.append(row)
+    if results:
+        if len(results) != 1:
+            pass # TODO: This indicates a problem with the primary keys in the database
+        result = CorpusSchema().dump(results[0]).data
+        return result, 200
+    return "Corpus with ID {} not found".format(corpusID), 404
+
+
 def post(corpusInfo):
     """Create a Corpus"""
     current_corpus = Corpus(name=corpusInfo['name'])
