@@ -79,7 +79,7 @@ paths:
       consumes:
         - application/json
       parameters:
-        - name: CorpusInfo
+        - name: corpusInfo
           in: body
           schema:
             type: object

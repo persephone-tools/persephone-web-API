@@ -15,8 +15,11 @@ def search():
     return "Get available corpus not implemented", 501
 
 
-def post():
+def post(corpusInfo):
     """Create a Corpus"""
+    training_set_IDs = corpusInfo['training']
+    testing_set_IDs = corpusInfo['testing']
+    validation_set_IDs = corpusInfo['validation']
     return "Corpus creation not implemented", 501
 
 def create_from_zip(zippedFile):
