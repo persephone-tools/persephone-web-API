@@ -15,8 +15,8 @@ def search():
     """Handle request for all available Corpus"""
     results = [] 
     for row in db.session.query(Corpus):
-        deserialized = CorpusSchema().dump(row).data
-        results.append(deserialized)
+        serialized = CorpusSchema().dump(row).data
+        results.append(serialized)
     return results, 200
 
 
