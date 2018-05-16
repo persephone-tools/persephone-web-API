@@ -1,0 +1,3 @@
+pytest
+setuptools>39
+tavern>0.9
