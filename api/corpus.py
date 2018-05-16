@@ -83,3 +83,9 @@ def create_from_zip(zippedFile):
         return "File type must be zip", 415
     print("Create corpus from zip file")
     return "Create corpus from zip not implemented", 501
+
+
+def create_file_structure(corpus, path):
+    """Create the needed file structure on disk for a persephone.Corpus
+    object to be created"""
+    raise NotImplementedError
