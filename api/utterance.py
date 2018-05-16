@@ -11,6 +11,9 @@ def post(utteranceInfo):
     """POST request"""
     audioId = utteranceInfo['audioId']
     transcriptionId = utteranceInfo['transcriptionId']
+    existing_utterance = Utterance.query.filter_by(audio_id=audioId, transcription_id=transcriptionId).first()
+    if existing_utterance:
+        return "Utterance already exists", 409
     try:
         current_utterance = Utterance(audio_id=audioId, transcription_id=transcriptionId)
         db.session.add(current_utterance)
