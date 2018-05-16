@@ -26,17 +26,17 @@ with flask_app.app_context():
 
 # configure upload paths
 flask_app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024 #max 64 MB file upload
-flask_app.config['BASE_UPLOAD_DIRECTORY'] = os.path.join(os.getcwd(), 'test_uploads')
-
-from api.upload_config import configure_uploads
-configure_uploads(flask_app)
 
 flask_app.config['DEBUG'] = True
 flask_app.config['TESTING'] = True
 
 @pytest.fixture
-def client():
+def client(tmpdir):
     """Create a test client to send requests to"""
+    flask_app.config['BASE_UPLOAD_DIRECTORY'] = os.path.join(str(tmpdir), 'test_uploads')
+
+    from api.upload_config import configure_uploads
+    configure_uploads(flask_app)
     with flask_app.test_client() as c:
         yield c
 
