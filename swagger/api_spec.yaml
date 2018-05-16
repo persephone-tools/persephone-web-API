@@ -74,6 +74,55 @@ paths:
             type: array
             items:
               $ref: "#/definitions/corpusInformation"
+    post:
+      summary: "Create a new corpus"
+      consumes:
+        - application/json
+      parameters:
+        - name: corpusInfo
+          in: body
+          schema:
+            type: object
+            required:
+              - name
+              - training
+              - validation
+              - testing
+            properties:
+              name:
+                type: string
+                description: "The name of this corpus"
+                example: "ExampleLang Corpus 3"
+              training:
+                $ref: "#/definitions/IDarray"
+              validation:
+                $ref: "#/definitions/IDarray"
+              testing:
+                $ref: "#/definitions/IDarray"
+      responses:
+        201:
+          description: success
+          schema:
+            $ref: "#/definitions/corpusInformation"
+  /corpus/{corpusID}:
+    get:
+      summary: "Get information about an uploaded corpus"
+      produces:
+        - application/json
+      parameters:
+        - name: corpusID
+          in: path
+          description: "ID of corpus to return information about"
+          required: true
+          type: integer
+          format: "int64"
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/corpusInformation"
+        404:
+          description: "Corpus not found"
   /corpus/fromZip:
     post:
       summary: "Create a corpus from a Zip file"
@@ -204,15 +253,37 @@ definitions:
     type: "object"
     required:
     - "name"
+    - "partition"
     properties:
       name:
         type: "string"
         description: "The name of this corpus"
-      utterances:
-        type: array
-        items:
-          $ref: "#/definitions/utteranceInformation"
-        description: "All utterances that this corpus contains"
+        example: "ExampleLang Corpus"
+      partition:
+        type: object
+        description: "How utterances are assigned to datasets for use in training the model"
+        properties:
+          training:
+            type: array
+            items:
+              $ref: "#/definitions/utteranceInformation"
+            description: "Utterances in training set"
+          validation:
+            type: array
+            items:
+              $ref: "#/definitions/utteranceInformation"
+            description: "Utterances in validation set"
+          testing:
+            type: array
+            items:
+              $ref: "#/definitions/utteranceInformation"
+            description: "Utterances in testing set"
+  IDarray:
+    type: "array"
+    items:
+      type: "integer"
+      format: "int64"
+      minimum: 0
   modelInformation:
     type: "object"
     properties:

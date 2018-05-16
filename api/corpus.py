@@ -5,11 +5,74 @@ This deals with the API access corpus model definitions and metadata
 import logging
 import zipfile
 
+from .db_models import Corpus, TestingDataSet, TrainingDataSet, ValidationDataSet
+from . import db
+from .serialization import CorpusSchema
+
 logger = logging.getLogger(__name__)
 
 def search():
-    print("Request for all available corpus")
-    return "Get available corpus not implemented", 501
+    """Handle request for all available Corpus"""
+    results = [] 
+    for row in db.session.query(Corpus):
+        serialized = CorpusSchema().dump(row).data
+        results.append(serialized)
+    return results, 200
+
+
+def get(corpusID):
+    """Get a Corpus by its ID"""
+    results = []
+    for row in Corpus.query.filter(Corpus.id==corpusID):
+        results.append(row)
+    if results:
+        if len(results) != 1:
+            pass # TODO: This indicates a problem with the primary keys in the database
+        result = CorpusSchema().dump(results[0]).data
+        return result, 200
+    return "Corpus with ID {} not found".format(corpusID), 404
+
+
+def post(corpusInfo):
+    """Create a Corpus"""
+    current_corpus = Corpus(name=corpusInfo['name'])
+    db.session.add(current_corpus)
+    db.session.flush() # Make sure that current_corpus.id exists before using as key
+    training_set_IDs = corpusInfo['training']
+    for train_utterance_id in training_set_IDs:
+        db.session.add(
+            TrainingDataSet(
+                corpus_id=current_corpus.id,
+                utterance_id=train_utterance_id
+            )
+        )
+
+    testing_set_IDs = corpusInfo['testing']
+    for test_utterance_id in testing_set_IDs:
+        db.session.add(
+            TestingDataSet(
+                corpus_id=current_corpus.id,
+                utterance_id=test_utterance_id
+            )
+        )
+
+    validation_set_IDs = corpusInfo['validation']
+    for validation_utterance_id in validation_set_IDs:
+        db.session.add(
+            ValidationDataSet(
+                corpus_id=current_corpus.id,
+                utterance_id=validation_utterance_id
+            )
+        )
+
+    try:
+        db.session.commit()
+    except sqlalchemy.exc.IntegrityError:
+        return "Invalid corpus provided", 400
+    else:
+        result = CorpusSchema().dump(current_corpus).data
+        return result, 201
+
 
 def create_from_zip(zippedFile):
     if zippedFile.mimetype != 'application/zip':
@@ -20,3 +83,9 @@ def create_from_zip(zippedFile):
         return "File type must be zip", 415
     print("Create corpus from zip file")
     return "Create corpus from zip not implemented", 501
+
+
+def create_file_structure(corpus, path):
+    """Create the needed file structure on disk for a persephone.Corpus
+    object to be created"""
+    raise NotImplementedError
