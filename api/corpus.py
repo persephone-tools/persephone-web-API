@@ -5,6 +5,8 @@ This deals with the API access corpus model definitions and metadata
 import logging
 import zipfile
 
+import sqlalchemy
+
 from .db_models import Corpus, TestingDataSet, TrainingDataSet, ValidationDataSet
 from . import db
 from .serialization import CorpusSchema

@@ -7,6 +7,16 @@ from . import db
 from .db_models import Utterance
 from .serialization import AudioSchema, TranscriptionSchema
 
+def get(utteranceID):
+    """GET request, find utterance by ID"""
+    existing_utterance = Utterance.query.get_or_404(utteranceID)
+    result = {
+        "id" : existing_utterance.id,
+        "audio" : AudioSchema().dump(existing_utterance.audio).data,
+        "transcription" : TranscriptionSchema().dump(existing_utterance.transcription).data,
+    }
+    return result, 200
+
 def post(utteranceInfo):
     """POST request"""
     audioId = utteranceInfo['audioId']
