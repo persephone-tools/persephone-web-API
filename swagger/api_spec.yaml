@@ -162,6 +162,15 @@ paths:
             items:
               $ref: "#/definitions/modelInformation"
   /transcription:
+    get:
+      summary: "Retrieve all transcriptions that are currently available"
+      responses:
+        200:
+          description: success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/transcriptionFileInformation"
     post:
       summary: "Upload an transcription file"
       consumes:
