@@ -22,11 +22,7 @@ def post(transcriptionFile):
         db.session.add(current_file)
         db.session.commit()
 
-    result = {
-        "id": current_file.id,
-        "fileURL": current_file.url,
-        "fileName" : current_file.filename,
-    }
+    result = TranscriptionSchema().dump(current_file).data
     return result, 201
 
 def get(transcriptionID):
@@ -35,20 +31,10 @@ def get(transcriptionID):
     rather a JSON object with the relevant information.
     This allows the flexibility of file storage being handled
     by another service that is outside this API service."""
-    results = []
-    for row in Transcription.query.filter(Transcription.id==transcriptionID):
-        results.append(row)
-    if results:
-        if len(results) != 1:
-            pass # TODO: This indicates a problem with the primary keys in the database
-        transcription_info = results[0]
-        result = {
-            "id": transcription_info.id,
-            "fileURL": transcription_info.url,
-            "fileName" : transcription_info.filename,
-        }
-        return result, 200
-    return "Transcription with ID {} not found".format(transcriptionID), 404
+    transcription = Transcription.query.get_or_404(transcriptionID)
+    result = TranscriptionSchema().dump(transcription).data
+    return result, 200
+
 
 def search():
     """Search transcription files"""

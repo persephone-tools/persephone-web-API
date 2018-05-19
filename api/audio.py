@@ -21,11 +21,7 @@ def post(audioFile):
         db.session.add(current_file)
         db.session.commit()
 
-    result = {
-        "id": current_file.id,
-        "fileURL": current_file.url,
-        "fileName" : current_file.filename,
-    }
+    result = AudioSchema().dump(current_file).data
     return result, 201
 
 
@@ -35,21 +31,9 @@ def get(audioID):
     rather a JSON object with the relevant information.
     This allows the flexibility of file storage being handled
     by another service that is outside this API service."""
-    results = []
-    for row in Audio.query.filter(Audio.id==audioID):
-        results.append(row)
-    if results:
-        if len(results) != 1:
-            pass # TODO: This indicates a problem with the primary keys in the database
-        audio_info = results[0]
-        result = {
-            "id": audio_info.id,
-            "fileURL": audio_info.url,
-            "fileName" : audio_info.filename,
-        }
-        return result, 200
-
-    return "Audio with ID {} not found".format(audioID), 404
+    audio_info = Audio.query.get_or_404(transcriptionID)
+    result = AudioSchema().dump(audio_info).data
+    return result, 200
 
 def search():
     """Search audio files"""
