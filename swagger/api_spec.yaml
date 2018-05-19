@@ -188,7 +188,7 @@ paths:
           schema:
             $ref: "#/definitions/transcriptionFileInformation"
         404:
-          description: "Audio file ID not found"
+          description: "Transcription not found"
 
   /utterance:
     post:
