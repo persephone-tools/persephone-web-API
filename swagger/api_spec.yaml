@@ -215,6 +215,10 @@ paths:
           description: success
           schema:
             $ref: "#/definitions/utteranceInformation"
+        400:
+          description: "Invalid utterance"
+        409:
+          description: "Already exists"
   /utterance/{utteranceID}:
     get:
       summary: "Get information about an an utterance"
