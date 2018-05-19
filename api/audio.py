@@ -4,11 +4,10 @@ This deals with the API access for audio files uploading/downloading.
 """
 import flask_uploads
 
-from .upload_config import audio_files, uploads_url_base
-
-from .db_models import Audio
-
 from . import db
+from .db_models import Audio
+from .upload_config import audio_files, uploads_url_base
+from .serialization import AudioSchema
 
 def post(audioFile):
     """handle POST request for audio file"""
@@ -51,3 +50,9 @@ def get(audioID):
         return result, 200
 
     return "Audio with ID {} not found".format(audioID), 404
+
+def search():
+    """Search audio files"""
+    results = Audio.query.all()
+    json_results = [AudioSchema().dump(audio).data for audio in results]
+    return json_results, 200

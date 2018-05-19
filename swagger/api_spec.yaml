@@ -21,6 +21,15 @@ produces:
 
 paths:
   /audio:
+    get:
+      summary: "Retrieve all audio files that are currently available"
+      responses:
+        200:
+          description: success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/audioFileInformation"
     post:
       summary: "Upload an audio file"
       consumes:
