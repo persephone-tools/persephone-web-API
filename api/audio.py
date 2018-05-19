@@ -21,11 +21,7 @@ def post(audioFile):
         db.session.add(current_file)
         db.session.commit()
 
-    result = {
-        "id": current_file.id,
-        "fileURL": current_file.url,
-        "fileName" : current_file.filename,
-    }
+    result = AudioSchema().dump(current_file).data
     return result, 201
 
 
