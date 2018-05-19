@@ -22,11 +22,7 @@ def post(transcriptionFile):
         db.session.add(current_file)
         db.session.commit()
 
-    result = {
-        "id": current_file.id,
-        "fileURL": current_file.url,
-        "fileName" : current_file.filename,
-    }
+    result = TranscriptionSchema().dump(current_file).data
     return result, 201
 
 def get(transcriptionID):
