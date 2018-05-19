@@ -215,6 +215,26 @@ paths:
           description: success
           schema:
             $ref: "#/definitions/utteranceInformation"
+  /utterance/{utteranceID}:
+    get:
+      summary: "Get information about an an utterance"
+      produces:
+        - application/json
+      parameters:
+        - name: utteranceID
+          in: path
+          description: "ID of utterance to return information about"
+          required: true
+          type: integer
+          format: "int64"
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/utteranceInformation"
+        404:
+          description: "Utterance not found"
+
 
 definitions:
   audioFileInformation:
