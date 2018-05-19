@@ -209,6 +209,15 @@ paths:
           description: "Transcription not found"
 
   /utterance:
+    get:
+      summary: "Retrieve all utterances that are currently available"
+      responses:
+        200:
+          description: success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/utteranceInformation"
     post:
       summary: "Create a new utterance"
       consumes:

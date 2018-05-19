@@ -37,3 +37,15 @@ def post(utteranceInfo):
             "transcription" : TranscriptionSchema().dump(current_utterance.transcription).data,
         }
         return result, 201
+
+def search():
+    """Search available utterances"""
+    results = Utterance.query.all()
+    json_results = []
+    for ut in results:
+        json_results.append({
+            "id" : ut.id,
+            "audio" : AudioSchema().dump(ut.audio).data,
+            "transcription" : TranscriptionSchema().dump(ut.transcription).data,
+        })
+    return json_results, 200
