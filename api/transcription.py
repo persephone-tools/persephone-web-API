@@ -4,11 +4,11 @@ This deals with the API access for transcription files uploading/downloading.
 """
 import flask_uploads
 
-from .upload_config import text_files, uploads_url_base
-
-from .db_models import Transcription
-
 from . import db
+from .db_models import Transcription
+from .upload_config import text_files, uploads_url_base
+from .serialization import TranscriptionSchema
+
 
 def post(transcriptionFile):
     """handle POST request for transcription file"""
@@ -49,3 +49,9 @@ def get(transcriptionID):
         }
         return result, 200
     return "Transcription with ID {} not found".format(transcriptionID), 404
+
+def search():
+    """Search transcription files"""
+    results = Transcription.query.all()
+    json_results = [TranscriptionSchema().dump(transcription).data for transcription in results]
+    return json_results, 200
