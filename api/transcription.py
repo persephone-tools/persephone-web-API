@@ -31,7 +31,6 @@ def get(transcriptionID):
     rather a JSON object with the relevant information.
     This allows the flexibility of file storage being handled
     by another service that is outside this API service."""
-    results = []
     transcription = Transcription.query.get_or_404(transcriptionID)
     result = TranscriptionSchema().dump(transcription).data
     return result, 200
