@@ -5,16 +5,12 @@ import sqlalchemy
 
 from . import db
 from .db_models import Utterance
-from .serialization import AudioSchema, TranscriptionSchema
+from .serialization import UtteranceSchema
 
 def get(utteranceID):
     """GET request, find utterance by ID"""
     existing_utterance = Utterance.query.get_or_404(utteranceID)
-    result = {
-        "id" : existing_utterance.id,
-        "audio" : AudioSchema().dump(existing_utterance.audio).data,
-        "transcription" : TranscriptionSchema().dump(existing_utterance.transcription).data,
-    }
+    result = UtteranceSchema().dump(existing_utterance).data
     return result, 200
 
 def post(utteranceInfo):
@@ -31,11 +27,7 @@ def post(utteranceInfo):
     except sqlalchemy.exc.IntegrityError:
         return "Invalid ID provided", 400
     else:
-        result = {
-            "id" : current_utterance.id,
-            "audio" : AudioSchema().dump(current_utterance.audio).data,
-            "transcription" : TranscriptionSchema().dump(current_utterance.transcription).data,
-        }
+        result = UtteranceSchema().dump(current_utterance).data
         return result, 201
 
 def search():
@@ -43,9 +35,7 @@ def search():
     results = Utterance.query.all()
     json_results = []
     for ut in results:
-        json_results.append({
-            "id" : ut.id,
-            "audio" : AudioSchema().dump(ut.audio).data,
-            "transcription" : TranscriptionSchema().dump(ut.transcription).data,
-        })
+        json_results.append(
+            UtteranceSchema().dump(ut).data
+        )
     return json_results, 200
