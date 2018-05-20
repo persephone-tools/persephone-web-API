@@ -40,7 +40,7 @@ class Transcription(db.Model):
 
 
 class Utterance(db.Model):
-    """Database ORM definiton for Utterances.
+    """Database ORM definition for Utterances.
     This consists of a relationship between an Audio file and a transcription file
     """
     __tablename__ = 'utterance'
@@ -66,7 +66,7 @@ class Utterance(db.Model):
 
 
 class Corpus(db.Model):
-    """Database ORM definiton for Corpus"""
+    """Database ORM definition for Corpus"""
     __tablename__ = 'corpus'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -85,7 +85,7 @@ class Corpus(db.Model):
 
 
 class TrainingDataSet(db.Model):
-    """This serves to facilitate mappings beween Utterances and Corpus as stored in the database"""
+    """This serves to facilitate mappings between Utterances and Corpus as stored in the database"""
     __tablename__ = 'trainingdata'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -108,7 +108,7 @@ class TrainingDataSet(db.Model):
 
 
 class ValidationDataSet(db.Model):
-    """This serves to facilitate mappings beween Utterances and Corpus as stored in the database"""
+    """This serves to facilitate mappings between Utterances and Corpus as stored in the database"""
     __tablename__ = 'validationdata'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -131,7 +131,7 @@ class ValidationDataSet(db.Model):
 
 
 class TestingDataSet(db.Model):
-    """This serves to facilitate mappings beween Utterances and Corpus as stored in the database"""
+    """This serves to facilitate mappings between Utterances and Corpus as stored in the database"""
     __tablename__ = 'testingdata'
 
     id = db.Column(db.Integer, primary_key=True)
