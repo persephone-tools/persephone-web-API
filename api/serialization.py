@@ -9,10 +9,13 @@ from . import db_models
 class AudioSchema(ModelSchema):
     class Meta:
         model = db_models.Audio
+        exclude = ("utterances",)
 
 class TranscriptionSchema(ModelSchema):
     class Meta:
         model = db_models.Transcription
+        exclude = ("utterances",)
+
 
 class UtteranceSchema(ModelSchema):
     class Meta:
