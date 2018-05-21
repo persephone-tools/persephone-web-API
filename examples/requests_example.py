@@ -31,4 +31,19 @@ transcription_id = transcription_results['id']
 print("transcription uploaded has an id of {}".format(transcription_id))
 
 
-# create an utterance from the audio file and transcription uploaded before
+# Create an utterance from the audio file and transcription uploaded before
+
+utterance_data = {
+    "audioId": audio_id,
+    "transcriptionId": transcription_id
+}
+
+utterance_url = URL_BASE + 'utterance'
+
+# Note that this endpoint expects JSON data so we pass json
+# instead of data to the request
+r = requests.post(utterance_url, json=utterance_data)
+print(r.text)
+utterance_results = r.json()
+utterance_id = utterance_results['id']
+print("Utterance created has an id of {}".format(utterance_id))
