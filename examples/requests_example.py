@@ -22,5 +22,18 @@ audio_id = audio_results['id']
 print("File uploaded has an id of {}".format(audio_id))
 
 # upload a transcription
+files = {'transcriptionFile': open('crdo-NRU_F4_ACCOMP_PFV.1.phonemes', 'rb')}
+
+audio_url = URL_BASE + "transcription"
+r = requests.post(audio_url, files=files)
+
+print(r.text)
+
+transcription_results = r.json()
+
+transcription_id = audio_results['id']
+
+print("transcription uploaded has an id of {}".format(transcription_id))
+
 
 # create an utterance from the audio file and transcription uploaded before
