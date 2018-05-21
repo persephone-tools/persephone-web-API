@@ -165,5 +165,8 @@ class Model(db.Model):
     )
     corpus = db.relationship(Corpus)
 
+    min_epochs = db.Column(db.Integer)
+    max_epochs = db.Column(db.Integer)
+
     def __repr__(self):
         return "<Model(corpus={})>".format(self.corpus)
