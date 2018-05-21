@@ -151,3 +151,19 @@ class TestingDataSet(db.Model):
 
     def __repr__(self):
         return "<TestingDataSet(corpus={}, utterance={})>".format(self.corpus, self.utterance)
+
+
+class Model(db.Model):
+    """Represents a transcription Model"""
+    __tablename__ = 'model'
+
+    id = db.Column(db.Integer, primary_key=True)
+    corpus_id = db.Column(
+        db.Integer,
+        db.ForeignKey('corpus.id'),
+        nullable=False
+    )
+    corpus = db.relationship(Corpus)
+
+    def __repr__(self):
+        return "<Model(corpus={})>".format(self.corpus)
