@@ -15,5 +15,11 @@ def search():
         results.append(serialized)
     return results, 200
 
+def get(modelID):
+    """ Get a model by its ID"""
+    transcription_model = TranscriptionModel.query.get_or_404(modelID)
+    result = TranscriptionModelSchema().dump(transcription_model).data
+    return result, 200
+
 def post():
     raise NotImplementedError
