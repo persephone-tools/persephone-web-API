@@ -73,7 +73,7 @@ class Corpus(db.Model):
     name = db.Column(db.String)
     # Persephone supports a default partition generation when the user does not supply
     # the partitions. Should we support this behavior in the API?
-    # If yes we need a user supplied partition of traing/valid/test data sets flag
+    # If yes we need a user supplied partition of train/valid/test data sets flag
     # and the parameters with which the partition sizes are determined.
 
     training = db.relationship('TrainingDataSet')
@@ -151,3 +151,26 @@ class TestingDataSet(db.Model):
 
     def __repr__(self):
         return "<TestingDataSet(corpus={}, utterance={})>".format(self.corpus, self.utterance)
+
+
+class TranscriptionModel(db.Model):
+    """Represents a transcription Model"""
+    __tablename__ = 'transcriptionmodel'
+
+    id = db.Column(db.Integer, primary_key=True)
+    corpus_id = db.Column(
+        db.Integer,
+        db.ForeignKey('corpus.id'),
+        nullable=False
+    )
+    corpus = db.relationship(Corpus)
+
+    name = db.Column(db.String)
+    min_epochs = db.Column(db.Integer, default=0)
+    max_epochs = db.Column(db.Integer)
+
+    early_stopping_steps = db.Column(db.Integer)
+
+    def __repr__(self):
+        return "<Model(name={}, corpus={}, min_epochs{}, max_epochs={}, early_stopping_steps={})>".format(
+            self.name, self.corpus, self.min_epochs, self.max_epochs, self.early_stopping_steps)

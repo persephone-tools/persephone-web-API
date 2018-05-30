@@ -161,6 +161,50 @@ paths:
             type: array
             items:
               $ref: "#/definitions/modelInformation"
+    post:
+      summary: "Create a new model"
+      consumes:
+        - application/json
+      parameters:
+        - name: modelInfo
+          in: body
+          schema:
+            type: object
+            required:
+              - name
+              - corpusID
+            properties:
+              name:
+                type: string
+                description: "The name of this model"
+                example: "ExampleLang model 1"
+              corpusID:
+                description: "The ID of the corpus to use for this model"
+                type: integer
+                format: "int64"
+              earlyStoppingSteps:
+                description: " Stop training after this number of steps if no LER improvement has been made"
+                type: integer
+                format: "int64"
+                minimum: 0
+              minimumEpochs:
+                description: "Minimum number of training epochs"
+                type: integer
+                format: "int64"
+                minimum: 0
+              maximumEpochs:
+                description: "Maximum number of training epochs"
+                type: integer
+                format: "int64"
+                minimum: 0
+      responses:
+        202:
+          description: "Accepted for processing"
+          schema:
+            $ref: "#/definitions/task"
+        400:
+          description: "Invalid model specification"
+
   /transcription:
     get:
       summary: "Retrieve all transcriptions that are currently available"
@@ -344,6 +388,14 @@ definitions:
       name:
         type: "string"
         example: "na_example_small"
+  task:
+    type: "object"
+    required:
+    - URL
+    properties:
+      URL:
+        description: "URL path to check on task progress"
+        type: "string"
   transcriptionFileInformation:
     type: "object"
     required:

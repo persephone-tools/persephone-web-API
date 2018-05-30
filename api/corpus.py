@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 def search():
     """Handle request for all available Corpus"""
-    results = [] 
+    results = []
     for row in db.session.query(Corpus):
         serialized = CorpusSchema().dump(row).data
         results.append(serialized)
@@ -24,15 +24,9 @@ def search():
 
 def get(corpusID):
     """Get a Corpus by its ID"""
-    results = []
-    for row in Corpus.query.filter(Corpus.id==corpusID):
-        results.append(row)
-    if results:
-        if len(results) != 1:
-            pass # TODO: This indicates a problem with the primary keys in the database
-        result = CorpusSchema().dump(results[0]).data
-        return result, 200
-    return "Corpus with ID {} not found".format(corpusID), 404
+    existing_corpus = Corpus.query.get_or_404(corpusID)
+    result = CorpusSchema().dump(existing_corpus).data
+    return result, 200
 
 
 def post(corpusInfo):
