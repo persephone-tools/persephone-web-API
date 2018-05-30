@@ -172,7 +172,7 @@ paths:
             type: object
             required:
               - name
-              - corpusId
+              - corpusID
             properties:
               name:
                 type: string
