@@ -21,5 +21,10 @@ def get(modelID):
     result = TranscriptionModelSchema().dump(transcription_model).data
     return result, 200
 
-def post():
+def post(modelInfo):
+    """Create a new transcription model"""
+    min_epochs = modelInfo.get('minimumEpochs', None)
+    max_epochs = modelInfo.get('maximumEpochs', None)
+    if min_epochs > max_epochs:
+        return "minimum number of epochs must be smaller than maximum", 400
     raise NotImplementedError
