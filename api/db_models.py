@@ -165,11 +165,12 @@ class TranscriptionModel(db.Model):
     )
     corpus = db.relationship(Corpus)
 
+    name = db.Column(db.String)
     min_epochs = db.Column(db.Integer, default=0)
     max_epochs = db.Column(db.Integer)
 
     early_stopping_steps = db.Column(db.Integer)
 
     def __repr__(self):
-        return "<Model(corpus={}, min_epochs{}, max_epochs={}, early_stopping_steps={})>".format(
-            self.corpus, self.min_epochs, self.max_epochs, self.early_stopping_steps)
+        return "<Model(name={}, corpus={}, min_epochs{}, max_epochs={}, early_stopping_steps={})>".format(
+            self.name, self.corpus, self.min_epochs, self.max_epochs, self.early_stopping_steps)
