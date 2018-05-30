@@ -178,6 +178,10 @@ paths:
                 type: string
                 description: "The name of this model"
                 example: "ExampleLang model 1"
+              corpusID:
+                description: "The ID of the corpus to use for this model"
+                type: integer
+                format: "int64"
               earlyStoppingSteps:
                 description: " Stop training after this number of steps if no LER improvement has been made"
                 type: integer
@@ -193,10 +197,6 @@ paths:
                 type: integer
                 format: "int64"
                 minimum: 0
-              corpusId:
-                description: "The ID of the corpus to use for this model"
-                type: integer
-                format: "int64"
       responses:
         202:
           description: "Accepted for processing"

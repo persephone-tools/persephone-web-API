@@ -27,4 +27,19 @@ def post(modelInfo):
     max_epochs = modelInfo.get('maximumEpochs', None)
     if min_epochs and max_epochs and min_epochs > max_epochs:
         return "minimum number of epochs must be smaller than maximum", 400
-    raise NotImplementedError
+
+    early_stopping_steps = modelInfo.get('', None)
+
+    current_model = TranscriptionModel(
+        name=modelInfo['name'],
+        corpus=modelInfo['corpusID'],
+        min_epochs=min_epochs,
+        max_epochs=max_epochs,
+        early_stopping_steps=early_stopping_steps
+    )
+    try:
+        db.session.commit()
+    except sqlalchemy.exc.IntegrityError:
+        return "Invalid model provided", 400
+    else:
+        raise NotImplementedError
