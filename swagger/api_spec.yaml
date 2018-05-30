@@ -179,17 +179,20 @@ paths:
                 description: "The name of this model"
                 example: "ExampleLang model 1"
               earlyStoppingSteps:
-                description: ""
+                description: " Stop training after this number of steps if no LER improvement has been made"
                 type: integer
                 format: "int64"
+                minimum: 0
               minimumEpochs:
                 description: "Minimum number of training epochs"
                 type: integer
                 format: "int64"
+                minimum: 0
               maximumEpochs:
                 description: "Maximum number of training epochs"
                 type: integer
                 format: "int64"
+                minimum: 0
               corpusId:
                 description: "The ID of the corpus to use for this model"
                 type: integer
