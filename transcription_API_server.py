@@ -40,6 +40,9 @@ flask_app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024 #max 64 MB file upload
 flask_app.config['BASE_UPLOAD_DIRECTORY'] = os.path.join(os.getcwd(), 'user_uploads')
 configure_uploads(flask_app)
 
+# persephone paths
+flask_app.config['CORPUS_PATH'] = os.path.join(os.getcwd(), 'persephone_corpus')
+
 
 @flask_app.route('/uploads/<path:path>')
 def uploaded_file(path):
