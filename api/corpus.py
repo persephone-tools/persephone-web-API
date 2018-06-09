@@ -13,6 +13,28 @@ from .serialization import CorpusSchema
 
 logger = logging.getLogger(__name__)
 
+def create_corpus_file_structure(corpus, path):
+    """Create the needed file structure on disk for a persephone.Corpus
+    object to be created"""
+    # Create:
+    #   train_prefixes.txt
+    #   test_prefixes.txt
+    #   valid_prefixes.txt
+    # mkdir:
+    #   label
+    #   wav
+    #   feat
+    import os
+    base_path = app.config['CORPUS_PATH']
+    corpus_path = os.path.join(base_path, path)
+    train_prefixes_path = os.path.join(corpus_path, "train_prefixes.txt")
+    test_prefixes_path = os.path.join(corpus_path, "test_prefixes.txt")
+    valid_prefixes_path = os.path.join(corpus_path, "valid_prefixes.txt")
+    with open(train_prefixes_path, 'w') as t_p_p:
+        pass
+    raise NotImplementedError
+
+
 def search():
     """Handle request for all available Corpus"""
     results = []
@@ -61,6 +83,9 @@ def post(corpusInfo):
             )
         )
 
+    import pdb; pdb.set_trace()
+    path = "corpus-{}-{}".format(current_corpus.name, current_corpus.id)
+    create_corpus_file_structure(current_corpus, path)
     try:
         db.session.commit()
     except sqlalchemy.exc.IntegrityError:
@@ -69,6 +94,9 @@ def post(corpusInfo):
         result = CorpusSchema().dump(current_corpus).data
         return result, 201
 
+def preprocess(corpusID):
+    """Preprocess a corpus"""
+    raise NotImplementedError
 
 def create_from_zip(zippedFile):
     if zippedFile.mimetype != 'application/zip':
@@ -79,9 +107,3 @@ def create_from_zip(zippedFile):
         return "File type must be zip", 415
     print("Create corpus from zip file")
     return "Create corpus from zip not implemented", 501
-
-
-def create_file_structure(corpus, path):
-    """Create the needed file structure on disk for a persephone.Corpus
-    object to be created"""
-    raise NotImplementedError
