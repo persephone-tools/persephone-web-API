@@ -80,6 +80,11 @@ class Corpus(db.Model):
     testing = db.relationship('TestingDataSet')
     validation = db.relationship('ValidationDataSet')
 
+    filesystem_path = db.Column(db.String)
+
+    preprocessed = db.Column(db.Boolean, unique=False, default=False)
+    #Flag to track if Corpus has been preprocessed and ready for use in ML models
+
     def __repr__(self):
         return '<Corpus(name="{}")>'.format(self.name)
 
