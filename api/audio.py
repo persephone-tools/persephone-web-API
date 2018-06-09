@@ -31,7 +31,7 @@ def get(audioID):
     rather a JSON object with the relevant information.
     This allows the flexibility of file storage being handled
     by another service that is outside this API service."""
-    audio_info = Audio.query.get_or_404(transcriptionID)
+    audio_info = Audio.query.get_or_404(audioID)
     result = AudioSchema().dump(audio_info).data
     return result, 200
 
