@@ -13,7 +13,7 @@ from .serialization import CorpusSchema
 
 logger = logging.getLogger(__name__)
 
-def create_corpus_file_structure(corpus, path):
+def create_corpus_file_structure(corpus, corpus_path):
     """Create the needed file structure on disk for a persephone.Corpus
     object to be created"""
     # Create:
@@ -25,8 +25,6 @@ def create_corpus_file_structure(corpus, path):
     #   wav
     #   feat
     import os
-    base_path = app.config['CORPUS_PATH']
-    corpus_path = os.path.join(base_path, path)
     train_prefixes_path = os.path.join(corpus_path, "train_prefixes.txt")
     test_prefixes_path = os.path.join(corpus_path, "test_prefixes.txt")
     valid_prefixes_path = os.path.join(corpus_path, "valid_prefixes.txt")
@@ -83,8 +81,9 @@ def post(corpusInfo):
             )
         )
 
-    import pdb; pdb.set_trace()
-    path = "corpus-{}-{}".format(current_corpus.name, current_corpus.id)
+    base_path = app.config['CORPUS_PATH']
+    corpus_path = "corpus-{}-{}".format(current_corpus.name, current_corpus.id)
+    path = os.path.join(base_path, corpus_path)
     create_corpus_file_structure(current_corpus, path)
     try:
         db.session.commit()
