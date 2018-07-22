@@ -3,10 +3,13 @@ import os
 from flask import send_from_directory
 from flask_uploads import patch_request_class
 
-from swagger.flask_app import connexion_app as app
+from swagger.flask_app import connexion_app, app
 
 from api.upload_config import configure_uploads
 import api
+
+connexion_app.add_api('api_spec.yaml', resolver=RestyResolver('api'))
+
 
 @app.route('/')
 def index():

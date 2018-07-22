@@ -5,7 +5,6 @@ from connexion.resolver import RestyResolver
 
 # Create the API endpoints from YAML specification
 connexion_app = connexion.FlaskApp(__name__, specification_dir='.')
-connexion_app.add_api('api_spec.yaml', resolver=RestyResolver('api'))
 
 # fetch underlying flask app from the connexion app
 app = connexion_app.app
