@@ -1,4 +1,8 @@
-""" Define the endpoints that this API can handle via the swagger/OpenAPI YAML file"""
+""" Create a connexion FlaskApp to handle the swagger/OpenAPI
+YAML specified API.
+
+Note that the regular Flask application is found at `connexion_app.app`
+and is exposed as `app`"""
 
 import connexion
 
