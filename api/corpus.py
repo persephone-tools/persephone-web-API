@@ -3,6 +3,7 @@ API endpoints for /corpus
 This deals with the API access corpus model definitions and metadata
 """
 import logging
+import os
 import zipfile
 
 import sqlalchemy
@@ -10,6 +11,9 @@ import sqlalchemy
 from .db_models import Corpus, TestingDataSet, TrainingDataSet, ValidationDataSet
 from . import db
 from .serialization import CorpusSchema
+
+from swagger.flask_app import connexion_app
+app = connexion_app.app
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +28,6 @@ def create_corpus_file_structure(corpus, corpus_path):
     #   label
     #   wav
     #   feat
-    import os
     train_prefixes_path = os.path.join(corpus_path, "train_prefixes.txt")
     test_prefixes_path = os.path.join(corpus_path, "test_prefixes.txt")
     valid_prefixes_path = os.path.join(corpus_path, "valid_prefixes.txt")

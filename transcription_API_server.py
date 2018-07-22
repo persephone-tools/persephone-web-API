@@ -3,7 +3,7 @@ import os
 from flask import send_from_directory
 from flask_uploads import patch_request_class
 
-from swagger.flask_app import app
+from swagger.flask_app import connexion_app as app
 
 from api.upload_config import configure_uploads
 import api
