@@ -65,8 +65,8 @@ class DBUtterance(db.Model):
         return "<DBUtterance(audio={}, transcription={})>".format(self.audio, self.transcription)
 
 
-class Corpus(db.Model):
-    """Database ORM definition for Corpus"""
+class DBcorpus(db.Model):
+    """Database ORM definition for DBcorpus"""
     __tablename__ = 'corpus'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -83,14 +83,14 @@ class Corpus(db.Model):
     filesystem_path = db.Column(db.String)
 
     preprocessed = db.Column(db.Boolean, unique=False, default=False)
-    #Flag to track if Corpus has been preprocessed and ready for use in ML models
+    #Flag to track if DBcorpus has been preprocessed and ready for use in ML models
 
     def __repr__(self):
-        return '<Corpus(name="{}")>'.format(self.name)
+        return '<DBcorpus(name="{}")>'.format(self.name)
 
 
 class TrainingDataSet(db.Model):
-    """This serves to facilitate mappings between Utterances and Corpus as stored in the database"""
+    """This serves to facilitate mappings between Utterances and DBcorpus as stored in the database"""
     __tablename__ = 'trainingdata'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -99,7 +99,7 @@ class TrainingDataSet(db.Model):
         db.ForeignKey('corpus.id'),
         nullable=False
     )
-    corpus = db.relationship(Corpus)
+    corpus = db.relationship(DBcorpus)
 
     utterance_id = db.Column(
         db.Integer,
@@ -113,7 +113,7 @@ class TrainingDataSet(db.Model):
 
 
 class ValidationDataSet(db.Model):
-    """This serves to facilitate mappings between Utterances and Corpus as stored in the database"""
+    """This serves to facilitate mappings between Utterances and DBcorpus as stored in the database"""
     __tablename__ = 'validationdata'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -122,7 +122,7 @@ class ValidationDataSet(db.Model):
         db.ForeignKey('corpus.id'),
         nullable=False
     )
-    corpus = db.relationship(Corpus)
+    corpus = db.relationship(DBcorpus)
 
     utterance_id = db.Column(
         db.Integer,
@@ -136,7 +136,7 @@ class ValidationDataSet(db.Model):
 
 
 class TestingDataSet(db.Model):
-    """This serves to facilitate mappings between Utterances and Corpus as stored in the database"""
+    """This serves to facilitate mappings between Utterances and DBcorpus as stored in the database"""
     __tablename__ = 'testingdata'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -145,7 +145,7 @@ class TestingDataSet(db.Model):
         db.ForeignKey('corpus.id'),
         nullable=False
     )
-    corpus = db.relationship(Corpus)
+    corpus = db.relationship(DBcorpus)
 
     utterance_id = db.Column(
         db.Integer,
@@ -168,7 +168,7 @@ class TranscriptionModel(db.Model):
         db.ForeignKey('corpus.id'),
         nullable=False
     )
-    corpus = db.relationship(Corpus)
+    corpus = db.relationship(DBcorpus)
 
     name = db.Column(db.String)
     min_epochs = db.Column(db.Integer, default=0)

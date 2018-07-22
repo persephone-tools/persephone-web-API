@@ -8,12 +8,11 @@ import zipfile
 
 import sqlalchemy
 
-from .db_models import Corpus, TestingDataSet, TrainingDataSet, ValidationDataSet
+from .db_models import DBcorpus, TestingDataSet, TrainingDataSet, ValidationDataSet
 from . import db
 from .serialization import CorpusSchema
 
-from swagger.flask_app import connexion_app
-app = connexion_app.app
+from swagger.flask_app import connexion_app, app
 
 logger = logging.getLogger(__name__)
 
@@ -37,24 +36,24 @@ def create_corpus_file_structure(corpus, corpus_path):
 
 
 def search():
-    """Handle request for all available Corpus"""
+    """Handle request for all available DBcorpus"""
     results = []
-    for row in db.session.query(Corpus):
+    for row in db.session.query(DBcorpus):
         serialized = CorpusSchema().dump(row).data
         results.append(serialized)
     return results, 200
 
 
 def get(corpusID):
-    """Get a Corpus by its ID"""
-    existing_corpus = Corpus.query.get_or_404(corpusID)
+    """Get a DBcorpus by its ID"""
+    existing_corpus = DBcorpus.query.get_or_404(corpusID)
     result = CorpusSchema().dump(existing_corpus).data
     return result, 200
 
 
 def post(corpusInfo):
-    """Create a Corpus"""
-    current_corpus = Corpus(name=corpusInfo['name'])
+    """Create a DBcorpus"""
+    current_corpus = DBcorpus(name=corpusInfo['name'])
     db.session.add(current_corpus)
     db.session.flush() # Make sure that current_corpus.id exists before using as key
     training_set_IDs = corpusInfo['training']
