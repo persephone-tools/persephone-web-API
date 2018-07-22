@@ -1,18 +1,13 @@
 import os
 
-import connexion
-from connexion.resolver import RestyResolver
-
 from flask import send_from_directory
 from flask_uploads import patch_request_class
+
+from swagger.flask_app import app
 
 from api.upload_config import configure_uploads
 import api
 
-
-# Create the API endpoints from YAML specification
-app = connexion.FlaskApp(__name__, specification_dir='swagger/')
-app.add_api('api_spec.yaml', resolver=RestyResolver('api'))
 @app.route('/')
 def index():
     return """Access to the API is via the API versioned path prefix
