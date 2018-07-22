@@ -19,7 +19,7 @@ class TranscriptionSchema(ModelSchema):
 
 class UtteranceSchema(ModelSchema):
     class Meta:
-        model = db_models.Utterance
+        model = db_models.DBUtterance
 
 class CorpusSchema(ModelSchema):
     class Meta:

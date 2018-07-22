@@ -46,4 +46,4 @@ r = requests.post(utterance_url, json=utterance_data)
 print(r.text)
 utterance_results = r.json()
 utterance_id = utterance_results['id']
-print("Utterance created has an id of {}".format(utterance_id))
+print("DBUtterance created has an id of {}".format(utterance_id))

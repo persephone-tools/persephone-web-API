@@ -19,7 +19,7 @@ class Audio(db.Model):
     filename = db.Column(db.String)
     url = db.Column(db.String)
 
-    in_utterances = db.relationship("Utterance", cascade="all, delete-orphan")
+    in_utterances = db.relationship("DBUtterance", cascade="all, delete-orphan")
 
     def __repr__(self):
         return "<Audio(filename={}, url={})>".format(self.filename, self.url)
@@ -33,13 +33,13 @@ class Transcription(db.Model):
     filename = db.Column(db.String)
     url = db.Column(db.String)
 
-    in_utterances = db.relationship("Utterance", cascade="all, delete-orphan")
+    in_utterances = db.relationship("DBUtterance", cascade="all, delete-orphan")
 
     def __repr__(self):
         return "<Transcription(filename={}, url={})>".format(self.filename, self.url)
 
 
-class Utterance(db.Model):
+class DBUtterance(db.Model):
     """Database ORM definition for Utterances.
     This consists of a relationship between an Audio file and a transcription file
     """
@@ -62,7 +62,7 @@ class Utterance(db.Model):
     transcription = db.relationship('Transcription', backref='utterances')
 
     def __repr__(self):
-        return "<Utterance(audio={}, transcription={})>".format(self.audio, self.transcription)
+        return "<DBUtterance(audio={}, transcription={})>".format(self.audio, self.transcription)
 
 
 class Corpus(db.Model):
@@ -106,7 +106,7 @@ class TrainingDataSet(db.Model):
         db.ForeignKey('utterance.id'),
         nullable=False
     )
-    utterance = db.relationship(Utterance)
+    utterance = db.relationship(DBUtterance)
 
     def __repr__(self):
         return "<TrainingDataSet(corpus={}, utterance={})>".format(self.corpus, self.utterance)
@@ -129,7 +129,7 @@ class ValidationDataSet(db.Model):
         db.ForeignKey('utterance.id'),
         nullable=False
     )
-    utterance = db.relationship(Utterance)
+    utterance = db.relationship(DBUtterance)
 
     def __repr__(self):
         return "<ValidationDataSet(corpus={}, utterance={})>".format(self.corpus, self.utterance)
@@ -152,7 +152,7 @@ class TestingDataSet(db.Model):
         db.ForeignKey('utterance.id'),
         nullable=False
     )
-    utterance = db.relationship(Utterance)
+    utterance = db.relationship(DBUtterance)
 
     def __repr__(self):
         return "<TestingDataSet(corpus={}, utterance={})>".format(self.corpus, self.utterance)
