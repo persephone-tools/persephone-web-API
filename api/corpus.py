@@ -19,24 +19,35 @@ from swagger.flask_app import connexion_app, app
 
 logger = logging.getLogger(__name__)
 
-def create_corpus_file_structure(corpus, corpus_path):
+def create_prefix_file(prefix_information, filepath: Path):
+    """Create a persephone formatted prefix file"""
+    raise NotImplementedError
+
+
+def create_corpus_file_structure(corpus: DBcorpus, corpus_path: Path) -> None:
     """Create the needed file structure on disk for a persephone.Corpus
-    object to be created"""
-    # Create:
-    #   train_prefixes.txt
-    #   test_prefixes.txt
-    #   valid_prefixes.txt
+    object to be created
+
+    :corpus: The DBcorpus object specifying how the persephone.Corpus must
+             be created.
+    :corpus_path: path to corpus
+    """
+    if corpus_path.exists():
+        raise FileExistsError("Corpus already exists at path {}".format(corpus_path))
+    else:
+        corpus_path.mkdir()
+
+    train_prefixes_path = corpus_path / "train_prefixes.txt"
+    test_prefixes_path = corpus_path / "test_prefixes.txt"
+    valid_prefixes_path = corpus_path / "valid_prefixes.txt"
+    create_prefix_file(corpus.training, train_prefixes_path)
+    create_prefix_file(corpus.testing, test_prefixes_path)
+    create_prefix_file(corpus.validation, valid_prefixes_path)
+    raise NotImplementedError
     # mkdir:
     #   label
     #   wav
     #   feat
-    train_prefixes_path = os.path.join(corpus_path, "train_prefixes.txt")
-    test_prefixes_path = os.path.join(corpus_path, "test_prefixes.txt")
-    valid_prefixes_path = os.path.join(corpus_path, "valid_prefixes.txt")
-    with open(train_prefixes_path, 'w') as t_p_p:
-        pass
-    raise NotImplementedError
-
 
 def search():
     """Handle request for all available DBcorpus"""
