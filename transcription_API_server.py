@@ -38,7 +38,14 @@ app.config['BASE_UPLOAD_DIRECTORY'] = os.path.join(os.getcwd(), 'user_uploads')
 configure_uploads(app)
 
 # persephone paths
-app.config['CORPUS_PATH'] = os.path.join(os.getcwd(), 'persephone_corpus')
+# Persephone related files stored here
+app.config['FILE_STORAGE_BASE'] = os.path.join(os.getcwd(), 'persephone_file_storage')
+# Corpus directories stored here
+app.config['CORPUS_PATH'] = os.path.join(app.config['FILE_STORAGE_BASE'], 'corpus')
+if os.path.isdir(app.config['CORPUS_PATH']):
+    print("Corpus storage directory {} already exists, not creating".format(app.config['CORPUS_PATH']))
+else:
+    os.makedirs(app.config['CORPUS_PATH'])
 
 
 @app.route('/uploads/<path:path>')
