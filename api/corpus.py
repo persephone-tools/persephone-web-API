@@ -1,10 +1,13 @@
 """
 API endpoints for /corpus
-This deals with the API access corpus model definitions and metadata
+This deals with the API for corpus model definitions and metadata
 """
 import logging
 import os
+import uuid
 import zipfile
+
+from pathlib import Path
 
 import sqlalchemy
 
@@ -83,10 +86,12 @@ def post(corpusInfo):
             )
         )
 
-    base_path = app.config['CORPUS_PATH']
-    corpus_path = "corpus-{}-{}".format(current_corpus.name, current_corpus.id)
-    path = os.path.join(base_path, corpus_path)
-    create_corpus_file_structure(current_corpus, path)
+    #Saving Corpus as UUIDs to remove name collision issues
+    corpus_uuid = uuid.uuid1()
+    corpus_path = Path(app.config['CORPUS_PATH']) / str(corpus_uuid)
+    create_corpus_file_structure(current_corpus, corpus_path)
+    current_corpus.filesystem_path = corpus_uuid
+    db.session.add(current_corpus)
     try:
         db.session.commit()
     except sqlalchemy.exc.IntegrityError:
