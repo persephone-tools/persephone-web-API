@@ -37,17 +37,18 @@ def create_corpus_file_structure(corpus: DBcorpus, corpus_path: Path) -> None:
     else:
         corpus_path.mkdir()
 
-    train_prefixes_path = corpus_path / "train_prefixes.txt"
-    test_prefixes_path = corpus_path / "test_prefixes.txt"
-    valid_prefixes_path = corpus_path / "valid_prefixes.txt"
-    create_prefix_file(corpus.training, train_prefixes_path)
-    create_prefix_file(corpus.testing, test_prefixes_path)
-    create_prefix_file(corpus.validation, valid_prefixes_path)
+    wav_path = corpus_path / "wav"
+    wav_path.mkdir()
+    label_path = corpus_path / "label"
+    label_path.mkdir()
+
+    # Create prefix files as required for specifying data splits in
+    # persephone.Corpus creation
+    create_prefixes(corpus.training, corpus_path, "train_prefixes.txt")
+    create_prefixes(corpus.testing, corpus_path, "test_prefixes.txt")
+    create_prefixes(corpus.validation, corpus_path, "valid_prefixes.txt")
     raise NotImplementedError
-    # mkdir:
-    #   label
-    #   wav
-    #   feat
+
 
 def search():
     """Handle request for all available DBcorpus"""
