@@ -21,7 +21,13 @@ def test_create_corpus_file_structure(tmpdir):
     test_prefixes_path = corpus_test_dir / "test_prefixes.txt"
     valid_prefixes_path = corpus_test_dir / "valid_prefixes.txt"
 
+    label_path = corpus_test_dir / "label"
+    wav_path = corpus_test_dir / "wav"
+
     assert corpus_test_dir.is_dir()
     assert train_prefixes_path.is_file()
     assert test_prefixes_path.is_file()
     assert valid_prefixes_path.is_file()
+
+    assert label_path.is_dir()
+    assert wav_path.is_dir()
