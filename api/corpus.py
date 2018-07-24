@@ -4,6 +4,7 @@ This deals with the API for corpus model definitions and metadata
 """
 import logging
 import os
+from shutil import copyfile
 import uuid
 import zipfile
 
@@ -19,10 +20,53 @@ from swagger.flask_app import connexion_app, app
 
 logger = logging.getLogger(__name__)
 
-def create_prefix_file(prefix_information, filepath: Path):
-    """Create a persephone formatted prefix file"""
-    raise NotImplementedError
+def strip_unsafe_characters(filename: str):
+    """Clean out potentially unsafe characters for filesystem operations
+    see: https://www.owasp.org/index.php/Testing_for_Path_Traversal_(OWASP-AZ-001)
+    """
+    return "".join([c for c in filename if c.isalpha() or c.isdigit() or c==' ' or c=='_']).rstrip()
 
+def create_prefixes(prefix_information, base_path: Path, prefix_name: str) -> set:
+    """Create a persephone formatted prefix file.
+    Assumes that "label" and "wav" directories exist
+
+    :prefix_information: Data about training splits
+    :base_path: Base path of this corpus
+    :prefix_name: Name of current data split, must be one of:
+                  "train_prefixes.txt", "test_prefixes", "validation_prefixes"
+    """
+    prefixes = set()
+    count = 0
+    for data in prefix_information:
+        count += 1
+        print("data.utterance", data.utterance)
+        label_filename = data.utterance.transcription.filename
+
+        # using the prefix of the label file to specify the prefix
+        prefix, extension = os.path.splitext(label_filename)
+        cleaned_prefix = strip_unsafe_characters(prefix)
+        prefixes.add(cleaned_prefix)
+
+        # copy transcription to "/label" directory
+        label_src_path = audio_src_path = os.path.join(app.config['UPLOADED_TEXT_DEST'], label_filename)
+        label_dest_path = base_path / "label" / (cleaned_prefix+extension)
+        copyfile(label_src_path, str(label_dest_path))
+
+        # copy audio to "/wav" directory
+        audio_filename = data.utterance.audio.filename
+        audio_src_path = os.path.join(app.config['UPLOADED_AUDIO_DEST'], audio_filename)
+        audio_dest_path = base_path / "wav" / (cleaned_prefix+".wav")
+        copyfile(audio_src_path, str(audio_dest_path))
+
+    if len(prefixes) != count:
+        raise ValueError("Duplicate prefix found")
+
+    prefix_file_path = base_path / prefix_name
+    with prefix_file_path.open(mode='w') as pf:
+        for prefix in prefixes:
+            pf.write(prefix)
+            pf.write(os.linesep)
+    return prefixes
 
 def create_corpus_file_structure(corpus: DBcorpus, corpus_path: Path) -> None:
     """Create the needed file structure on disk for a persephone.Corpus
