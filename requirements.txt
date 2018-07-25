@@ -1,5 +1,5 @@
 connexion
-persephone
+persephone>0.3.1
 flask-uploads
 sqlalchemy>1.2
 flask_sqlalchemy
