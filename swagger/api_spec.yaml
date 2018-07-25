@@ -374,6 +374,10 @@ definitions:
         type: "string"
         description: "The name of this corpus"
         example: "ExampleLang Corpus"
+      feature_type:
+        type: "string"
+        description: "The type of the features"
+        example: "fbank"
       partition:
         type: object
         description: "How utterances are assigned to datasets for use in training the model"
