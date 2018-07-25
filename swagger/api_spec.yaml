@@ -378,6 +378,10 @@ definitions:
         type: "string"
         description: "The type of the features"
         example: "fbank"
+      max_samples:
+        type: "integer"
+        format: "int64"
+        minimum: 0
       partition:
         type: object
         description: "How utterances are assigned to datasets for use in training the model"
