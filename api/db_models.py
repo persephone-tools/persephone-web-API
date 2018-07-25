@@ -82,8 +82,11 @@ class DBcorpus(db.Model):
 
     filesystem_path = db.Column(db.String)
 
-    preprocessed = db.Column(db.Boolean, unique=False, default=False)
     #Flag to track if DBcorpus has been preprocessed and ready for use in ML models
+    preprocessed = db.Column(db.Boolean, unique=False, default=False)
+
+    # the type of the feature files in this corpus
+    feature_type = db.Column(db.String)
 
     def __repr__(self):
         return '<DBcorpus(name="{}")>'.format(self.name)
