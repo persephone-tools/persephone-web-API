@@ -374,6 +374,10 @@ definitions:
         type: "string"
         description: "The name of this corpus"
         example: "ExampleLang Corpus"
+      label_type:
+        type: "string"
+        description: "The type of labels"
+        example: "phonemes"
       feature_type:
         type: "string"
         description: "The type of the features"
@@ -382,6 +386,8 @@ definitions:
         type: "integer"
         format: "int64"
         minimum: 0
+        example: 1000
+        description: "The maximum number of samples an utterance in the corpus may have. If an utterance is longer than this, it is not included in the corpus."
       partition:
         type: object
         description: "How utterances are assigned to datasets for use in training the model"

@@ -88,6 +88,10 @@ class DBcorpus(db.Model):
     # the type of the feature files in this corpus
     feature_type = db.Column(db.String)
 
+    # A string describing the transcription labels.
+    # For example, “phonemes” or “tones”.
+    label_type = db.Column(db.String)
+
     # The maximum number of samples an utterance in the corpus may have.
     # If an utterance is longer than this, it is not included in the corpus.
     max_samples = db.Column(db.Integer)

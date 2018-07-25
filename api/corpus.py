@@ -115,8 +115,13 @@ def get(corpusID):
 
 def post(corpusInfo):
     """Create a DBcorpus"""
-    current_corpus = DBcorpus(name=corpusInfo['name'])
-    current_corpus.feature_type = corpusInfo['feature_type']
+    max_samples = corpusInfo.get('max_samples', None)
+    current_corpus = DBcorpus(
+        name=corpusInfo['name'],
+        label_type=corpusInfo['label_type'],
+        feature_type=corpusInfo['feature_type']
+    )
+    current_corpus.max_samples = max_samples
     db.session.add(current_corpus)
     db.session.flush() # Make sure that current_corpus.id exists before using as key
     training_set_IDs = corpusInfo['training']
@@ -154,9 +159,10 @@ def post(corpusInfo):
     db.session.add(current_corpus)
     persephone_corpus = Corpus(
         feat_type=current_corpus.feature_type,
-        label_type="phonemes",
-        tgt_dir=corpus_path
+        label_type=current_corpus.label_type,
+        tgt_dir=corpus_path,
     )
+
     try:
         db.session.commit()
     except sqlalchemy.exc.IntegrityError:
