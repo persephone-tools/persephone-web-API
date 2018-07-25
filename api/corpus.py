@@ -4,12 +4,12 @@ This deals with the API for corpus model definitions and metadata
 """
 import logging
 import os
+from pathlib import Path
 from shutil import copyfile
 import uuid
 import zipfile
 
-from pathlib import Path
-
+from persephone.corpus import Corpus
 import sqlalchemy
 
 from .db_models import DBcorpus, TestingDataSet, TrainingDataSet, ValidationDataSet
@@ -150,8 +150,9 @@ def post(corpusInfo):
     corpus_uuid = uuid.uuid1()
     corpus_path = Path(app.config['CORPUS_PATH']) / str(corpus_uuid)
     create_corpus_file_structure(current_corpus, corpus_path)
-    current_corpus.filesystem_path = corpus_uuid
+    current_corpus.filesystem_path = str(corpus_uuid) # see if there's some other way of handling a UUID value directly into SQLAlchemy
     db.session.add(current_corpus)
+    current_corpus = Corpus(feat_type="fbank", label_type="phonemes", tgt_dir=corpus_path)
     try:
         db.session.commit()
     except sqlalchemy.exc.IntegrityError:
