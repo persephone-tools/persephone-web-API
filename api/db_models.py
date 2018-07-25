@@ -88,6 +88,10 @@ class DBcorpus(db.Model):
     # the type of the feature files in this corpus
     feature_type = db.Column(db.String)
 
+    # The maximum number of samples an utterance in the corpus may have.
+    # If an utterance is longer than this, it is not included in the corpus.
+    max_samples = db.Column(db.Integer)
+
     def __repr__(self):
         return '<DBcorpus(name="{}")>'.format(self.name)
 
