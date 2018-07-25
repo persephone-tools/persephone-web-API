@@ -39,7 +39,6 @@ def create_prefixes(prefix_information, base_path: Path, prefix_name: str) -> se
     count = 0
     for data in prefix_information:
         count += 1
-        print("data.utterance", data.utterance)
         label_filename = data.utterance.transcription.filename
 
         # using the prefix of the label file to specify the prefix
@@ -117,6 +116,7 @@ def get(corpusID):
 def post(corpusInfo):
     """Create a DBcorpus"""
     current_corpus = DBcorpus(name=corpusInfo['name'])
+    current_corpus.feature_type = corpusInfo['feature_type']
     db.session.add(current_corpus)
     db.session.flush() # Make sure that current_corpus.id exists before using as key
     training_set_IDs = corpusInfo['training']
@@ -152,7 +152,11 @@ def post(corpusInfo):
     create_corpus_file_structure(current_corpus, corpus_path)
     current_corpus.filesystem_path = str(corpus_uuid) # see if there's some other way of handling a UUID value directly into SQLAlchemy
     db.session.add(current_corpus)
-    current_corpus = Corpus(feat_type="fbank", label_type="phonemes", tgt_dir=corpus_path)
+    persephone_corpus = Corpus(
+        feat_type=current_corpus.feature_type,
+        label_type="phonemes",
+        tgt_dir=corpus_path
+    )
     try:
         db.session.commit()
     except sqlalchemy.exc.IntegrityError:
