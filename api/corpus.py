@@ -88,11 +88,15 @@ def create_corpus_file_structure(corpus: DBcorpus, corpus_path: Path) -> None:
 
     # Create prefix files as required for specifying data splits in
     # persephone.Corpus creation
-    create_prefixes(corpus.training, corpus_path, "train_prefixes.txt")
-    create_prefixes(corpus.testing, corpus_path, "test_prefixes.txt")
-    create_prefixes(corpus.validation, corpus_path, "valid_prefixes.txt")
-    raise NotImplementedError
-
+    train_prefixes = create_prefixes(corpus.training, corpus_path, "train_prefixes.txt")
+    testing_prefixes = create_prefixes(corpus.testing, corpus_path, "test_prefixes.txt")
+    if train_prefixes & testing_prefixes:
+        raise ValueError("Overlapping prefixes detected with training and testing: {}".format(train_prefixes & testing_prefixes))
+    validation_prefixes = create_prefixes(corpus.validation, corpus_path, "valid_prefixes.txt")
+    if train_prefixes & validation_prefixes:
+        raise ValueError("Overlapping prefixes detected with training and validation: {}".format(train_prefixes & validation_prefixes))
+    if validation_prefixes & testing_prefixes:
+        raise ValueError("Overlapping prefixes detected with validation and testing: {}".format(validation_prefixes & testing_prefixes))
 
 def search():
     """Handle request for all available DBcorpus"""
