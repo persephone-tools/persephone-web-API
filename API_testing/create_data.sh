@@ -31,6 +31,8 @@ curl -X POST --header 'Content-Type: application/json' --header 'Accept: applica
 echo "*** creating corpus ***"
 curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/problem+json' -d '{
    "name": "Test Corpus", 
+   "label_type": "phonemes",
+   "feature_type": "fbank",
    "testing": [
      1
    ],

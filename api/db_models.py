@@ -19,7 +19,7 @@ class Audio(db.Model):
     filename = db.Column(db.String)
     url = db.Column(db.String)
 
-    in_utterances = db.relationship("Utterance", cascade="all, delete-orphan")
+    in_utterances = db.relationship("DBUtterance", cascade="all, delete-orphan")
 
     def __repr__(self):
         return "<Audio(filename={}, url={})>".format(self.filename, self.url)
@@ -33,13 +33,13 @@ class Transcription(db.Model):
     filename = db.Column(db.String)
     url = db.Column(db.String)
 
-    in_utterances = db.relationship("Utterance", cascade="all, delete-orphan")
+    in_utterances = db.relationship("DBUtterance", cascade="all, delete-orphan")
 
     def __repr__(self):
         return "<Transcription(filename={}, url={})>".format(self.filename, self.url)
 
 
-class Utterance(db.Model):
+class DBUtterance(db.Model):
     """Database ORM definition for Utterances.
     This consists of a relationship between an Audio file and a transcription file
     """
@@ -62,11 +62,11 @@ class Utterance(db.Model):
     transcription = db.relationship('Transcription', backref='utterances')
 
     def __repr__(self):
-        return "<Utterance(audio={}, transcription={})>".format(self.audio, self.transcription)
+        return "<DBUtterance(audio={}, transcription={})>".format(self.audio, self.transcription)
 
 
-class Corpus(db.Model):
-    """Database ORM definition for Corpus"""
+class DBcorpus(db.Model):
+    """Database ORM definition for DBcorpus"""
     __tablename__ = 'corpus'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -80,12 +80,28 @@ class Corpus(db.Model):
     testing = db.relationship('TestingDataSet')
     validation = db.relationship('ValidationDataSet')
 
+    filesystem_path = db.Column(db.String)
+
+    #Flag to track if DBcorpus has been preprocessed and ready for use in ML models
+    preprocessed = db.Column(db.Boolean, unique=False, default=False)
+
+    # the type of the feature files in this corpus
+    feature_type = db.Column(db.String)
+
+    # A string describing the transcription labels.
+    # For example, “phonemes” or “tones”.
+    label_type = db.Column(db.String)
+
+    # The maximum number of samples an utterance in the corpus may have.
+    # If an utterance is longer than this, it is not included in the corpus.
+    max_samples = db.Column(db.Integer)
+
     def __repr__(self):
-        return '<Corpus(name="{}")>'.format(self.name)
+        return '<DBcorpus(name="{}")>'.format(self.name)
 
 
 class TrainingDataSet(db.Model):
-    """This serves to facilitate mappings between Utterances and Corpus as stored in the database"""
+    """This serves to facilitate mappings between Utterances and DBcorpus as stored in the database"""
     __tablename__ = 'trainingdata'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -94,21 +110,21 @@ class TrainingDataSet(db.Model):
         db.ForeignKey('corpus.id'),
         nullable=False
     )
-    corpus = db.relationship(Corpus)
+    corpus = db.relationship(DBcorpus)
 
     utterance_id = db.Column(
         db.Integer,
         db.ForeignKey('utterance.id'),
         nullable=False
     )
-    utterance = db.relationship(Utterance)
+    utterance = db.relationship(DBUtterance)
 
     def __repr__(self):
         return "<TrainingDataSet(corpus={}, utterance={})>".format(self.corpus, self.utterance)
 
 
 class ValidationDataSet(db.Model):
-    """This serves to facilitate mappings between Utterances and Corpus as stored in the database"""
+    """This serves to facilitate mappings between Utterances and DBcorpus as stored in the database"""
     __tablename__ = 'validationdata'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -117,21 +133,21 @@ class ValidationDataSet(db.Model):
         db.ForeignKey('corpus.id'),
         nullable=False
     )
-    corpus = db.relationship(Corpus)
+    corpus = db.relationship(DBcorpus)
 
     utterance_id = db.Column(
         db.Integer,
         db.ForeignKey('utterance.id'),
         nullable=False
     )
-    utterance = db.relationship(Utterance)
+    utterance = db.relationship(DBUtterance)
 
     def __repr__(self):
         return "<ValidationDataSet(corpus={}, utterance={})>".format(self.corpus, self.utterance)
 
 
 class TestingDataSet(db.Model):
-    """This serves to facilitate mappings between Utterances and Corpus as stored in the database"""
+    """This serves to facilitate mappings between Utterances and DBcorpus as stored in the database"""
     __tablename__ = 'testingdata'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -140,14 +156,14 @@ class TestingDataSet(db.Model):
         db.ForeignKey('corpus.id'),
         nullable=False
     )
-    corpus = db.relationship(Corpus)
+    corpus = db.relationship(DBcorpus)
 
     utterance_id = db.Column(
         db.Integer,
         db.ForeignKey('utterance.id'),
         nullable=False
     )
-    utterance = db.relationship(Utterance)
+    utterance = db.relationship(DBUtterance)
 
     def __repr__(self):
         return "<TestingDataSet(corpus={}, utterance={})>".format(self.corpus, self.utterance)
@@ -163,7 +179,7 @@ class TranscriptionModel(db.Model):
         db.ForeignKey('corpus.id'),
         nullable=False
     )
-    corpus = db.relationship(Corpus)
+    corpus = db.relationship(DBcorpus)
 
     name = db.Column(db.String)
     min_epochs = db.Column(db.Integer, default=0)
