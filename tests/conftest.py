@@ -48,10 +48,12 @@ def client(tmpdir):
 def upload_audio(client):
     """Fixture for convenience in sending requests to the audio endpoint"""
     import io
-    def _make_audio(audio_data):
-        """Create a file with appropriate WAV magic bytes"""
+    def _make_audio(audio_data, filename):
+        """Create a file with appropriate WAV magic bytes and encoding"""
         WAV_MAGIC_BYTES = b'RIFF....WAVE'
-        data = {'audioFile': (io.BytesIO(WAV_MAGIC_BYTES), 'test_wav_file.wav')}
+        data = {'audioFile': (io.BytesIO(WAV_MAGIC_BYTES+audio_data.encode('utf-8')),
+                             filename)
+        }
         return client.post(
             ('/{}/audio'.format(API_VERSION)),
             data=data,
