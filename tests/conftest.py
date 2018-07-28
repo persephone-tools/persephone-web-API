@@ -61,3 +61,18 @@ def upload_audio(client):
         )
 
     return _make_audio
+
+@pytest.fixture
+def upload_transcription(client):
+    """Fixture for convenience in sending requests to the transcription endpoint"""
+    import io
+    def _make_transcription(transcription_data, filename):
+        """Create a file with appropriate encoding"""
+        data = {'transcriptionFile': (io.BytesIO(transcription_data.encode('utf-8')), filename)}
+        return client.post(
+            ('/{}/transcription'.format(API_VERSION)),
+            data=data,
+            content_type='multipart/form-data'
+        )
+
+    return _make_transcription
