@@ -6,6 +6,9 @@ import pytest
 
 import api
 
+# API version prefix
+API_VERSION = "v0.1"
+
 app = connexion.FlaskApp(__name__)
 app.add_api('../swagger/api_spec.yaml', resolver=RestyResolver('api'))
 
@@ -40,3 +43,19 @@ def client(tmpdir):
     with flask_app.test_client() as c:
         yield c
 
+
+@pytest.fixture
+def upload_audio(client):
+    """Fixture for convenience in sending requests to the audio endpoint"""
+    import io
+    def _make_audio(audio_data):
+        """Create a file with appropriate WAV magic bytes"""
+        WAV_MAGIC_BYTES = b'RIFF....WAVE'
+        data = {'audioFile': (io.BytesIO(WAV_MAGIC_BYTES), 'test_wav_file.wav')}
+        return client.post(
+            ('/{}/audio'.format(API_VERSION)),
+            data=data,
+            content_type='multipart/form-data'
+        )
+
+    return _make_audio
