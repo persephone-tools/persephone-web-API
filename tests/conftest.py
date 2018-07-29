@@ -37,6 +37,7 @@ flask_app.config['TESTING'] = True
 def client(tmpdir):
     """Create a test client to send requests to"""
     flask_app.config['BASE_UPLOAD_DIRECTORY'] = os.path.join(str(tmpdir), 'test_uploads')
+    flask_app.config['CORPUS_PATH'] = os.path.join(str(tmpdir), 'corpus')
 
     from api.upload_config import configure_uploads
     configure_uploads(flask_app)
