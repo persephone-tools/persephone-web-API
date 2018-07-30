@@ -1,24 +1,16 @@
+"""Configration for pytest to run the test suite"""
 import os
-
-import connexion
-from connexion.resolver import RestyResolver
 import pytest
+
+from persephone_api.app import create_app
+from persephone_api.settings import TestConfig
+
+app = create_app(TestConfig)
 
 import api
 
 # API version prefix
 API_VERSION = "v0.1"
-
-app = connexion.FlaskApp(__name__)
-app.add_api('../swagger/api_spec.yaml', resolver=RestyResolver('api'))
-
-# fetch underlying flask app from the connexion app
-flask_app = app.app
-
-# configure the DB
-# in-memory sqlite DB for testing
-flask_app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 from api import db
 db.init_app(flask_app)
@@ -30,8 +22,6 @@ with flask_app.app_context():
 # configure upload paths
 flask_app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024 #max 64 MB file upload
 
-flask_app.config['DEBUG'] = True
-flask_app.config['TESTING'] = True
 
 @pytest.fixture
 def client(tmpdir):
