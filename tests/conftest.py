@@ -7,31 +7,29 @@ from persephone_api.settings import TestConfig
 
 app = create_app(TestConfig)
 
-import api
-
 # API version prefix
 API_VERSION = "v0.1"
 
-from api import db
+from persephone_api import db
 db.init_app(flask_app)
 
 # create DB tables
-with flask_app.app_context():
+with app.app_context():
     db.create_all()
 
 # configure upload paths
-flask_app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024 #max 64 MB file upload
+app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024 #max 64 MB file upload
 
 
 @pytest.fixture
 def client(tmpdir):
     """Create a test client to send requests to"""
-    flask_app.config['BASE_UPLOAD_DIRECTORY'] = os.path.join(str(tmpdir), 'test_uploads')
-    flask_app.config['CORPUS_PATH'] = os.path.join(str(tmpdir), 'corpus')
+    app.config['BASE_UPLOAD_DIRECTORY'] = os.path.join(str(tmpdir), 'test_uploads')
+    app.config['CORPUS_PATH'] = os.path.join(str(tmpdir), 'corpus')
 
     from api.upload_config import configure_uploads
-    configure_uploads(flask_app)
-    with flask_app.test_client() as c:
+    configure_uploads(app)
+    with app.test_client() as c:
         yield c
 
 
