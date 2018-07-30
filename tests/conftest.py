@@ -11,7 +11,7 @@ app = create_app(TestConfig)
 API_VERSION = "v0.1"
 
 from persephone_api import db
-db.init_app(flask_app)
+db.init_app(app)
 
 # create DB tables
 with app.app_context():
