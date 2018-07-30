@@ -24,7 +24,9 @@ app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024 #max 64 MB file upload
 @pytest.fixture
 def client(tmpdir):
     """Create a test client to send requests to"""
+    tmpdir.mkdir('test_uploads')
     app.config['BASE_UPLOAD_DIRECTORY'] = os.path.join(str(tmpdir), 'test_uploads')
+    tmpdir.mkdir('corpus')
     app.config['CORPUS_PATH'] = os.path.join(str(tmpdir), 'corpus')
 
     from persephone_api.upload_config import configure_uploads
