@@ -4,10 +4,10 @@ This deals with the API access for transcription files uploading/downloading.
 """
 import flask_uploads
 
-from . import db
-from .db_models import Transcription
-from .upload_config import text_files, uploads_url_base
-from .serialization import TranscriptionSchema
+from .. import db
+from ..db_models import Transcription
+from ..upload_config import text_files, uploads_url_base
+from ..serialization import TranscriptionSchema
 
 
 def post(transcriptionFile):

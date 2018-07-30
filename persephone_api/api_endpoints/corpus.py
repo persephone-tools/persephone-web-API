@@ -9,14 +9,14 @@ from shutil import copyfile
 import uuid
 import zipfile
 
+import flask
 from persephone.corpus import Corpus
 import sqlalchemy
 
-from .db_models import DBcorpus, TestingDataSet, TrainingDataSet, ValidationDataSet
-from . import db
-from .serialization import CorpusSchema
+from .. import db
+from ..db_models import DBcorpus, TestingDataSet, TrainingDataSet, ValidationDataSet
+from ..serialization import CorpusSchema
 
-from swagger.flask_app import connexion_app, app
 
 logger = logging.getLogger(__name__)
 
@@ -153,7 +153,7 @@ def post(corpusInfo):
 
     #Saving Corpus as UUIDs to remove name collision issues
     corpus_uuid = uuid.uuid1()
-    corpus_path = Path(app.config['CORPUS_PATH']) / str(corpus_uuid)
+    corpus_path = Path(flask.current_app.config['CORPUS_PATH']) / str(corpus_uuid)
     create_corpus_file_structure(current_corpus, corpus_path)
     current_corpus.filesystem_path = str(corpus_uuid) # see if there's some other way of handling a UUID value directly into SQLAlchemy
     db.session.add(current_corpus)

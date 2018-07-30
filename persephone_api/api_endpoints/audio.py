@@ -4,10 +4,10 @@ This deals with the API access for audio files uploading/downloading.
 """
 import flask_uploads
 
-from . import db
-from .db_models import Audio
-from .upload_config import audio_files, uploads_url_base
-from .serialization import AudioSchema
+from .. import db
+from ..db_models import Audio
+from ..upload_config import audio_files, uploads_url_base
+from ..serialization import AudioSchema
 
 def post(audioFile):
     """handle POST request for audio file"""
