@@ -27,7 +27,7 @@ def client(tmpdir):
     app.config['BASE_UPLOAD_DIRECTORY'] = os.path.join(str(tmpdir), 'test_uploads')
     app.config['CORPUS_PATH'] = os.path.join(str(tmpdir), 'corpus')
 
-    from api.upload_config import configure_uploads
+    from persephone_api.upload_config import configure_uploads
     configure_uploads(app)
     with app.test_client() as c:
         yield c

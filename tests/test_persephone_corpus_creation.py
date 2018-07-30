@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 
 def test_create_corpus_file_structure(tmpdir):
     """Test filesystem tasks related to corpus creation"""
-    from api.corpus import create_corpus_file_structure
+    from persephone_api.api_endpoints.corpus import create_corpus_file_structure
     from pathlib import Path
     corpus_base_dir = Path(str(tmpdir.mkdir("corpus_base")))
     import uuid
