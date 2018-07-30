@@ -26,11 +26,14 @@ def strip_unsafe_characters(filename: str):
     """
     return "".join([c for c in filename if c.isalpha() or c.isdigit() or c==' ' or c=='_']).rstrip()
 
-def create_prefixes(prefix_information, base_path: Path, prefix_name: str) -> set:
+def create_prefixes(audio_uploads_path: Path, transcription_uploads_path: Path, prefix_information,
+                    base_path: Path, prefix_name: str) -> set:
     """Create a persephone formatted prefix file.
     Assumes that "label" and "wav" directories exist
 
-    :prefix_information: Data about training splits
+    :prefix_information: Data about training splits from the DB
+    :audio_uploads_path: Path to storage for uploaded audio files
+    :transcription_uploads_path: Path to storage for uploaded transcription files
     :base_path: Base path of this corpus
     :prefix_name: Name of current data split, must be one of:
                   "train_prefixes.txt", "test_prefixes", "validation_prefixes"
@@ -47,15 +50,15 @@ def create_prefixes(prefix_information, base_path: Path, prefix_name: str) -> se
         prefixes.add(cleaned_prefix)
 
         # copy transcription to "/label" directory
-        label_src_path = audio_src_path = os.path.join(app.config['UPLOADED_TEXT_DEST'], label_filename)
+        label_src_path  = transcription_uploads_path / label_filename
         label_dest_path = base_path / "label" / (cleaned_prefix+extension)
-        copyfile(label_src_path, str(label_dest_path))
+        copyfile(str(label_src_path), str(label_dest_path))
 
         # copy audio to "/wav" directory
         audio_filename = data.utterance.audio.filename
-        audio_src_path = os.path.join(app.config['UPLOADED_AUDIO_DEST'], audio_filename)
+        audio_src_path = audio_uploads_path / audio_filename
         audio_dest_path = base_path / "wav" / (cleaned_prefix+".wav")
-        copyfile(audio_src_path, str(audio_dest_path))
+        copyfile(str(audio_src_path), str(audio_dest_path))
 
     if len(prefixes) != count:
         raise ValueError("Duplicate prefix found")
@@ -67,10 +70,13 @@ def create_prefixes(prefix_information, base_path: Path, prefix_name: str) -> se
             pf.write(os.linesep)
     return prefixes
 
-def create_corpus_file_structure(corpus: DBcorpus, corpus_path: Path) -> None:
+def create_corpus_file_structure(audio_uploads_path: Path, transcription_uploads_path: Path,
+                                 corpus: DBcorpus, corpus_path: Path) -> None:
     """Create the needed file structure on disk for a persephone.Corpus
     object to be created
 
+    :audio_uploads_path: Base path to storage for uploaded audio files
+    :transcription_uploads_path: Base path to storage for uploaded transcription files
     :corpus: The DBcorpus object specifying how the persephone.Corpus must
              be created.
     :corpus_path: path to corpus
@@ -87,11 +93,11 @@ def create_corpus_file_structure(corpus: DBcorpus, corpus_path: Path) -> None:
 
     # Create prefix files as required for specifying data splits in
     # persephone.Corpus creation
-    train_prefixes = create_prefixes(corpus.training, corpus_path, "train_prefixes.txt")
-    testing_prefixes = create_prefixes(corpus.testing, corpus_path, "test_prefixes.txt")
+    train_prefixes = create_prefixes(audio_uploads_path, transcription_uploads_path, corpus.training, corpus_path, "train_prefixes.txt")
+    testing_prefixes = create_prefixes(audio_uploads_path, transcription_uploads_path, corpus.testing, corpus_path, "test_prefixes.txt")
     if train_prefixes & testing_prefixes:
         raise ValueError("Overlapping prefixes detected with training and testing: {}".format(train_prefixes & testing_prefixes))
-    validation_prefixes = create_prefixes(corpus.validation, corpus_path, "valid_prefixes.txt")
+    validation_prefixes = create_prefixes(audio_uploads_path, transcription_uploads_path, corpus.validation, corpus_path, "valid_prefixes.txt")
     if train_prefixes & validation_prefixes:
         raise ValueError("Overlapping prefixes detected with training and validation: {}".format(train_prefixes & validation_prefixes))
     if validation_prefixes & testing_prefixes:
@@ -154,7 +160,9 @@ def post(corpusInfo):
     #Saving Corpus as UUIDs to remove name collision issues
     corpus_uuid = uuid.uuid1()
     corpus_path = Path(flask.current_app.config['CORPUS_PATH']) / str(corpus_uuid)
-    create_corpus_file_structure(current_corpus, corpus_path)
+    audio_uploads_path = Path(flask.current_app.config['UPLOADED_AUDIO_DEST'])
+    transcription_uploads_path = Path(flask.current_app.config['UPLOADED_TEXT_DEST'])
+    create_corpus_file_structure(audio_uploads_path, transcription_uploads_path, current_corpus, corpus_path)
     current_corpus.filesystem_path = str(corpus_uuid) # see if there's some other way of handling a UUID value directly into SQLAlchemy
     db.session.add(current_corpus)
     persephone_corpus = Corpus(
