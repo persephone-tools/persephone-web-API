@@ -5,12 +5,15 @@ This is a web API for the the `persephone library <https://github.com/oadams/per
 
 This is a REST API that will provide the ability to interact with the Persephone transcription tools from over the network.
 
-This API is based on the `OpenAPI 2.0 <https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md>`_ (formerly known as Swagger) standard which specifies API endpoints via API description files. The API specification for this project can be found in a YAML file located in the repository at `./swagger/api_spec.yaml`
+This API is based on the `OpenAPI 2.0 <https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md>`_ (formerly known as Swagger) standard which specifies API endpoints via API description files.
+The API specification for this project can be found in a YAML file located in the repository at `./persephone_api/api_spec.yaml`
 
 This file will show you all the endpoints that are supported but an easier way to get familiarity with the API is to use the API explorer frontend provided by the project. See the API explorer section of this README to get started with exploring the API.
 
 Installation
 ------------
+
+This package requires Python 3.5 or higher.
 
 Currently you will need to set up a virtualenvironment and install package requirements.
 You can do this as follows:
