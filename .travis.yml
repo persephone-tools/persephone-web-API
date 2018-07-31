@@ -1,5 +1,5 @@
 language: python
-before-install:
+before_install:
   - sudo apt-get install -y ffmpeg
 python:
   - "3.5"
