@@ -34,17 +34,42 @@ def client(tmpdir):
     with app.test_client() as c:
         yield c
 
+import wave
+import struct
 
 @pytest.fixture
 def upload_audio(client):
     """Fixture for convenience in sending requests to the audio endpoint"""
     import io
-    def _make_audio(audio_data, filename):
-        """Create a file with appropriate WAV magic bytes and encoding"""
-        WAV_MAGIC_BYTES = b'RIFF....WAVE'
-        data = {'audioFile': (io.BytesIO(WAV_MAGIC_BYTES+audio_data.encode('utf-8')),
-                             filename)
-        }
+    def _make_audio(audio_data, filename: str, framerate: float=44100.00, duration: float=1):
+        """Create a file with appropriate WAV magic bytes and encoding
+
+        :audio_data: raw frame data to be placed into the wav file
+        :filename: the filename that will be uploaded
+        :framerate: hertz
+        :duration: seconds this file will go for
+        """
+        #WAV_MAGIC_BYTES = b'RIFF....WAVE'
+        amp = 8000.0 # amplitude
+        wav_data = io.BytesIO()
+        wav_file = wave.open(wav_data, "wb")
+        # wav params
+        nchannels = 1
+        sampwidth = 2
+        framerate = int(framerate)
+        nframes = int(framerate*duration)
+        comptype = "NONE"
+        compname = "not compressed"
+        wav_file.setparams((nchannels, sampwidth, framerate, nframes, comptype, compname))
+        # write the contents
+        for s in audio_data:
+            wav_file.writeframes(struct.pack('h', int(s*amp/2)))
+        wav_file.close()
+
+        # Seek to start of the audio stream data
+        wav_data.seek(0)
+
+        data = {'audioFile': (wav_data, filename)}
         return client.post(
             ('/{}/audio'.format(API_VERSION)),
             data=data,
@@ -52,6 +77,8 @@ def upload_audio(client):
         )
 
     return _make_audio
+
+
 
 @pytest.fixture
 def upload_transcription(client):
