@@ -1,17 +1,12 @@
 import os
 
 from flask import send_from_directory
-from flask_uploads import patch_request_class
 
-from swagger.flask_app import connexion_app, app
+from persephone_api.upload_config import configure_uploads
+from persephone_api.app import create_app
+from persephone_api.settings import DevConfig
 
-from api.upload_config import configure_uploads
-import api
-
-# resolve the API
-from connexion.resolver import RestyResolver
-connexion_app.add_api('api_spec.yaml', resolver=RestyResolver('api'))
-
+app = create_app(DevConfig)
 
 @app.route('/')
 def index():
@@ -20,12 +15,7 @@ def index():
 <a href="/{version}/ui/">/{version}/ui/</a>, this is the best place to explore the API.
 """.format(version="v0.1")
 
-# configure the DB
-# in-memory sqlite DB for development purposes, will need file backing for persistence
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-from api import db
+from persephone_api import db
 db.init_app(app)
 
 # create DB tables

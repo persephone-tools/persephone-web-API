@@ -3,9 +3,9 @@ API endpoints for /utterance
 """
 import sqlalchemy
 
-from . import db
-from .db_models import DBUtterance
-from .serialization import UtteranceSchema
+from .. import db
+from ..db_models import DBUtterance
+from ..serialization import UtteranceSchema
 
 def get(utteranceID):
     """GET request, find utterance by ID"""

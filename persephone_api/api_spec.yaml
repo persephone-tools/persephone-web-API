@@ -134,7 +134,7 @@ paths:
           description: "Corpus not found"
   /corpus/preprocess/{corpusID}:
       post:
-        operationId: api.corpus.preprocess
+        operationId: persephone_api.api_endpoints.corpus.preprocess
         summary: "Preprocess a corpus for use with persephone"
         produces:
           - application/json
@@ -155,7 +155,7 @@ paths:
   /corpus/fromZip:
     post:
       summary: "Create a corpus from a Zip file"
-      operationId: api.corpus.create_from_zip
+      operationId: persephone_api.api_endpoints.corpus.create_from_zip
       consumes:
         - multipart/form-data
       parameters:
