@@ -3,9 +3,16 @@ API endpoints for /model
 This deals with the API access for model definitions and metadata
 """
 
+from persephone.rnn_ctc import Model
+
 from ..extensions import db
 from ..db_models import TranscriptionModel
 from ..serialization import TranscriptionModelSchema
+
+def create_RNN_CTC_model(model: TranscriptionModel):
+    """Create a persephone RNN CTC model"""
+    raise NotImplementedError
+
 
 def search():
     """Handle request to search over all models"""
@@ -37,6 +44,7 @@ def post(modelInfo):
         max_epochs=max_epochs,
         early_stopping_steps=early_stopping_steps
     )
+    create_RNN_CTC_model(current_model)
     try:
         db.session.commit()
     except sqlalchemy.exc.IntegrityError:
