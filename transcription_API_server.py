@@ -5,6 +5,7 @@ from flask import send_from_directory
 from persephone_api.upload_config import configure_uploads
 from persephone_api.app import create_app
 from persephone_api.settings import DevConfig
+from persephone_api.extensions import db
 
 app = create_app(DevConfig)
 
@@ -14,9 +15,6 @@ def index():
 <a href="/{version}">/{version}</a>. The API explorer tool can be found at
 <a href="/{version}/ui/">/{version}/ui/</a>, this is the best place to explore the API.
 """.format(version="v0.1")
-
-from persephone_api import db
-db.init_app(app)
 
 # create DB tables
 with app.app_context():
