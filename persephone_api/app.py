@@ -1,12 +1,14 @@
+import os
+
 import connexion
 from connexion.resolver import RestyResolver
+import flask_uploads
 
 from . import api_endpoints
 
-from .settings import ProdConfig
-
 from .extensions import db
-
+from .settings import ProdConfig
+from .upload_config import configure_uploads
 
 def create_app(config_object=ProdConfig):
     """An application factory, as explained here: http://flask.pocoo.org/docs/patterns/appfactories/.
@@ -21,6 +23,7 @@ def create_app(config_object=ProdConfig):
     app.config.from_object(config_object)
 
     register_extensions(app)
+    configure_uploads(app, base_upload_path=os.path.join(os.getcwd(), 'user_uploads'))
     return app
 
 def register_swagger_api(connexion_flask_app) -> None:
