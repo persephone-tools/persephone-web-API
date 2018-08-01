@@ -1,4 +1,4 @@
-from . import db
+from .extensions import db
 
 from sqlalchemy import event
 from sqlalchemy.engine import Engine

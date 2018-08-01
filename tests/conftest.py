@@ -3,15 +3,13 @@ import os
 import pytest
 
 from persephone_api.app import create_app
+from persephone_api.extensions import db
 from persephone_api.settings import TestConfig
 
 app = create_app(TestConfig)
 
 # API version prefix
 API_VERSION = "v0.1"
-
-from persephone_api import db
-db.init_app(app)
 
 # create DB tables
 with app.app_context():
@@ -34,12 +32,12 @@ def client(tmpdir):
     with app.test_client() as c:
         yield c
 
-import wave
-import struct
 
 @pytest.fixture
 def upload_audio(client):
     """Fixture for convenience in sending requests to the audio endpoint"""
+    import wave
+    import struct
     import io
     def _make_audio(audio_data, filename: str, framerate: float=44100.00, duration: float=1):
         """Create a file with appropriate WAV magic bytes and encoding
@@ -49,7 +47,6 @@ def upload_audio(client):
         :framerate: hertz
         :duration: seconds this file will go for
         """
-        #WAV_MAGIC_BYTES = b'RIFF....WAVE'
         amp = 8000.0 # amplitude
         wav_data = io.BytesIO()
         wav_file = wave.open(wav_data, "wb")

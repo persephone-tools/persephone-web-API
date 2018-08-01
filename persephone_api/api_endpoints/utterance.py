@@ -3,7 +3,7 @@ API endpoints for /utterance
 """
 import sqlalchemy
 
-from .. import db
+from ..extensions import db
 from ..db_models import DBUtterance
 from ..serialization import UtteranceSchema
 
