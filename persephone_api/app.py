@@ -5,6 +5,8 @@ from . import api_endpoints
 
 from .settings import ProdConfig
 
+from .extensions import db
+
 
 def create_app(config_object=ProdConfig):
     """An application factory, as explained here: http://flask.pocoo.org/docs/patterns/appfactories/.
@@ -17,8 +19,15 @@ def create_app(config_object=ProdConfig):
     # fetch underlying flask app from the connexion app
     app = connexion_app.app
     app.config.from_object(config_object)
+
+    register_extensions(app)
     return app
 
-def register_swagger_api(connexion_flask_app):
+def register_swagger_api(connexion_flask_app) -> None:
     """Take a connexion FlaskApp and register swagger API"""
     connexion_flask_app.add_api('api_spec.yaml', resolver=RestyResolver('persephone_api.api_endpoints'))
+
+def register_extensions(app) -> None:
+    """Register Flask extensions."""
+    db.init_app(app)
+    return None

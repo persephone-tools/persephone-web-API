@@ -13,7 +13,7 @@ import flask
 from persephone.corpus import Corpus
 import sqlalchemy
 
-from .. import db
+from ..extensions import db
 from ..db_models import DBcorpus, TestingDataSet, TrainingDataSet, ValidationDataSet
 from ..serialization import CorpusSchema
 
