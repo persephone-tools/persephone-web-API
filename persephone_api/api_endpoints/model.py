@@ -25,7 +25,8 @@ def create_RNN_CTC_model(model: TranscriptionModel, corpus_storage_path: Path,
     :corpus_storage_path: The path the corpuses are stored at.
     :models_storage_path: The path the models are stored at.
     """
-    exp_dir = experiment.prep_exp_dir(directory=model.filesystem_path)
+    model_path = models_storage_path / model.filesystem_path
+    exp_dir = experiment.prep_exp_dir(directory=str(model_path))
     corpus_db_entry = DBcorpus.query.get_or_404(model.corpus)
     pickled_corpus_path = corpus_storage_path / corpus_db_entry.filesystem_path / "corpus.p"
     with pickled_corpus_path.open('rb') as pickle_file:
