@@ -97,7 +97,7 @@ class DBcorpus(db.Model):
     max_samples = db.Column(db.Integer)
 
     def __repr__(self):
-        return '<DBcorpus(name="{}")>'.format(self.name)
+        return '<DBcorpus(name="{}", label_type="{}", feature_type="{}", max_samples="{}")>'.format(self.name, self.label_type, self.feature_type, self.max_samples)
 
 
 class TrainingDataSet(db.Model):
