@@ -59,6 +59,8 @@ def get(modelID):
 
 def post(modelInfo):
     """Create a new transcription model"""
+    current_corpus = DBcorpus.query.get_or_404(modelInfo['corpusID'])
+
     min_epochs = modelInfo.get('minimumEpochs', 0)
     max_epochs = modelInfo.get('maximumEpochs', None)
     if max_epochs and min_epochs > max_epochs:
@@ -70,20 +72,22 @@ def post(modelInfo):
     beam_width = modelInfo.get('beamWidth', None)
     decoding_merge_repeated = modelInfo.get('decodingMergeRepeated', True)
 
+    model_uuid = uuid.uuid1()
+
     current_model = TranscriptionModel(
         name=modelInfo['name'],
-        corpus=modelInfo['corpusID'],
+        corpus=current_corpus,
         num_layers=num_layers,
         hidden_size=hidden_size,
         min_epochs=min_epochs,
         max_epochs=max_epochs,
         beam_width=beam_width,
         decoding_merge_repeated=decoding_merge_repeated,
-        early_stopping_steps=early_stopping_steps
+        early_stopping_steps=early_stopping_steps,
+        filesystem_path=str(model_uuid)
     )
 
-    model_uuid = uuid.uuid1()
-    current_model.filesystem_path = str(model_uuid)
+    db.session.add(current_model)
 
     create_RNN_CTC_model(
         current_model,
