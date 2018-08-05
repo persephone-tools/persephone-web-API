@@ -194,10 +194,12 @@ class TranscriptionModel(db.Model):
     early_stopping_steps = db.Column(db.Integer)
 
     beam_width = db.Column(db.Integer)
-    decoding_merge_repeated = db.Column(db.Integer)
+    decoding_merge_repeated = db.Column(db.Boolean, unique=False, default=True)
 
     filesystem_path = db.Column(db.String)
 
     def __repr__(self):
-        return "<Model(name={}, corpus={}, min_epochs{}, max_epochs={}, early_stopping_steps={})>".format(
-            self.name, self.corpus, self.min_epochs, self.max_epochs, self.early_stopping_steps)
+        return ("<Model(name={}, corpus={}, min_epochs={}, max_epochs={}, "
+               "early_stopping_steps={}, beam_width={}, decoding_merge_repeated={})>").format(
+                    self.name, self.corpus, self.min_epochs, self.max_epochs,
+                    self.early_stopping_steps, self.beam_width, self.decoding_merge_repeated)
