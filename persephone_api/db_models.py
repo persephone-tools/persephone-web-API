@@ -170,7 +170,7 @@ class TestingDataSet(db.Model):
 
 
 class TranscriptionModel(db.Model):
-    """Represents a transcription Model"""
+    """Represents a transcription Model with specifying a RNN CTC neural network"""
     __tablename__ = 'transcriptionmodel'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -182,10 +182,21 @@ class TranscriptionModel(db.Model):
     corpus = db.relationship(DBcorpus)
 
     name = db.Column(db.String)
+
     min_epochs = db.Column(db.Integer, default=0)
     max_epochs = db.Column(db.Integer)
 
+    # The number of layers in the network
+    num_layers = db.Column(db.Integer)
+    # The size of each layer
+    hidden_size = db.Column(db.Integer)
+
     early_stopping_steps = db.Column(db.Integer)
+
+    beam_width = db.Column(db.Integer)
+    decoding_merge_repeated = db.Column(db.Integer)
+
+    filesystem_path = db.Column(db.String)
 
     def __repr__(self):
         return "<Model(name={}, corpus={}, min_epochs{}, max_epochs={}, early_stopping_steps={})>".format(
