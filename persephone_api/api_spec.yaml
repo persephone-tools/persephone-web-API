@@ -182,7 +182,7 @@ paths:
             items:
               $ref: "#/definitions/modelInformation"
     post:
-      summary: "Create a new model"
+      summary: "Create a new RNN CTC model"
       consumes:
         - application/json
       parameters:
@@ -198,12 +198,30 @@ paths:
                 type: string
                 description: "The name of this model"
                 example: "ExampleLang model 1"
+              beamWidth:
+                description: "Beam width size"
+                type: integer
+                format: "int64"
+                minimum: 0
               corpusID:
                 description: "The ID of the corpus to use for this model"
                 type: integer
                 format: "int64"
+              decodingMergeRepeated:
+                description: "Merge repeated characters when decoding"
+                type: boolean
               earlyStoppingSteps:
                 description: " Stop training after this number of steps if no LER improvement has been made"
+                type: integer
+                format: "int64"
+                minimum: 0
+              hiddenSize:
+                description: "Size of the hidden layers"
+                type: integer
+                format: "int64"
+                minimum: 0
+              numberLayers:
+                description: "Number of layers in the network"
                 type: integer
                 format: "int64"
                 minimum: 0
