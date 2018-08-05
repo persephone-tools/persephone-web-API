@@ -28,6 +28,13 @@ if os.path.isdir(app.config['CORPUS_PATH']):
     print("Corpus storage directory {} already exists, not creating".format(app.config['CORPUS_PATH']))
 else:
     os.makedirs(app.config['CORPUS_PATH'])
+# Model directories stored here
+app.config['MODELS_PATH'] = os.path.join(app.config['FILE_STORAGE_BASE'], 'models')
+if os.path.isdir(app.config['MODELS_PATH']):
+    print("Models storage directory {} already exists, not creating".format(app.config['MODELS_PATH']))
+else:
+    os.makedirs(app.config['MODELS_PATH'])
+
 
 
 @app.route('/uploads/<path:path>')
