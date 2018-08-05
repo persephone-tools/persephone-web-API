@@ -67,9 +67,9 @@ def post(modelInfo):
         return "minimum number of epochs must be smaller than maximum", 400
 
     early_stopping_steps = modelInfo.get('earlyStoppingSteps', None)
-    num_layers = modelInfo.get('numberLayers', None)
-    hidden_size = modelInfo.get('hiddenSize', None)
-    beam_width = modelInfo.get('beamWidth', None)
+    num_layers = modelInfo.get('numberLayers', 3)
+    hidden_size = modelInfo.get('hiddenSize', 250)
+    beam_width = modelInfo.get('beamWidth', 100)
     decoding_merge_repeated = modelInfo.get('decodingMergeRepeated', True)
 
     model_uuid = uuid.uuid1()
