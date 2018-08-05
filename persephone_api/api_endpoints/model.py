@@ -2,24 +2,36 @@
 API endpoints for /model
 This deals with the API access for model definitions and metadata
 """
+import os
 from pathlib import Path
+import pickle
 import uuid
 
 import flask
 from persephone import experiment
-from persephone.rnn_ctc import Model
+from persephone import rnn_ctc
 from persephone.corpus_reader import CorpusReader
 
 from ..extensions import db
 from ..db_models import DBcorpus, TranscriptionModel
 from ..serialization import TranscriptionModelSchema
 
-def create_RNN_CTC_model(model: TranscriptionModel):
-    """Create a persephone RNN CTC model"""
+def create_RNN_CTC_model(model: TranscriptionModel, corpus_storage_path: Path,
+                         models_storage_path: Path):
+    """Create a persephone RNN CTC model
+
+    :model: The database entry contaning the information about the model attempting
+            to be created here.
+    :corpus_storage_path: The path the corpuses are stored at.
+    :models_storage_path: The path the models are stored at.
+    """
     exp_dir = experiment.prep_exp_dir(directory=model.filesystem_path)
-    corpus = DBcorpus.query.get_or_404(model.corpus)
-    import pdb; pdb.set_trace()
-    corpus_reader = CorpusReader(corpus, batch_size=batch_size)
+    corpus_db_entry = DBcorpus.query.get_or_404(model.corpus)
+    pickled_corpus_path = corpus_storage_path / corpus_db_entry.filesystem_path / "corpus.p"
+    with pickled_corpus_path.open('rb') as pickle_file:
+        corpus = pickle.load(pickle_file)
+
+    corpus_reader = CorpusReader(corpus)
     model = rnn_ctc.Model(
         exp_dir,
         corpus_reader,
@@ -28,7 +40,7 @@ def create_RNN_CTC_model(model: TranscriptionModel):
         beam_width=model.beam_width,
         decoding_merge_repeated=model.decoding_merge_repeated
         )
-    raise NotImplementedError
+    # TODO: pickle model at this point?
 
 def search():
     """Handle request to search over all models"""
@@ -70,13 +82,17 @@ def post(modelInfo):
     )
 
     model_uuid = uuid.uuid1()
-    model_path = Path(flask.current_app.config['MODELS_PATH']) / str(model_uuid)
-    current_model.filesystem_path = str(model_path)
-    create_RNN_CTC_model(current_model)
+    current_model.filesystem_path = str(model_uuid)
+
+    create_RNN_CTC_model(
+        current_model,
+        corpus_storage_path=Path(flask.current_app.config['CORPUS_PATH']),
+        models_storage_path=Path(flask.current_app.config['MODELS_PATH'])
+    )
     try:
         db.session.commit()
     except sqlalchemy.exc.IntegrityError:
         return "Invalid model provided", 400
     else:
-        result = TranscriptionModelSchema().dump(current_corpus).data
+        result = TranscriptionModelSchema().dump(current_model).data
         return result, 201
