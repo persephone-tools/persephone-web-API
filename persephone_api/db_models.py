@@ -97,7 +97,7 @@ class DBcorpus(db.Model):
     max_samples = db.Column(db.Integer)
 
     def __repr__(self):
-        return '<DBcorpus(name="{}")>'.format(self.name)
+        return '<DBcorpus(name="{}", label_type="{}", feature_type="{}", max_samples="{}")>'.format(self.name, self.label_type, self.feature_type, self.max_samples)
 
 
 class TrainingDataSet(db.Model):
@@ -170,7 +170,7 @@ class TestingDataSet(db.Model):
 
 
 class TranscriptionModel(db.Model):
-    """Represents a transcription Model"""
+    """Represents a transcription Model with specifying a RNN CTC neural network"""
     __tablename__ = 'transcriptionmodel'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -181,12 +181,25 @@ class TranscriptionModel(db.Model):
     )
     corpus = db.relationship(DBcorpus)
 
-    name = db.Column(db.String)
-    min_epochs = db.Column(db.Integer, default=0)
-    max_epochs = db.Column(db.Integer)
+    name = db.Column(db.String, nullable=False)
 
-    early_stopping_steps = db.Column(db.Integer)
+    min_epochs = db.Column(db.Integer, default=0, nullable=False)
+    max_epochs = db.Column(db.Integer, nullable=True)
+
+    # The number of layers in the network
+    num_layers = db.Column(db.Integer, nullable=False)
+    # The size of each layer
+    hidden_size = db.Column(db.Integer, nullable=False)
+
+    early_stopping_steps = db.Column(db.Integer, nullable=False)
+
+    beam_width = db.Column(db.Integer, nullable=False)
+    decoding_merge_repeated = db.Column(db.Boolean, unique=False, default=True, nullable=False)
+
+    filesystem_path = db.Column(db.String, nullable=False)
 
     def __repr__(self):
-        return "<Model(name={}, corpus={}, min_epochs{}, max_epochs={}, early_stopping_steps={})>".format(
-            self.name, self.corpus, self.min_epochs, self.max_epochs, self.early_stopping_steps)
+        return ("<Model(name={}, corpus={}, min_epochs={}, max_epochs={}, "
+               "early_stopping_steps={}, beam_width={}, decoding_merge_repeated={})>").format(
+                    self.name, self.corpus, self.min_epochs, self.max_epochs,
+                    self.early_stopping_steps, self.beam_width, self.decoding_merge_repeated)
