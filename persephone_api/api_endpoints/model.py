@@ -27,7 +27,7 @@ def create_RNN_CTC_model(model: TranscriptionModel, corpus_storage_path: Path,
     """
     model_path = models_storage_path / model.filesystem_path
     exp_dir = experiment.prep_exp_dir(directory=str(model_path))
-    corpus_db_entry = DBcorpus.query.get_or_404(model.corpus)
+    corpus_db_entry = model.corpus
     pickled_corpus_path = corpus_storage_path / corpus_db_entry.filesystem_path / "corpus.p"
     with pickled_corpus_path.open('rb') as pickle_file:
         corpus = pickle.load(pickle_file)
@@ -74,6 +74,7 @@ def post(modelInfo):
 
     model_uuid = uuid.uuid1()
 
+    import pdb; pdb.set_trace()
     current_model = TranscriptionModel(
         name=modelInfo['name'],
         corpus=current_corpus,

@@ -181,22 +181,22 @@ class TranscriptionModel(db.Model):
     )
     corpus = db.relationship(DBcorpus)
 
-    name = db.Column(db.String)
+    name = db.Column(db.String, nullable=False)
 
-    min_epochs = db.Column(db.Integer, default=0)
-    max_epochs = db.Column(db.Integer)
+    min_epochs = db.Column(db.Integer, default=0, nullable=False)
+    max_epochs = db.Column(db.Integer, nullable=True)
 
     # The number of layers in the network
-    num_layers = db.Column(db.Integer)
+    num_layers = db.Column(db.Integer, nullable=False)
     # The size of each layer
-    hidden_size = db.Column(db.Integer)
+    hidden_size = db.Column(db.Integer, nullable=False)
 
-    early_stopping_steps = db.Column(db.Integer)
+    early_stopping_steps = db.Column(db.Integer, nullable=False)
 
-    beam_width = db.Column(db.Integer)
-    decoding_merge_repeated = db.Column(db.Boolean, unique=False, default=True)
+    beam_width = db.Column(db.Integer, nullable=False)
+    decoding_merge_repeated = db.Column(db.Boolean, unique=False, default=True, nullable=False)
 
-    filesystem_path = db.Column(db.String)
+    filesystem_path = db.Column(db.String, nullable=False)
 
     def __repr__(self):
         return ("<Model(name={}, corpus={}, min_epochs={}, max_epochs={}, "
