@@ -73,6 +73,7 @@ def upload_audio(client):
             data=data,
             content_type='multipart/form-data'
         )
+        wav_data.close()
 
     return _make_audio
 
