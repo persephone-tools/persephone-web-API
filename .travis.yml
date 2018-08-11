@@ -1,7 +1,10 @@
 language: python
+cache: pip
+
 python:
   - "3.5"
   - "3.6"
+
 before_install:
   - sudo add-apt-repository -y ppa:mc3man/trusty-media
   - sudo apt-get -qq update
