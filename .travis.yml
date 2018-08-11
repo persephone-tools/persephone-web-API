@@ -10,4 +10,4 @@ install:
   - pip install pipenv
   - pipenv install --dev --skip-lock
 script:
-  - pipenv run pytest
+  - python -m pytest
