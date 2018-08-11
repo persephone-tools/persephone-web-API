@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+persephone = {version = ">0.3.1"}
+connexion = "*"
+flask-uploads = "*"
+sqlalchemy = {version = ">1.2"}
+flask_sqlalchemy  = "*"
+marshmallow-sqlalchemy = "*"
+
+[dev-packages]
+pylint = "*"
+pytest = "*"
+mypy = "*"
+
+[requires]
+python_version = "3.5"
