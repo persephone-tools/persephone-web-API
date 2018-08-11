@@ -1,12 +1,16 @@
 language: python
 cache: pip
+
+python:
+  - "3.5"
+  - "3.6"
+
 before_install:
   - sudo add-apt-repository -y ppa:mc3man/trusty-media
   - sudo apt-get -qq update
   - sudo apt-get install -y ffmpeg
-python:
-  - "3.5"
-  - "3.6"
 install:
-  - pip install -r requirements.txt
-script: python -m pytest
+  - pip install pipenv
+  - pipenv install --dev --skip-lock
+script:
+  - python -m pytest
