@@ -41,6 +41,9 @@ def create_RNN_CTC_model(model: TranscriptionModel, corpus_storage_path: Path,
         beam_width=model.beam_width,
         decoding_merge_repeated=model.decoding_merge_repeated
         )
+    model_pickle_path = model_path / "model.p"
+    with model_pickle_path.open('wb') as pickle_file:
+        pickle.dump(model, pickle_file, protocol=4)
     # TODO: pickle model at this point?
 
 def search():
@@ -74,7 +77,6 @@ def post(modelInfo):
 
     model_uuid = uuid.uuid1()
 
-    import pdb; pdb.set_trace()
     current_model = TranscriptionModel(
         name=modelInfo['name'],
         corpus=current_corpus,
