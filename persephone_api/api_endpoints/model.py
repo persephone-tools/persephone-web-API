@@ -10,6 +10,7 @@ import uuid
 import flask
 from persephone import experiment
 from persephone import rnn_ctc
+import persephone.rnn_ctc
 from persephone.corpus_reader import CorpusReader
 
 from ..extensions import db
@@ -17,7 +18,7 @@ from ..db_models import DBcorpus, TranscriptionModel
 from ..serialization import TranscriptionModelSchema
 
 def create_RNN_CTC_model(model: TranscriptionModel, corpus_storage_path: Path,
-                         models_storage_path: Path):
+                         models_storage_path: Path) -> persephone.rnn_ctc.Model:
     """Create a persephone RNN CTC model
 
     :model: The database entry contaning the information about the model attempting
@@ -33,7 +34,7 @@ def create_RNN_CTC_model(model: TranscriptionModel, corpus_storage_path: Path,
         corpus = pickle.load(pickle_file)
 
     corpus_reader = CorpusReader(corpus)
-    model = rnn_ctc.Model(
+    return rnn_ctc.Model(
         exp_dir,
         corpus_reader,
         num_layers=model.num_layers,
@@ -41,7 +42,6 @@ def create_RNN_CTC_model(model: TranscriptionModel, corpus_storage_path: Path,
         beam_width=model.beam_width,
         decoding_merge_repeated=model.decoding_merge_repeated
         )
-    # TODO: pickle model at this point?
 
 def search():
     """Handle request to search over all models"""
@@ -74,7 +74,6 @@ def post(modelInfo):
 
     model_uuid = uuid.uuid1()
 
-    import pdb; pdb.set_trace()
     current_model = TranscriptionModel(
         name=modelInfo['name'],
         corpus=current_corpus,
@@ -90,11 +89,6 @@ def post(modelInfo):
 
     db.session.add(current_model)
 
-    create_RNN_CTC_model(
-        current_model,
-        corpus_storage_path=Path(flask.current_app.config['CORPUS_PATH']),
-        models_storage_path=Path(flask.current_app.config['MODELS_PATH'])
-    )
     try:
         db.session.commit()
     except sqlalchemy.exc.IntegrityError:
@@ -106,4 +100,18 @@ def post(modelInfo):
 
 def train(modelID):
     """Submit task to train a model"""
+    current_model = TranscriptionModel.query.get_or_404(modelID)
+    persephone_model = create_RNN_CTC_model(
+        current_model,
+        corpus_storage_path=Path(flask.current_app.config['CORPUS_PATH']),
+        models_storage_path=Path(flask.current_app.config['MODELS_PATH'])
+    )
+    persephone_model.train(
+        early_stopping_steps=current_model.early_stopping_steps,
+        min_epochs=current_model.min_epochs,
+        max_valid_ler = 1.0, # TODO: handle parameter here by adding to TranscriptionModel
+        max_train_ler = 0.3, # TODO: handle parameter here by adding to TranscriptionModel
+        max_epochs=current_model.max_epochs,
+    )
+    import pdb; pdb.set_trace()
     raise NotImplementedError
