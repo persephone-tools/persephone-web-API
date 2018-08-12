@@ -408,6 +408,9 @@ definitions:
     - "name"
     - "partition"
     properties:
+      id:
+        type: "integer"
+        format: "int64"
       name:
         type: "string"
         description: "The name of this corpus"
@@ -453,6 +456,9 @@ definitions:
       minimum: 0
   modelInformation:
     type: "object"
+    required:
+    - "name"
+    - "corpusID"
     properties:
       id:
         type: "integer"
