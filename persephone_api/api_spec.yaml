@@ -242,6 +242,26 @@ paths:
             $ref: "#/definitions/task"
         400:
           description: "Invalid model specification"
+  /model/train/{modelID}:
+    post:
+      operationId: persephone_api.api_endpoints.model.train
+      summary: "Submit a request to train a model"
+      produces:
+        - application/json
+      parameters:
+        - name: modelID
+          in: path
+          description: "ID of model to preprocess"
+          required: true
+          type: integer
+          format: "int64"
+      responses:
+        202:
+          description: "Accepted for processing"
+          schema:
+            $ref: "#/definitions/task"
+        404:
+          description: "Model not found"
 
   /transcription:
     get:

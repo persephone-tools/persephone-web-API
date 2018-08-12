@@ -102,3 +102,8 @@ def post(modelInfo):
     else:
         result = TranscriptionModelSchema().dump(current_model).data
         return result, 201
+
+
+def train(modelID):
+    """Submit task to train a model"""
+    raise NotImplementedError
