@@ -141,3 +141,10 @@ def test_tiny(client):
     assert response.status_code == 201
     model_response_data = json.loads(response.data.decode('utf8'))
     model_id = model_response_data['id']
+
+    response = client.post(
+        '/v0.1/model/train/{}'.format(model_id),
+        data=json.dumps(model_data),
+        headers={'Content-Type': 'application/json'}
+    )
+    
