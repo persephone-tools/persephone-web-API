@@ -88,7 +88,6 @@ def test_tiny(client):
         upload_transcription(data_path, test_prefixes[0]+".phonemes")
     ]
 
-    import pdb; pdb.set_trace()
     training_utterances = [
         create_utterance(train_audio_ids[0], train_transcriptions_ids[0]),
         create_utterance(train_audio_ids[1], train_transcriptions_ids[1]),
@@ -118,4 +117,27 @@ def test_tiny(client):
         headers={'Content-Type': 'application/json'}
     )
     assert response.status_code == 201
-    
+
+    corpus_response_data = json.loads(response.data.decode('utf8'))
+    corpus_id = corpus_response_data['id']
+
+    model_data = {
+        "name": "Test Na tiny model",
+        "beamWidth": 1,
+        "corpusID": corpus_id,
+        "decodingMergeRepeated": True,
+        "earlyStoppingSteps": 1,
+        "numberLayers": 2,
+        "hiddenSize": 250,
+        "maximumEpochs": 5,
+        "minimumEpochs": 2,
+    }
+
+    response = client.post(
+        '/v0.1/model',
+        data=json.dumps(model_data),
+        headers={'Content-Type': 'application/json'}
+    )
+    assert response.status_code == 201
+    model_response_data = json.loads(response.data.decode('utf8'))
+    model_id = model_response_data['id']
