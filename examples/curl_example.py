@@ -2,16 +2,18 @@
 # This is a very quick and dirty to populate some initial data via calling the API.
 # Note that for now ID's are hardcoded in later steps.
 # TODO: process response data IDs
+FILES_SRC_DIRECTORY="example_files"
+
 # Upload WAV files
 echo "*** uploading WAV files ***"
-curl -X POST --header 'Content-Type: multipart/form-data' --header 'Accept: application/json' --form audioFile=@crdo-NRU_F4_ACCOMP_PFV.1.wav 'http://127.0.0.1:8080/v0.1/audio'
-curl -X POST --header 'Content-Type: multipart/form-data' --header 'Accept: application/json' --form audioFile=@crdo-NRU_F4_ACCOMP_PFV.3.wav 'http://127.0.0.1:8080/v0.1/audio'
-curl -X POST --header 'Content-Type: multipart/form-data' --header 'Accept: application/json' --form audioFile=@crdo-NRU_F4_ACCOMP_PFV.7.wav 'http://127.0.0.1:8080/v0.1/audio'
+curl -X POST --header 'Content-Type: multipart/form-data' --header 'Accept: application/json' --form audioFile="@${FILES_SRC_DIRECTORY}/crdo-NRU_F4_ACCOMP_PFV.1.wav" 'http://127.0.0.1:8080/v0.1/audio'
+curl -X POST --header 'Content-Type: multipart/form-data' --header 'Accept: application/json' --form audioFile="@${FILES_SRC_DIRECTORY}/crdo-NRU_F4_ACCOMP_PFV.3.wav" 'http://127.0.0.1:8080/v0.1/audio'
+curl -X POST --header 'Content-Type: multipart/form-data' --header 'Accept: application/json' --form audioFile="@${FILES_SRC_DIRECTORY}/crdo-NRU_F4_ACCOMP_PFV.7.wav" 'http://127.0.0.1:8080/v0.1/audio'
 # Upload transcriptions
 echo "*** uploading transcription files ***"
-curl -X POST --header 'Content-Type: multipart/form-data' --header 'Accept: application/json' --form transcriptionFile=@crdo-NRU_F4_ACCOMP_PFV.1.phonemes 'http://127.0.0.1:8080/v0.1/transcription'
-curl -X POST --header 'Content-Type: multipart/form-data' --header 'Accept: application/json' --form transcriptionFile=@crdo-NRU_F4_ACCOMP_PFV.3.phonemes 'http://127.0.0.1:8080/v0.1/transcription'
-curl -X POST --header 'Content-Type: multipart/form-data' --header 'Accept: application/json' --form transcriptionFile=@crdo-NRU_F4_ACCOMP_PFV.7.phonemes 'http://127.0.0.1:8080/v0.1/transcription'
+curl -X POST --header 'Content-Type: multipart/form-data' --header 'Accept: application/json' --form transcriptionFile="@${FILES_SRC_DIRECTORY}/crdo-NRU_F4_ACCOMP_PFV.1.phonemes" 'http://127.0.0.1:8080/v0.1/transcription'
+curl -X POST --header 'Content-Type: multipart/form-data' --header 'Accept: application/json' --form transcriptionFile="@${FILES_SRC_DIRECTORY}/crdo-NRU_F4_ACCOMP_PFV.3.phonemes" 'http://127.0.0.1:8080/v0.1/transcription'
+curl -X POST --header 'Content-Type: multipart/form-data' --header 'Accept: application/json' --form transcriptionFile="@${FILES_SRC_DIRECTORY}/crdo-NRU_F4_ACCOMP_PFV.7.phonemes" 'http://127.0.0.1:8080/v0.1/transcription'
 # Create Utterances
 echo "*** specifying utterances ***"
 curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{
