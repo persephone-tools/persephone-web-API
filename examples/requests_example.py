@@ -2,14 +2,17 @@
 This file shows how you can interact with the Persephone API with the requests library.
 See http://docs.python-requests.org/en/master/ for requests library documentation.
 """
+import os
 import requests
 
 API_VERSION  = "v0.1"
 # Where the API is being served from
 URL_BASE = "http://127.0.0.1:8080/{}/".format(API_VERSION)
 
+EXAMPLE_FILES_DIR = "example_files"
+
 # upload an audio file
-files = {'audioFile': open('crdo-NRU_F4_ACCOMP_PFV.1.wav', 'rb')}
+files = {'audioFile': open(os.path.join(EXAMPLE_FILES_DIR, 'crdo-NRU_F4_ACCOMP_PFV.1.wav'), 'rb')}
 
 audio_url = URL_BASE + "audio"
 r = requests.post(audio_url, files=files)
@@ -21,7 +24,7 @@ print("File uploaded has an id of {}".format(audio_id))
 
 
 # upload a transcription
-files = {'transcriptionFile': open('crdo-NRU_F4_ACCOMP_PFV.1.phonemes', 'rb')}
+files = {'transcriptionFile': open(os.path.join(EXAMPLE_FILES_DIR, 'crdo-NRU_F4_ACCOMP_PFV.1.phonemes'), 'rb')}
 
 transcription_url = URL_BASE + "transcription"
 r = requests.post(transcription_url, files=files)
@@ -46,4 +49,4 @@ r = requests.post(utterance_url, json=utterance_data)
 print(r.text)
 utterance_results = r.json()
 utterance_id = utterance_results['id']
-print("DBUtterance created has an id of {}".format(utterance_id))
+print("Utterance created on server has an id of {}".format(utterance_id))
