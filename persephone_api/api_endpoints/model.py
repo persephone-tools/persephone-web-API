@@ -17,6 +17,20 @@ from ..extensions import db
 from ..db_models import DBcorpus, TranscriptionModel
 from ..serialization import TranscriptionModelSchema
 
+def decide_batch_size(num_train):
+    """Determine size of batches for use in training"""
+    if num_train >= 512:
+        batch_size = 16
+    elif num_train < 128:
+        if num_train < 4:
+            batch_size = 1
+        else:
+            batch_size = 4
+    else:
+        batch_size = int(num_train / 32)
+
+    return batch_size
+
 def create_RNN_CTC_model(model: TranscriptionModel, corpus_storage_path: Path,
                          models_storage_path: Path) -> persephone.rnn_ctc.Model:
     """Create a persephone RNN CTC model
@@ -33,7 +47,7 @@ def create_RNN_CTC_model(model: TranscriptionModel, corpus_storage_path: Path,
     with pickled_corpus_path.open('rb') as pickle_file:
         corpus = pickle.load(pickle_file)
 
-    corpus_reader = CorpusReader(corpus)
+    corpus_reader = CorpusReader(corpus, batch_size=decide_batch_size(len(corpus.train_prefixes)))
     return rnn_ctc.Model(
         exp_dir,
         corpus_reader,
