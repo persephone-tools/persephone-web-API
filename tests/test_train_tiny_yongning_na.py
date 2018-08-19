@@ -15,10 +15,10 @@ def test_tiny(client):
                 data=data,
                 content_type='multipart/form-data'
             )
-            assert response.status_code == 201
-            response_data = json.loads(response.data.decode('utf8'))
-            assert response_data['id']
-            return response_data['id']
+        assert response.status_code == 201
+        response_data = json.loads(response.data.decode('utf8'))
+        assert response_data['id']
+        return response_data['id']
 
     def upload_transcription(path: str, filename: str) -> int:
         """Helper to upload a transcription file, where `path` is the directory
@@ -31,23 +31,24 @@ def test_tiny(client):
                 data=data,
                 content_type='multipart/form-data'
             )
-            assert response.status_code == 201
-            response_data = json.loads(response.data.decode('utf8'))
-            assert response_data['id']
-            return response_data['id']
+        assert response.status_code == 201
+        response_data = json.loads(response.data.decode('utf8'))
+        assert response_data['id']
+        return response_data['id']
 
     def create_utterance(audio_id: int, transcription_id: int) -> int:
         """Helper to create an utterance, returns id of utterance created"""
         data = {
             "audioId": audio_id,
             "transcriptionId": transcription_id
-        }        
+        }
+
         response = client.post(
-            ('/v0.1/utterance'),
-            data=data,
-            content_type='multipart/form-data'
+            '/v0.1/utterance',
+            data=json.dumps(data),
+            headers={'Content-Type': 'application/json'}
         )
-        assert response.status_code == 201
+        assert response.status_code == 201, response
         response_data = json.loads(response.data.decode('utf8'))
         assert response_data['id']
         return response_data['id']
@@ -86,3 +87,35 @@ def test_tiny(client):
     test_transcriptions_ids = [
         upload_transcription(data_path, test_prefixes[0]+".phonemes")
     ]
+
+    import pdb; pdb.set_trace()
+    training_utterances = [
+        create_utterance(train_audio_ids[0], train_transcriptions_ids[0]),
+        create_utterance(train_audio_ids[1], train_transcriptions_ids[1]),
+    ]
+
+    validation_utterances = [
+        create_utterance(validation_audio_ids[0], validation_transcriptions_ids[0])
+    ]
+
+    test_utterances = [
+        create_utterance(test_audio_ids[0], test_transcriptions_ids[0])
+    ]
+
+    data = {
+        "name": "Test Na tiny corpus",
+        "label_type": "phonemes",
+        "feature_type": "fbank",
+        "preprocessed": "false",
+        "testing": test_utterances,
+        "training": training_utterances,
+        "validation": validation_utterances
+    }
+
+    response = client.post(
+        '/v0.1/corpus',
+        data=json.dumps(data),
+        headers={'Content-Type': 'application/json'}
+    )
+    assert response.status_code == 201
+    
