@@ -106,7 +106,6 @@ def train(modelID):
         corpus_storage_path=Path(flask.current_app.config['CORPUS_PATH']),
         models_storage_path=Path(flask.current_app.config['MODELS_PATH'])
     )
-    import pdb; pdb.set_trace()
     MAX_EPOCHS = 100 # TODO: Set maximum running time somewhere else
     if current_model.max_epochs:
         persephone_model.train(
