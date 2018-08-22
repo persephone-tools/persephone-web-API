@@ -120,21 +120,17 @@ def train(modelID):
         corpus_storage_path=Path(flask.current_app.config['CORPUS_PATH']),
         models_storage_path=Path(flask.current_app.config['MODELS_PATH'])
     )
-    MAX_EPOCHS = 100 # TODO: Set maximum running time somewhere else
+    MAX_EPOCHS = 100 # TODO: Set maximum epochs somewhere else
     if current_model.max_epochs:
-        persephone_model.train(
-            early_stopping_steps=current_model.early_stopping_steps,
-            min_epochs=current_model.min_epochs,
-            max_valid_ler = 1.0, # TODO: handle parameter here by adding to TranscriptionModel
-            max_train_ler = 0.3, # TODO: handle parameter here by adding to TranscriptionModel
-            max_epochs=current_model.max_epochs,
-        )
+        epochs = current_model.max_epochs
     else:
-        persephone_model.train(
-            early_stopping_steps=current_model.early_stopping_steps,
-            min_epochs=current_model.min_epochs,
-            max_valid_ler = 1.0, # TODO: handle parameter here by adding to TranscriptionModel
-            max_train_ler = 0.3, # TODO: handle parameter here by adding to TranscriptionModel
-            max_epochs=MAX_EPOCHS,
-        )
-    return "Not implemented", 501
+        epochs = MAX_EPOCHS
+
+    persephone_model.train(
+        early_stopping_steps=current_model.early_stopping_steps,
+        min_epochs=current_model.min_epochs,
+        max_valid_ler = 1.0, # TODO: handle parameter here by adding to TranscriptionModel
+        max_train_ler = 0.3, # TODO: handle parameter here by adding to TranscriptionModel
+        max_epochs=current_model.max_epochs,
+    )
+    return "Training not fully implemented", 200
