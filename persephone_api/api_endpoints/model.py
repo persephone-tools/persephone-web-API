@@ -134,3 +134,7 @@ def train(modelID):
         max_epochs=current_model.max_epochs,
     )
     return "Training not fully implemented", 200
+
+def transcribe(modelID, audioID):
+    """Transcribe audio with the given model"""
+    raise NotImplementedError
