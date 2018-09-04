@@ -94,6 +94,26 @@ def upload_transcription(client):
 
     return _make_transcription
 
+
+@pytest.fixture
+def create_utterance(client):
+    """Fixture for convenience in creating an utterance via requests to the utterance specification endpoint"""
+    import json
+    def _create_utterance(audio_id, transcription_id):
+        """create an utterance from pairs of IDs of resources"""
+        data = {
+            "audioId": audio_id,
+            "transcriptionId": transcription_id
+        }
+
+        return client.post(
+            '/{}/utterance'.format(API_VERSION),
+            data=json.dumps(data),
+            headers={'Content-Type': 'application/json'}
+        )
+    return _create_utterance
+
+
 @pytest.fixture
 def create_sine():
     def _create_sine(note: str="A", seconds: float=1, framerate: float=44100.00) -> list:
