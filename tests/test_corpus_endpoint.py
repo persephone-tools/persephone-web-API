@@ -1,6 +1,6 @@
 """Test corpus API endpoints"""
 
-def test_corpus_creation(client, upload_audio, upload_transcription, create_sine):
+def test_corpus_creation(client, upload_audio, upload_transcription, create_utterance, create_sine):
     """Test that we are able to create a corpus object via the API"""
     import json
 
@@ -36,44 +36,17 @@ def test_corpus_creation(client, upload_audio, upload_transcription, create_sine
     transcription_response_data = json.loads(response.data.decode('utf8'))
     transcription_id_c = transcription_response_data['id']
 
-    data = {
-        "audioId": wav_id_a,
-        "transcriptionId": transcription_id_a
-    }
-
-    response = client.post(
-        '/v0.1/utterance',
-        data=json.dumps(data),
-        headers={'Content-Type': 'application/json'}
-    )
+    response = create_utterance(wav_id_a, transcription_id_a)
     assert response.status_code == 201
     utterance_response_data = json.loads(response.data.decode('utf8'))
     utterance_id_a = utterance_response_data['id']
 
-    data = {
-        "audioId": wav_id_b,
-        "transcriptionId": transcription_id_b
-    }
-
-    response = client.post(
-        '/v0.1/utterance',
-        data=json.dumps(data),
-        headers={'Content-Type': 'application/json'}
-    )
+    response = create_utterance(wav_id_b, transcription_id_b)
     assert response.status_code == 201
     utterance_response_data = json.loads(response.data.decode('utf8'))
     utterance_id_b = utterance_response_data['id']
 
-    data = {
-        "audioId": wav_id_c,
-        "transcriptionId": transcription_id_c
-    }
-
-    response = client.post(
-        '/v0.1/utterance',
-        data=json.dumps(data),
-        headers={'Content-Type': 'application/json'}
-    )
+    response = create_utterance(wav_id_c, transcription_id_c)
     assert response.status_code == 201
     utterance_response_data = json.loads(response.data.decode('utf8'))
     utterance_id_c = utterance_response_data['id']
