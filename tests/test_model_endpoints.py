@@ -64,9 +64,10 @@ def test_invalid_early_stopping(client):
     assert response.status_code == 400
 
 
-def create_model():
+def test_create_model(client, upload_audio, upload_transcription, create_utterance, create_sine):
     """Test that we can create a model from the API"""
-     # Create mock audio uploads
+    # Create mock audio uploads
+    import json
     response = upload_audio(create_sine(note="A"), filename="a.wav")
     assert response.status_code == 201
     wav_response_data = json.loads(response.data.decode('utf8'))
@@ -98,44 +99,18 @@ def create_model():
     transcription_response_data = json.loads(response.data.decode('utf8'))
     transcription_id_c = transcription_response_data['id']
 
-    data = {
-        "audioId": wav_id_a,
-        "transcriptionId": transcription_id_a
-    }
 
-    response = client.post(
-        '/v0.1/utterance',
-        data=json.dumps(data),
-        headers={'Content-Type': 'application/json'}
-    )
+    response = create_utterance(wav_id_a, transcription_id_a)
     assert response.status_code == 201
     utterance_response_data = json.loads(response.data.decode('utf8'))
     utterance_id_a = utterance_response_data['id']
 
-    data = {
-        "audioId": wav_id_b,
-        "transcriptionId": transcription_id_b
-    }
-
-    response = client.post(
-        '/v0.1/utterance',
-        data=json.dumps(data),
-        headers={'Content-Type': 'application/json'}
-    )
+    response = create_utterance(wav_id_b, transcription_id_b)
     assert response.status_code == 201
     utterance_response_data = json.loads(response.data.decode('utf8'))
     utterance_id_b = utterance_response_data['id']
 
-    data = {
-        "audioId": wav_id_c,
-        "transcriptionId": transcription_id_c
-    }
-
-    response = client.post(
-        '/v0.1/utterance',
-        data=json.dumps(data),
-        headers={'Content-Type': 'application/json'}
-    )
+    response = create_utterance(wav_id_c, transcription_id_c)
     assert response.status_code == 201
     utterance_response_data = json.loads(response.data.decode('utf8'))
     utterance_id_c = utterance_response_data['id']
