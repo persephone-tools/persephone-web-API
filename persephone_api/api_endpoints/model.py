@@ -137,4 +137,7 @@ def train(modelID):
 
 def transcribe(modelID, audioID):
     """Transcribe audio with the given model"""
+    current_model = TranscriptionModel.query.get_or_404(modelID)
+    audio_info = Audio.query.get_or_404(audioID)
+
     raise NotImplementedError
