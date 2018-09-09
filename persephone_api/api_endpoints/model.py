@@ -131,7 +131,7 @@ def train(modelID):
         min_epochs=current_model.min_epochs,
         max_valid_ler = 1.0, # TODO: handle parameter here by adding to TranscriptionModel
         max_train_ler = 0.3, # TODO: handle parameter here by adding to TranscriptionModel
-        max_epochs=current_model.max_epochs,
+        max_epochs=epochs,
     )
     return "Training not fully implemented", 200
 
