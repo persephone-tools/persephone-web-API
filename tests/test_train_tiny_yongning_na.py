@@ -147,4 +147,15 @@ def test_tiny(client):
         data=json.dumps(model_data),
         headers={'Content-Type': 'application/json'}
     )
-    
+
+    assert response.status_code >= 200 and response.status_code < 300
+
+    transcribe_test_audio_prefix = "crdo-NRU_NUMPLUSCL_L2_TIMES_1TO100_F4_24SEPT2011_AUDIOPLUSEGG.58"
+    audio_to_transcribe_id = upload_audio(data_path, transcribe_test_audio_prefix+".wav")
+
+    response = client.post(
+        '/v0.1/model/transcribe/{}/{}'.format(model_id, audio_to_transcribe_id),
+        headers={'Content-Type': 'application/json'}
+    )
+
+    assert response.status_code == 201
