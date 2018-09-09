@@ -12,12 +12,25 @@ from persephone import experiment
 from persephone import rnn_ctc
 import persephone.rnn_ctc
 from persephone.corpus_reader import CorpusReader
+from persephone import model
 
 from ..extensions import db
 from ..db_models import DBcorpus, TranscriptionModel
 from ..serialization import TranscriptionModelSchema
 
-def decide_batch_size(num_train):
+# quick and dirty way of persisting models, most certainly not fit for production
+# in a multi user environment
+available_models = {}
+
+def get_transcription_model(model_id: int) -> model.Model:
+    """Return an instance of a Persephone model for a given ID"""
+    return available_models[model_id]
+
+def register_transcription_model(model_id: int, model_object: model.Model) -> None:
+    """Register a python object containing the transcription model"""
+    available_models[model_id] = model_object
+
+def decide_batch_size(num_train: int):
     """Determine size of batches for use in training"""
     if num_train >= 512:
         batch_size = 16
@@ -120,6 +133,8 @@ def train(modelID):
         corpus_storage_path=Path(flask.current_app.config['CORPUS_PATH']),
         models_storage_path=Path(flask.current_app.config['MODELS_PATH'])
     )
+
+    register_transcription_model(modelID, persephone_model)
     MAX_EPOCHS = 100 # TODO: Set maximum epochs somewhere else
     if current_model.max_epochs:
         epochs = current_model.max_epochs
@@ -139,5 +154,12 @@ def transcribe(modelID, audioID):
     """Transcribe audio with the given model"""
     current_model = TranscriptionModel.query.get_or_404(modelID)
     audio_info = Audio.query.get_or_404(audioID)
+    # TODO: test that audio file is not empty
 
+    try:
+        persephone_model = get_transcription_model(modelID)
+    except KeyError:
+        # We don't currently have that model ready in memory so we have to bail out here
+        return "Persephone model object not loaded in memory, please train first", 500
+    
     raise NotImplementedError
