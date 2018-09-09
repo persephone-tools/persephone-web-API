@@ -22,14 +22,15 @@ app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024 #max 64 MB file upload
 @pytest.fixture
 def client(tmpdir):
     """Create a test client to send requests to"""
-    tmpdir.mkdir('test_uploads')
+    uploads_path = tmpdir.mkdir('test_uploads')
     app.config['BASE_UPLOAD_DIRECTORY'] = os.path.join(str(tmpdir), 'test_uploads')
     tmpdir.mkdir('corpus')
+    tmpdir.mkdir('models')
     app.config['CORPUS_PATH'] = os.path.join(str(tmpdir), 'corpus')
     app.config['MODELS_PATH'] = os.path.join(str(tmpdir), 'models')
-
+    #uploads_path = tmpdir.mkdir('user_uploads')
     from persephone_api.upload_config import configure_uploads
-    configure_uploads(app)
+    configure_uploads(app, base_upload_path=str(uploads_path))
     with app.test_client() as c:
         yield c
 
@@ -99,7 +100,7 @@ def upload_transcription(client):
 def create_utterance(client):
     """Fixture for convenience in creating an utterance via requests to the utterance specification endpoint"""
     import json
-    def _create_utterance(audio_id, transcription_id):
+    def _create_utterance(audio_id: int, transcription_id: int):
         """create an utterance from pairs of IDs of resources"""
         data = {
             "audioId": audio_id,
