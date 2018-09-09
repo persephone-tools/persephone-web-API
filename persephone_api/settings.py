@@ -33,6 +33,7 @@ class DevConfig(Config):
 class TestConfig(Config):
     """Test configuration."""
 
+    ENV = 'testing'
     TESTING = True
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
