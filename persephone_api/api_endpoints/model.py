@@ -15,7 +15,7 @@ from persephone.corpus_reader import CorpusReader
 from persephone import model
 
 from ..extensions import db
-from ..db_models import DBcorpus, TranscriptionModel
+from ..db_models import DBcorpus, TranscriptionModel, Audio
 from ..serialization import TranscriptionModelSchema
 
 # quick and dirty way of persisting models, most certainly not fit for production
@@ -148,7 +148,7 @@ def train(modelID):
         max_train_ler = 0.3, # TODO: handle parameter here by adding to TranscriptionModel
         max_epochs=epochs,
     )
-    return "Training not fully implemented", 200
+    return "Model trained", 200
 
 def transcribe(modelID, audioID):
     """Transcribe audio with the given model"""
@@ -156,10 +156,21 @@ def transcribe(modelID, audioID):
     audio_info = Audio.query.get_or_404(audioID)
     # TODO: test that audio file is not empty
 
-    try:
-        persephone_model = get_transcription_model(modelID)
-    except KeyError:
-        # We don't currently have that model ready in memory so we have to bail out here
-        return "Persephone model object not loaded in memory, please train first", 500
-    
-    raise NotImplementedError
+    #try:
+    #    persephone_model = get_transcription_model(modelID)
+    #except KeyError:
+    #    # We don't currently have that model ready in memory so we have to bail out here
+    #    return "Persephone model object not loaded in memory, please train first", 500
+
+    model_path = Path(flask.current_app.config['MODELS_PATH']) / current_model.filesystem_path / "0"/ "model" / "model_best.ckpt" # TODO: handle experiment number in path
+    audio_uploads_path = Path(flask.current_app.config['UPLOADED_AUDIO_DEST'])
+    assert audio_uploads_path
+    print("/n/n***", audio_uploads_path, "***")
+    audio_path = audio_uploads_path / audio_info.filename
+
+    print("***", audio_path, "***/n/n")
+
+    results = model.decode(model_path, [audio_path], set()) #TODO pass real set of labels
+
+    return results[0], 201
+
