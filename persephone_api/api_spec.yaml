@@ -217,6 +217,33 @@ paths:
             $ref: "#/definitions/task"
         404:
           description: "Model not found"
+  /model/transcribe/{modelID}/{audioID}:
+    post:
+      operationId: persephone_api.api_endpoints.model.transcribe
+      summary: "Submit a request to transcribe an audio file using a model"
+      produces:
+        - application/json
+      parameters:
+        - name: modelID
+          in: path
+          description: "ID of model being used"
+          required: true
+          type: integer
+          format: "int64"
+        - name: audioID
+          in: path
+          description: "ID of audio file being transcribed"
+          required: true
+          type: integer
+          format: "int64"
+      responses:
+        202:
+          description: "Accepted for processing"
+          schema:
+            $ref: "#/definitions/task"
+        404:
+          description: "Not found"
+
 
   /transcription:
     get:

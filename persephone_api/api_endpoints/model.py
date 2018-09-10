@@ -12,12 +12,25 @@ from persephone import experiment
 from persephone import rnn_ctc
 import persephone.rnn_ctc
 from persephone.corpus_reader import CorpusReader
+from persephone import model
 
 from ..extensions import db
-from ..db_models import DBcorpus, TranscriptionModel
+from ..db_models import DBcorpus, TranscriptionModel, Audio
 from ..serialization import TranscriptionModelSchema
 
-def decide_batch_size(num_train):
+# quick and dirty way of persisting models, most certainly not fit for production
+# in a multi user environment
+available_models = {}
+
+def get_transcription_model(model_id: int) -> model.Model:
+    """Return an instance of a Persephone model for a given ID"""
+    return available_models[model_id]
+
+def register_transcription_model(model_id: int, model_object: model.Model) -> None:
+    """Register a python object containing the transcription model"""
+    available_models[model_id] = model_object
+
+def decide_batch_size(num_train: int):
     """Determine size of batches for use in training"""
     if num_train >= 512:
         batch_size = 16
@@ -120,21 +133,54 @@ def train(modelID):
         corpus_storage_path=Path(flask.current_app.config['CORPUS_PATH']),
         models_storage_path=Path(flask.current_app.config['MODELS_PATH'])
     )
-    MAX_EPOCHS = 100 # TODO: Set maximum running time somewhere else
+
+    register_transcription_model(modelID, persephone_model)
+    MAX_EPOCHS = 100 # TODO: Set maximum epochs somewhere else
     if current_model.max_epochs:
-        persephone_model.train(
-            early_stopping_steps=current_model.early_stopping_steps,
-            min_epochs=current_model.min_epochs,
-            max_valid_ler = 1.0, # TODO: handle parameter here by adding to TranscriptionModel
-            max_train_ler = 0.3, # TODO: handle parameter here by adding to TranscriptionModel
-            max_epochs=current_model.max_epochs,
-        )
+        epochs = current_model.max_epochs
     else:
-        persephone_model.train(
-            early_stopping_steps=current_model.early_stopping_steps,
-            min_epochs=current_model.min_epochs,
-            max_valid_ler = 1.0, # TODO: handle parameter here by adding to TranscriptionModel
-            max_train_ler = 0.3, # TODO: handle parameter here by adding to TranscriptionModel
-            max_epochs=MAX_EPOCHS,
+        epochs = MAX_EPOCHS
+
+    persephone_model.train(
+        early_stopping_steps=current_model.early_stopping_steps,
+        min_epochs=current_model.min_epochs,
+        max_valid_ler = 1.0, # TODO: handle parameter here by adding to TranscriptionModel
+        max_train_ler = 0.3, # TODO: handle parameter here by adding to TranscriptionModel
+        max_epochs=epochs,
+    )
+    # TODO: Save all this information somewhere so it can be easily used in the
+    # transcribe step
+    #print("persephone_model.batch_x: ", persephone_model.batch_x)
+    #print("persephone_model.batch_x_lens: ", persephone_model.batch_x_lens)
+    #print("persephone_model.dense_decoded: ", persephone_model.dense_decoded)
+
+    return "Model trained", 200
+
+def transcribe(modelID, audioID):
+    """Transcribe audio with the given model"""
+    current_model = TranscriptionModel.query.get_or_404(modelID)
+    audio_info = Audio.query.get_or_404(audioID)
+    # TODO: test that audio file is not empty
+
+    # TODO: handle experiment number in path
+    model_path = Path(flask.current_app.config['MODELS_PATH']) / current_model.filesystem_path / "0"
+    model_checkpoint_path = model_path / "model" / "model_best.ckpt"
+    audio_uploads_path = Path(flask.current_app.config['UPLOADED_AUDIO_DEST'])
+
+    # putting features into the existing corpus path for now
+    corpus_path = Path(flask.current_app.config['CORPUS_PATH']) / current_model.corpus.filesystem_path
+    audio_path = audio_uploads_path / audio_info.filename
+
+    labels_set = {'ʂ', 'i', 'qʰ', 'ɯ', 'wɤ', 'ŋ', 'tsʰ', 'ʐ', 'v̩'}  #TODO pass real set of labels
+
+    results = model.decode(
+        model_checkpoint_path, [audio_path],
+        labels_set,
+        feature_type=current_model.corpus.feature_type,
+        preprocessed_output_path=(corpus_path / "feat"),
+        batch_x_name="batch_x:0",
+        batch_x_lens_name="batch_x_lens:0",
+        output_name="hyp_dense_decoded:0"
         )
-    return "Not implemented", 501
+
+    return results[0], 201

@@ -1,5 +1,4 @@
 """Configration for pytest to run the test suite"""
-import os
 import pytest
 
 from persephone_api.app import create_app
@@ -22,14 +21,14 @@ app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024 #max 64 MB file upload
 @pytest.fixture
 def client(tmpdir):
     """Create a test client to send requests to"""
-    tmpdir.mkdir('test_uploads')
-    app.config['BASE_UPLOAD_DIRECTORY'] = os.path.join(str(tmpdir), 'test_uploads')
-    tmpdir.mkdir('corpus')
-    app.config['CORPUS_PATH'] = os.path.join(str(tmpdir), 'corpus')
-    app.config['MODELS_PATH'] = os.path.join(str(tmpdir), 'models')
-
+    uploads_path = tmpdir.mkdir('test_uploads')
+    app.config['BASE_UPLOAD_DIRECTORY'] = str(uploads_path)
+    corpus_path = tmpdir.mkdir('corpus')
+    app.config['CORPUS_PATH'] = str(corpus_path)
+    models_path = tmpdir.mkdir('models')
+    app.config['MODELS_PATH'] = str(models_path)
     from persephone_api.upload_config import configure_uploads
-    configure_uploads(app)
+    configure_uploads(app, base_upload_path=str(uploads_path))
     with app.test_client() as c:
         yield c
 
@@ -93,6 +92,26 @@ def upload_transcription(client):
         )
 
     return _make_transcription
+
+
+@pytest.fixture
+def create_utterance(client):
+    """Fixture for convenience in creating an utterance via requests to the utterance specification endpoint"""
+    import json
+    def _create_utterance(audio_id: int, transcription_id: int):
+        """create an utterance from pairs of IDs of resources"""
+        data = {
+            "audioId": audio_id,
+            "transcriptionId": transcription_id
+        }
+
+        return client.post(
+            '/{}/utterance'.format(API_VERSION),
+            data=json.dumps(data),
+            headers={'Content-Type': 'application/json'}
+        )
+    return _create_utterance
+
 
 @pytest.fixture
 def create_sine():

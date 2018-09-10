@@ -170,7 +170,7 @@ class TestingDataSet(db.Model):
 
 
 class TranscriptionModel(db.Model):
-    """Represents a transcription Model with specifying a RNN CTC neural network"""
+    """Represents a transcription Model that specifies a RNN CTC neural network"""
     __tablename__ = 'transcriptionmodel'
 
     id = db.Column(db.Integer, primary_key=True)
