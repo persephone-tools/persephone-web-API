@@ -156,21 +156,23 @@ def transcribe(modelID, audioID):
     audio_info = Audio.query.get_or_404(audioID)
     # TODO: test that audio file is not empty
 
-    #try:
-    #    persephone_model = get_transcription_model(modelID)
-    #except KeyError:
-    #    # We don't currently have that model ready in memory so we have to bail out here
-    #    return "Persephone model object not loaded in memory, please train first", 500
-
-    model_path = Path(flask.current_app.config['MODELS_PATH']) / current_model.filesystem_path / "0"/ "model" / "model_best.ckpt" # TODO: handle experiment number in path
+    # TODO: handle experiment number in path
+    model_path = Path(flask.current_app.config['MODELS_PATH']) / current_model.filesystem_path / "0"
+    model_checkpoint_path = model_path / "model" / "model_best.ckpt"
     audio_uploads_path = Path(flask.current_app.config['UPLOADED_AUDIO_DEST'])
-    assert audio_uploads_path
-    print("/n/n***", audio_uploads_path, "***")
+
+    # putting features into the existing corpus path for now
+    corpus_path = Path(flask.current_app.config['CORPUS_PATH']) / current_model.corpus.filesystem_path
     audio_path = audio_uploads_path / audio_info.filename
 
-    print("***", audio_path, "***/n/n")
-
-    results = model.decode(model_path, [audio_path], set()) #TODO pass real set of labels
+    results = model.decode(
+        model_checkpoint_path, [audio_path],
+        set(),  #TODO pass real set of labels
+        feature_type=current_model.corpus.feature_type,
+        preprocessed_output_path=(corpus_path / "feat"),
+        batch_x_name="batch_x:0",
+        batch_x_lens_name="batch_x_lens:0",
+        output_name="hyp_dense_decoded:0"
+        )
 
     return results[0], 201
-
