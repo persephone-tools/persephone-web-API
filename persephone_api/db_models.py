@@ -210,7 +210,7 @@ class Label(db.Model):
     __tablename__ = 'label'
 
     id = db.Column(db.Integer, primary_key=True)
-    label = db.Column(db.String, nullable=False)
+    label = db.Column(db.Unicode, nullable=False)
     def __repr__(self):
         return "<Label({})>".format(self.label)
 
