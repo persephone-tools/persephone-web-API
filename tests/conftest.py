@@ -1,5 +1,4 @@
 """Configration for pytest to run the test suite"""
-import os
 import pytest
 
 from persephone_api.app import create_app
@@ -23,12 +22,11 @@ app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024 #max 64 MB file upload
 def client(tmpdir):
     """Create a test client to send requests to"""
     uploads_path = tmpdir.mkdir('test_uploads')
-    app.config['BASE_UPLOAD_DIRECTORY'] = os.path.join(str(tmpdir), 'test_uploads')
-    tmpdir.mkdir('corpus')
-    tmpdir.mkdir('models')
-    app.config['CORPUS_PATH'] = os.path.join(str(tmpdir), 'corpus')
-    app.config['MODELS_PATH'] = os.path.join(str(tmpdir), 'models')
-    #uploads_path = tmpdir.mkdir('user_uploads')
+    app.config['BASE_UPLOAD_DIRECTORY'] = str(uploads_path)
+    corpus_path = tmpdir.mkdir('corpus')
+    app.config['CORPUS_PATH'] = str(corpus_path)
+    models_path = tmpdir.mkdir('models')
+    app.config['MODELS_PATH'] = str(models_path)
     from persephone_api.upload_config import configure_uploads
     configure_uploads(app, base_upload_path=str(uploads_path))
     with app.test_client() as c:
