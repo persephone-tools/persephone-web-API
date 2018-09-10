@@ -148,6 +148,12 @@ def train(modelID):
         max_train_ler = 0.3, # TODO: handle parameter here by adding to TranscriptionModel
         max_epochs=epochs,
     )
+    # TODO: Save all this information somewhere so it can be easily used in the
+    # transcribe step
+    #print("persephone_model.batch_x: ", persephone_model.batch_x)
+    #print("persephone_model.batch_x_lens: ", persephone_model.batch_x_lens)
+    #print("persephone_model.dense_decoded: ", persephone_model.dense_decoded)
+
     return "Model trained", 200
 
 def transcribe(modelID, audioID):
@@ -165,9 +171,11 @@ def transcribe(modelID, audioID):
     corpus_path = Path(flask.current_app.config['CORPUS_PATH']) / current_model.corpus.filesystem_path
     audio_path = audio_uploads_path / audio_info.filename
 
+    labels_set = {'ʂ', 'i', 'qʰ', 'ɯ', 'wɤ', 'ŋ', 'tsʰ', 'ʐ', 'v̩'}  #TODO pass real set of labels
+
     results = model.decode(
         model_checkpoint_path, [audio_path],
-        set(),  #TODO pass real set of labels
+        labels_set,
         feature_type=current_model.corpus.feature_type,
         preprocessed_output_path=(corpus_path / "feat"),
         batch_x_name="batch_x:0",
