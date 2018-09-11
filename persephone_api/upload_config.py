@@ -1,6 +1,7 @@
 """Configuration for the flask_uploads extension that handles file uploading"""
-import flask_uploads
 import os
+
+import flask_uploads
 
 audio_files = flask_uploads.UploadSet(name="audio", extensions=("wav", "wave", "mp3"))
 text_files =  flask_uploads.UploadSet(name="text", extensions=("txt", "phonemes", "phonemes_and_tones"))
@@ -20,4 +21,3 @@ def configure_uploads(flask_app, base_upload_path=None) -> None:
     flask_app.config['UPLOADED_FILES_URL'] = uploads_url_base
     flask_uploads.configure_uploads(flask_app, (audio_files, text_files))
     return None
-

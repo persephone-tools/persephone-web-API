@@ -171,6 +171,17 @@ paths:
         415:
           description: "Bad filetype"
 
+  /labels:
+    get:
+      summary: "Retrieve all phonetic labels that are currently available"
+      responses:
+        200:
+          description: success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/label"
+
   /model:
     get:
       summary: "Retrieve all models that are currently available"
@@ -243,7 +254,6 @@ paths:
             $ref: "#/definitions/task"
         404:
           description: "Not found"
-
 
   /transcription:
     get:
@@ -436,6 +446,25 @@ definitions:
       type: "integer"
       format: "int64"
       minimum: 0
+  label:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      label:
+        type: "string"
+        description: "An atomic phonetic label as used in speech models"
+  labelSetInformation:
+    type: "object"
+    properties:
+      corpus:
+        $ref: "#/definitions/corpusInformation"
+      labels:
+        type: "array"
+        items:
+          $ref: "#/definitions/label"
+
   modelInformation:
     type: "object"
     required:

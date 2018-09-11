@@ -2,18 +2,17 @@
 API endpoints for /model
 This deals with the API access for model definitions and metadata
 """
-import os
 from pathlib import Path
 import pickle
 import uuid
 
 import flask
+import sqlalchemy
+
 from persephone import experiment
 from persephone import rnn_ctc
-import persephone.rnn_ctc
 from persephone.corpus_reader import CorpusReader
 from persephone import model
-import sqlalchemy
 
 from ..extensions import db
 from ..db_models import DBcorpus, TranscriptionModel, Audio
@@ -45,8 +44,8 @@ def decide_batch_size(num_train: int) -> int:
 
     return batch_size
 
-def create_RNN_CTC_model(model: TranscriptionModel, corpus_storage_path: Path,
-                         models_storage_path: Path) -> persephone.rnn_ctc.Model:
+def create_RNN_CTC_model(model_db: TranscriptionModel, corpus_storage_path: Path,
+                         models_storage_path: Path) -> rnn_ctc.Model:
     """Create a persephone RNN CTC model
 
     :model: The database entry contaning the information about the model attempting
@@ -54,9 +53,9 @@ def create_RNN_CTC_model(model: TranscriptionModel, corpus_storage_path: Path,
     :corpus_storage_path: The path the corpuses are stored at.
     :models_storage_path: The path the models are stored at.
     """
-    model_path = models_storage_path / model.filesystem_path
+    model_path = models_storage_path / model_db.filesystem_path
     exp_dir = experiment.prep_exp_dir(directory=str(model_path))
-    corpus_db_entry = model.corpus
+    corpus_db_entry = model_db.corpus
     pickled_corpus_path = corpus_storage_path / corpus_db_entry.filesystem_path / "corpus.p"
     with pickled_corpus_path.open('rb') as pickle_file:
         corpus = pickle.load(pickle_file)
@@ -65,10 +64,10 @@ def create_RNN_CTC_model(model: TranscriptionModel, corpus_storage_path: Path,
     return rnn_ctc.Model(
         exp_dir,
         corpus_reader,
-        num_layers=model.num_layers,
-        hidden_size=model.hidden_size,
-        beam_width=model.beam_width,
-        decoding_merge_repeated=model.decoding_merge_repeated
+        num_layers=model_db.num_layers,
+        hidden_size=model_db.hidden_size,
+        beam_width=model_db.beam_width,
+        decoding_merge_repeated=model_db.decoding_merge_repeated
         )
 
 def search():
