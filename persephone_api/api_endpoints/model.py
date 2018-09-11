@@ -13,6 +13,7 @@ from persephone import rnn_ctc
 import persephone.rnn_ctc
 from persephone.corpus_reader import CorpusReader
 from persephone import model
+import sqlalchemy
 
 from ..extensions import db
 from ..db_models import DBcorpus, TranscriptionModel, Audio
@@ -30,7 +31,7 @@ def register_transcription_model(model_id: int, model_object: model.Model) -> No
     """Register a python object containing the transcription model"""
     available_models[model_id] = model_object
 
-def decide_batch_size(num_train: int):
+def decide_batch_size(num_train: int) -> int:
     """Determine size of batches for use in training"""
     if num_train >= 512:
         batch_size = 16
