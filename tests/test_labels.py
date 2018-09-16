@@ -29,7 +29,7 @@ def test_label_listing(client):
         headers={'Content-Type': 'application/json'}
     )
 
-    assert response.status_code == 201
+    assert response
 
     data = {
         "phoneticLabel": "b",
@@ -40,10 +40,17 @@ def test_label_listing(client):
         data=json.dumps(data),
         headers={'Content-Type': 'application/json'}
     )
-    assert response.status_code == 201
+    assert response
 
     response = client.get(
         '/v0.1/label',
     )
 
     assert response
+    assert response.status_code == 200
+
+    label_response_data = json.loads(response.data.decode('utf8'))
+    assert len(label_response_data) == 2
+
+    labels = set(item['label'] for item in label_response_data)
+    assert labels == {"a", "b"}
