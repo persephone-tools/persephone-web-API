@@ -4,7 +4,7 @@ def test_label_creation(client):
     """Test that we can create a label"""
     import json
     data = {
-        "label": "a",
+        "phoneticLabel": "a",
     }
 
     response = client.post(
