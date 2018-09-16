@@ -171,7 +171,7 @@ paths:
         415:
           description: "Bad filetype"
 
-  /labels:
+  /label:
     get:
       summary: "Retrieve all phonetic labels that are currently available"
       responses:
@@ -181,7 +181,18 @@ paths:
             type: array
             items:
               $ref: "#/definitions/label"
-
+    post:
+      summary: "Create a phonetic label that can be used in transcriptions"
+      consumes:
+        - application/json
+      parameters:
+        - name: labelInfo
+          in: body
+          schema:
+            $ref: "#/definitions/label"
+      responses:
+        201:
+          description: "label created"
   /model:
     get:
       summary: "Retrieve all models that are currently available"
