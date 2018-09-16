@@ -189,7 +189,13 @@ paths:
         - name: labelInfo
           in: body
           schema:
-            $ref: "#/definitions/label"
+            type: object
+            required:
+              - phoneticLabel
+            properties:
+              phoneticLabel:
+                type: string
+                description: "The phonetic label"
       responses:
         201:
           description: "label created"
