@@ -94,6 +94,8 @@ paths:
             type: object
             required:
               - name
+              - label_type
+              - feature_type
               - training
               - validation
               - testing
@@ -102,6 +104,14 @@ paths:
                 type: string
                 description: "The name of this corpus"
                 example: "ExampleLang Corpus 3"
+              label_type:
+                type: "string"
+                description: "The type of labels"
+                example: "phonemes"
+              feature_type:
+                type: "string"
+                description: "The type of the features"
+                example: "fbank"
               training:
                 $ref: "#/definitions/IDarray"
               validation:
