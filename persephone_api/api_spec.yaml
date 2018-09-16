@@ -94,6 +94,8 @@ paths:
             type: object
             required:
               - name
+              - label_type
+              - feature_type
               - training
               - validation
               - testing
@@ -102,6 +104,10 @@ paths:
                 type: string
                 description: "The name of this corpus"
                 example: "ExampleLang Corpus 3"
+              label_type:
+                $ref: "#/definitions/labelType"
+              feature_type:
+                $ref: "#/definitions/featureType"
               training:
                 $ref: "#/definitions/IDarray"
               validation:
@@ -398,13 +404,9 @@ definitions:
         description: "The name of this corpus"
         example: "ExampleLang Corpus"
       label_type:
-        type: "string"
-        description: "The type of labels"
-        example: "phonemes"
+        $ref: "#/definitions/labelType"
       feature_type:
-        type: "string"
-        description: "The type of the features"
-        example: "fbank"
+        $ref: "#/definitions/featureType"
       max_samples:
         type: "integer"
         format: "int64"
@@ -430,6 +432,14 @@ definitions:
             items:
               $ref: "#/definitions/utteranceInformation"
             description: "Utterances in testing set"
+  labelType:
+    type: "string"
+    description: "The type of the labels"
+    example: "phonemes"
+  featureType:
+    type: "string"
+    description: "The type of the features"
+    example: "fbank"
   IDarray:
     type: "array"
     items:
