@@ -6,7 +6,9 @@ from ..serialization import LabelSchema
 
 def search():
     """Handle request for all available labels"""
-    raise NotImplementedError
+    results = Label.query.all()
+    json_results = [LabelSchema().dump(label).data for label in results]
+    return json_results, 200
 
 def post(labelInfo):
     """Create a new phonetic label"""
