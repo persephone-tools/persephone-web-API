@@ -28,3 +28,7 @@ class CorpusSchema(ModelSchema):
 class TranscriptionModelSchema(ModelSchema):
     class Meta:
         model = db_models.TranscriptionModel
+
+class LabelSchema(ModelSchema):
+    class Meta:
+        model = db_models.Label
