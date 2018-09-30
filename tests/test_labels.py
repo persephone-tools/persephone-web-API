@@ -116,3 +116,17 @@ def test_label_NFC_uniqueness(client):
         headers={'Content-Type': 'application/json'}
     )
     assert 400 <= response.status_code < 500
+
+
+def test_corpus_labels(client, create_corpus):
+    """test that creating a corpus creates the right set of labels"""
+    corpus_id = create_corpus()
+    expected_labels = {'A', 'B', 'C'}
+
+
+    response = client.get(
+        '/v0.1/corpus/labels/{}'.format(corpus_id),
+        data=json.dumps(data),
+        headers={'Content-Type': 'application/json'}
+    )
+    assert response.status_code == 200
