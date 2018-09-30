@@ -120,13 +120,15 @@ def test_label_NFC_uniqueness(client):
 
 def test_corpus_labels(client, create_corpus):
     """test that creating a corpus creates the right set of labels"""
+    import json
     corpus_id = create_corpus()
     expected_labels = {'A', 'B', 'C'}
 
-
     response = client.get(
         '/v0.1/corpus/labels/{}'.format(corpus_id),
-        data=json.dumps(data),
         headers={'Content-Type': 'application/json'}
     )
     assert response.status_code == 200
+    label_response_data = json.loads(response.data.decode('utf8'))
+    assert label_response_data['corpus']['id'] == corpus_id
+    assert set(label_response_data['labels']) == expected_labels
