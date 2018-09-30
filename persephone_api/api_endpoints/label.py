@@ -1,4 +1,5 @@
 """Handlers for phonetic label functionality"""
+import unicodedata
 
 import sqlalchemy
 
@@ -13,11 +14,16 @@ def search():
     return json_results, 200
 
 def post(labelInfo):
-    """Create a new phonetic label"""
+    """Create a new phonetic label
+
+    We are normalizing all labels with NFC to handle the potential duplicates.
+    Refer to https://unicode.org/reports/tr15/ for details about how this works.
+    """
 
     raw_label = labelInfo['phoneticLabel']
+    NFC_normalized_label = unicodedata.normalize("NFC", raw_label)
     current_label = Label(
-        label=raw_label
+        label=NFC_normalized_label
     )
 
     db.session.add(current_label)
