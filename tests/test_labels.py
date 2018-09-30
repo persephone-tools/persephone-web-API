@@ -78,3 +78,40 @@ def test_label_uniqueness(client):
         headers={'Content-Type': 'application/json'}
     )
     assert 400 <= response.status_code < 500
+
+def test_label_NFC_uniqueness(client):
+    """Test that unicode characters that are the same according to NFC are
+    properly recognized as duplicates at the database level.
+
+    We are using NFC normalization internally, this test may have to change if
+    the normalization is changed.
+
+    Refer to https://unicode.org/reports/tr15/ for details about how this works.
+    """
+    import unicodedata
+    single_character_ä = "\u00E4"
+    combining_diaeresis_ä = "\u0061\u0308"
+    assert unicodedata.normalize("NFC", single_character_ä) == unicodedata.normalize("NFC", combining_diaeresis_ä)
+
+    import json
+    data = {
+        "phoneticLabel": single_character_ä,
+    }
+    response = client.post(
+        '/v0.1/label',
+        data=json.dumps(data),
+        headers={'Content-Type': 'application/json'}
+    )
+    assert response.status_code == 201
+
+    data = {
+        "phoneticLabel": combining_diaeresis_ä,
+    }
+
+    # Duplicate as per NFC normalization should return 4xx code
+    response = client.post(
+        '/v0.1/label',
+        data=json.dumps(data),
+        headers={'Content-Type': 'application/json'}
+    )
+    assert 400 <= response.status_code < 500
