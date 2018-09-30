@@ -30,6 +30,7 @@ def test_label_listing(client):
     )
 
     assert response
+    assert response.status_code == 201
 
     data = {
         "phoneticLabel": "b",

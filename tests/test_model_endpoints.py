@@ -1,6 +1,9 @@
-def test_invalid_min_max_steps(client):
+"""Tests for model related endpoints"""
+
+def test_invalid_min_max_steps(client, create_corpus):
+    corpus_id = create_corpus()
     data = {
-        "corpusID": 1,
+        "corpusID": corpus_id,
         "maximumEpochs": 10,
         "minimumEpochs": 100,
         "name": "Bad mix max model"
@@ -15,10 +18,11 @@ def test_invalid_min_max_steps(client):
 
     assert response.status_code == 400
 
-def test_invalid_epoch_steps(client):
+def test_invalid_epoch_steps(client, create_corpus):
     import json
+    corpus_id = create_corpus()
     data = {
-        "corpusID": 1,
+        "corpusID": corpus_id,
         "maximumEpochs": 5,
         "minimumEpochs": -1,
         "name": "Bad minimum epoch"
@@ -33,12 +37,11 @@ def test_invalid_epoch_steps(client):
     assert response.status_code == 400
 
     data = {
-        "corpusID": 1,
+        "corpusID": corpus_id,
         "maximumEpochs": -10,
         "minimumEpochs": 5,
         "name": "Bad maximum epoch"
     }
-
 
     response = client.post(
         '/v0.1/model',
@@ -48,10 +51,11 @@ def test_invalid_epoch_steps(client):
     assert response.status_code == 400
 
 
-def test_invalid_early_stopping(client):
+def test_invalid_early_stopping(client, create_corpus):
+    corpus_id = create_corpus()
     import json
     data = {
-        "corpusID": 1,
+        "corpusID": corpus_id,
         "earlyStoppingSteps": -1,
         "name": "Bad maximum epoch"
     }
