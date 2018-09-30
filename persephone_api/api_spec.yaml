@@ -132,26 +132,46 @@ paths:
             $ref: "#/definitions/corpusInformation"
         404:
           description: "Corpus not found"
+  /corpus/labels/{corpusID}:
+    get:
+      operationId: persephone_api.api_endpoints.corpus.get_label_set
+      summary: "Get the set of labels as defined by the corpus"
+      produces:
+        - application/json
+      parameters:
+        - name: corpusID
+          in: path
+          description: "ID of corpus to return label set for"
+          required: true
+          type: integer
+          format: "int64"
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/labelSetInformation"
+        404:
+          description: "Corpus not found"
   /corpus/preprocess/{corpusID}:
-      post:
-        operationId: persephone_api.api_endpoints.corpus.preprocess
-        summary: "Preprocess a corpus for use with persephone"
-        produces:
-          - application/json
-        parameters:
-          - name: corpusID
-            in: path
-            description: "ID of corpus to preprocess"
-            required: true
-            type: integer
-            format: "int64"
-        responses:
-          200:
-            description: success
-            schema:
-              $ref: "#/definitions/corpusInformation"
-          404:
-            description: "Corpus not found"
+    post:
+      operationId: persephone_api.api_endpoints.corpus.preprocess
+      summary: "Preprocess a corpus for use with persephone"
+      produces:
+        - application/json
+      parameters:
+        - name: corpusID
+          in: path
+          description: "ID of corpus to preprocess"
+          required: true
+          type: integer
+          format: "int64"
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/corpusInformation"
+        404:
+          description: "Corpus not found"
   /corpus/fromZip:
     post:
       summary: "Create a corpus from a Zip file"

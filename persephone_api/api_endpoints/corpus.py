@@ -165,6 +165,9 @@ def post(corpusInfo):
     create_corpus_file_structure(audio_uploads_path, transcription_uploads_path, current_corpus, corpus_path)
     current_corpus.filesystem_path = str(corpus_uuid) # see if there's some other way of handling a UUID value directly into SQLAlchemy
     db.session.add(current_corpus)
+
+    # Creating the corpus object has the side-effect of creating a directory located at the path
+    # given to `tgt_dir`
     persephone_corpus = Corpus(
         feat_type=current_corpus.feature_type,
         label_type=current_corpus.label_type,
@@ -178,6 +181,10 @@ def post(corpusInfo):
     else:
         result = CorpusSchema().dump(current_corpus).data
         return result, 201
+
+def get_label_set(corpusID):
+    """Get the label set for a corpus with the given ID"""
+    raise NotImplementedError
 
 def preprocess(corpusID):
     """Preprocess a corpus"""
