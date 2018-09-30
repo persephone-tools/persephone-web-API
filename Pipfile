@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-persephone = {version = ">0.3.1"}
+persephone = {git = 'https://github.com/persephone-tools/persephone.git', editable = true}
 connexion = {version = ">=1.4"}
 flask-uploads = {version = ">0.2.0"}
 SQLAlchemy = {version = ">1.2.0"}
