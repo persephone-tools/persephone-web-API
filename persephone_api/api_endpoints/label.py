@@ -1,5 +1,7 @@
 """Handlers for phonetic label functionality"""
 
+import sqlalchemy
+
 from ..extensions import db
 from ..db_models import Label
 from ..serialization import LabelSchema
@@ -13,12 +15,16 @@ def search():
 def post(labelInfo):
     """Create a new phonetic label"""
 
+    raw_label = labelInfo['phoneticLabel']
     current_label = Label(
-        label=labelInfo['phoneticLabel']
+        label=raw_label
     )
 
     db.session.add(current_label)
-    db.session.commit()
-
-    result = LabelSchema().dump(current_label).data
-    return result, 201
+    try:
+        db.session.commit()
+    except sqlalchemy.exc.IntegrityError:
+        return "Duplicate label {} provided".format(raw_label), 400
+    else:
+        result = LabelSchema().dump(current_label).data
+        return result, 201
