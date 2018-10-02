@@ -193,15 +193,26 @@ class TranscriptionModel(db.Model):
 
     early_stopping_steps = db.Column(db.Integer, nullable=False)
 
+    #Width of beam as used in beam search
     beam_width = db.Column(db.Integer, nullable=False)
+    # Flag to toggle merging of repeated phonemes in results stream
+    # for example "A B B B C" becomes "A B C" with this enabled
     decoding_merge_repeated = db.Column(db.Boolean, unique=False, default=True, nullable=False)
+
+    # Maximum Label Error Rate on validation data set
+    max_valid_LER = db.Column(db.Float)
+
+    # Maximum Label Error Rate on validation training set
+    max_train_LER = db.Column(db.Float)
 
     filesystem_path = db.Column(db.String, nullable=False)
 
     def __repr__(self):
         return ("<Model(name={}, corpus={}, min_epochs={}, max_epochs={}, "
+               "max_valid_LER={}, max_train_LER={}, "
                "early_stopping_steps={}, beam_width={}, decoding_merge_repeated={})>").format(
                     self.name, self.corpus, self.min_epochs, self.max_epochs,
+                    self.max_valid_LER, self.max_train_LER,
                     self.early_stopping_steps, self.beam_width, self.decoding_merge_repeated)
 
 
