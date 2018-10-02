@@ -138,26 +138,46 @@ paths:
             $ref: "#/definitions/corpusInformation"
         404:
           description: "Corpus not found"
+  /corpus/labels/{corpusID}:
+    get:
+      operationId: persephone_api.api_endpoints.corpus.get_label_set
+      summary: "Get the set of labels as defined by the corpus"
+      produces:
+        - application/json
+      parameters:
+        - name: corpusID
+          in: path
+          description: "ID of corpus to return label set for"
+          required: true
+          type: integer
+          format: "int64"
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/labelSetInformation"
+        404:
+          description: "Corpus not found"
   /corpus/preprocess/{corpusID}:
-      post:
-        operationId: persephone_api.api_endpoints.corpus.preprocess
-        summary: "Preprocess a corpus for use with persephone"
-        produces:
-          - application/json
-        parameters:
-          - name: corpusID
-            in: path
-            description: "ID of corpus to preprocess"
-            required: true
-            type: integer
-            format: "int64"
-        responses:
-          200:
-            description: success
-            schema:
-              $ref: "#/definitions/corpusInformation"
-          404:
-            description: "Corpus not found"
+    post:
+      operationId: persephone_api.api_endpoints.corpus.preprocess
+      summary: "Preprocess a corpus for use with persephone"
+      produces:
+        - application/json
+      parameters:
+        - name: corpusID
+          in: path
+          description: "ID of corpus to preprocess"
+          required: true
+          type: integer
+          format: "int64"
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/corpusInformation"
+        404:
+          description: "Corpus not found"
   /corpus/fromZip:
     post:
       summary: "Create a corpus from a Zip file"
@@ -177,6 +197,34 @@ paths:
         415:
           description: "Bad filetype"
 
+  /label:
+    get:
+      summary: "Retrieve all phonetic labels that are currently available"
+      responses:
+        200:
+          description: success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/label"
+    post:
+      summary: "Create a phonetic label that can be used in transcriptions"
+      consumes:
+        - application/json
+      parameters:
+        - name: labelInfo
+          in: body
+          schema:
+            type: object
+            required:
+              - phoneticLabel
+            properties:
+              phoneticLabel:
+                type: string
+                description: "The phonetic label"
+      responses:
+        201:
+          description: "label created"
   /model:
     get:
       summary: "Retrieve all models that are currently available"
@@ -249,7 +297,6 @@ paths:
             $ref: "#/definitions/task"
         404:
           description: "Not found"
-
 
   /transcription:
     get:
@@ -446,6 +493,25 @@ definitions:
       type: "integer"
       format: "int64"
       minimum: 0
+  label:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      label:
+        type: "string"
+        description: "An atomic phonetic label as used in speech models"
+  labelSetInformation:
+    type: "object"
+    properties:
+      corpus:
+        $ref: "#/definitions/corpusInformation"
+      labels:
+        type: "array"
+        items:
+          $ref: "#/definitions/label"
+
   modelInformation:
     type: "object"
     required:

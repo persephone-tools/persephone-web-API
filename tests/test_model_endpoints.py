@@ -1,6 +1,9 @@
-def test_invalid_min_max_steps(client):
+"""Tests for model related endpoints"""
+
+def test_invalid_min_max_steps(client, create_corpus):
+    corpus_id = create_corpus()
     data = {
-        "corpusID": 1,
+        "corpusID": corpus_id,
         "maximumEpochs": 10,
         "minimumEpochs": 100,
         "name": "Bad mix max model"
@@ -15,10 +18,11 @@ def test_invalid_min_max_steps(client):
 
     assert response.status_code == 400
 
-def test_invalid_epoch_steps(client):
+def test_invalid_epoch_steps(client, create_corpus):
     import json
+    corpus_id = create_corpus()
     data = {
-        "corpusID": 1,
+        "corpusID": corpus_id,
         "maximumEpochs": 5,
         "minimumEpochs": -1,
         "name": "Bad minimum epoch"
@@ -33,12 +37,11 @@ def test_invalid_epoch_steps(client):
     assert response.status_code == 400
 
     data = {
-        "corpusID": 1,
+        "corpusID": corpus_id,
         "maximumEpochs": -10,
         "minimumEpochs": 5,
         "name": "Bad maximum epoch"
     }
-
 
     response = client.post(
         '/v0.1/model',
@@ -48,10 +51,11 @@ def test_invalid_epoch_steps(client):
     assert response.status_code == 400
 
 
-def test_invalid_early_stopping(client):
+def test_invalid_early_stopping(client, create_corpus):
+    corpus_id = create_corpus()
     import json
     data = {
-        "corpusID": 1,
+        "corpusID": corpus_id,
         "earlyStoppingSteps": -1,
         "name": "Bad maximum epoch"
     }
@@ -64,83 +68,10 @@ def test_invalid_early_stopping(client):
     assert response.status_code == 400
 
 
-def test_create_model(client, upload_audio, upload_transcription, create_utterance, create_sine):
+def test_create_model(client, create_corpus):
     """Test that we can create a model from the API"""
-    # Create mock audio uploads
     import json
-    response = upload_audio(create_sine(note="A"), filename="a.wav")
-    assert response.status_code == 201
-    wav_response_data = json.loads(response.data.decode('utf8'))
-    wav_id_a = wav_response_data['id']
-
-    response = upload_audio(create_sine(note="B"), filename="b.wav")
-    assert response.status_code == 201
-    wav_response_data = json.loads(response.data.decode('utf8'))
-    wav_id_b = wav_response_data['id']
-
-    response = upload_audio(create_sine(note="C"), filename="c.wav")
-    assert response.status_code == 201
-    wav_response_data = json.loads(response.data.decode('utf8'))
-    wav_id_c = wav_response_data['id']
-
-    # Create mock transcription uploads
-    response = upload_transcription("A", filename="a.phonemes")
-    assert response.status_code == 201
-    transcription_response_data = json.loads(response.data.decode('utf8'))
-    transcription_id_a = transcription_response_data['id']
-
-    response = upload_transcription("B", filename="b.phonemes")
-    assert response.status_code == 201
-    transcription_response_data = json.loads(response.data.decode('utf8'))
-    transcription_id_b = transcription_response_data['id']
-
-    response = upload_transcription("C", filename="c.phonemes")
-    assert response.status_code == 201
-    transcription_response_data = json.loads(response.data.decode('utf8'))
-    transcription_id_c = transcription_response_data['id']
-
-
-    response = create_utterance(wav_id_a, transcription_id_a)
-    assert response.status_code == 201
-    utterance_response_data = json.loads(response.data.decode('utf8'))
-    utterance_id_a = utterance_response_data['id']
-
-    response = create_utterance(wav_id_b, transcription_id_b)
-    assert response.status_code == 201
-    utterance_response_data = json.loads(response.data.decode('utf8'))
-    utterance_id_b = utterance_response_data['id']
-
-    response = create_utterance(wav_id_c, transcription_id_c)
-    assert response.status_code == 201
-    utterance_response_data = json.loads(response.data.decode('utf8'))
-    utterance_id_c = utterance_response_data['id']
-
-    corpus_data = {
-        "name": "Test Corpus",
-        "label_type": "phonemes",
-        "feature_type": "fbank",
-        "preprocessed": "false",
-        "testing": [
-            utterance_id_a
-        ],
-        "training": [
-            utterance_id_b
-        ],
-        "validation": [
-            utterance_id_c
-        ]
-    }
-
-    response = client.post(
-        '/v0.1/corpus',
-        data=json.dumps(corpus_data),
-        headers={'Content-Type': 'application/json'}
-    )
-
-    assert response.status_code == 201
-
-    corpus_response_data = json.loads(response.data.decode('utf8'))
-    corpus_id = corpus_response_data['id']
+    corpus_id = create_corpus()
 
     model_data = {
         "name": "Test model",
