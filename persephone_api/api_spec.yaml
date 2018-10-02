@@ -562,6 +562,14 @@ definitions:
         type: integer
         format: "int64"
         minimum: 0
+      maxTrainingLER:
+        description: "Maximum Label Error Rate (LER) on training data"
+        type: number
+        minimum: 0
+      maxValidationLER:
+        description: "Maximum Label Error Rate (LER) on validation data"
+        type: number
+        minimum: 0
   task:
     type: "object"
     required:
