@@ -205,7 +205,6 @@ def create_corpus(client, upload_audio, upload_transcription, create_utterance, 
             "name": "Test Corpus",
             "label_type": "phonemes",
             "feature_type": "fbank",
-            "preprocessed": "false",
             "testing": [
                 utterance_id_a
             ],
