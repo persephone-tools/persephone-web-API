@@ -112,7 +112,9 @@ def post(modelInfo):
         beam_width=beam_width,
         decoding_merge_repeated=decoding_merge_repeated,
         early_stopping_steps=early_stopping_steps,
-        filesystem_path=str(model_uuid)
+        filesystem_path=str(model_uuid),
+        max_train_LER=modelInfo.get('maxTrainingLER', None),
+        max_valid_LER=modelInfo.get('maxValidationLER', None)
     )
 
     db.session.add(current_model)
