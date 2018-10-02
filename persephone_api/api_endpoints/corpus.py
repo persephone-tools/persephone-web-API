@@ -14,7 +14,7 @@ from persephone.corpus import Corpus
 import sqlalchemy
 
 from ..extensions import db
-from ..db_models import DBcorpus, TestingDataSet, TrainingDataSet, ValidationDataSet, CorpusLabelSet
+from ..db_models import DBcorpus, TestingDataSet, TrainingDataSet, ValidationDataSet, Label, CorpusLabelSet
 from ..serialization import CorpusSchema
 
 
@@ -175,7 +175,17 @@ def post(corpusInfo):
     )
     labels = persephone_corpus.labels
     # Make any labels that don't currently exist in the Label table
-    # Make CorpusLabelSet
+    for l in labels:
+        current_label = Label(label=l)
+        db.session.add(current_label)
+        # Make CorpusLabelSet entry
+
+        db.session.add(
+            CorpusLabelSet(
+                corpus=current_corpus,
+                label=current_label
+            )
+        )
     try:
         db.session.commit()
     except sqlalchemy.exc.IntegrityError:
@@ -187,8 +197,13 @@ def post(corpusInfo):
 def get_label_set(corpusID):
     """Get the label set for a corpus with the given ID"""
     existing_corpus = DBcorpus.query.get_or_404(corpusID)
-    labels = db.session.query(CorpusLabelSet).filter_by(corpus_id=existing_corpus.id)
+    labels_query = db.session.query(CorpusLabelSet).filter_by(corpus_id=existing_corpus.id)
+
     corpus_data = CorpusSchema().dump(existing_corpus).data
+    labels = []
+    for l in labels_query.all():
+        labels.append(l.label.label)
+
     return {"corpus": corpus_data, "labels": list(labels) }, 200
 
 def preprocess(corpusID):
