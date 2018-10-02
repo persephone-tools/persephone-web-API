@@ -17,6 +17,7 @@ from persephone import model
 from ..extensions import db
 from ..db_models import DBcorpus, TranscriptionModel, Audio
 from ..serialization import TranscriptionModelSchema
+from .corpus import labels_set
 
 # quick and dirty way of persisting models, most certainly not fit for production
 # in a multi user environment
@@ -171,11 +172,11 @@ def transcribe(modelID, audioID):
     corpus_path = Path(flask.current_app.config['CORPUS_PATH']) / current_model.corpus.filesystem_path
     audio_path = audio_uploads_path / audio_info.filename
 
-    labels_set = {'ʂ', 'i', 'qʰ', 'ɯ', 'wɤ', 'ŋ', 'tsʰ', 'ʐ', 'v̩'}  #TODO pass real set of labels
+    labels = labels_set(current_model.corpus)
 
     results = model.decode(
         model_checkpoint_path, [audio_path],
-        labels_set,
+        labels,
         feature_type=current_model.corpus.feature_type,
         preprocessed_output_path=(corpus_path / "feat"),
         batch_x_name="batch_x:0",
