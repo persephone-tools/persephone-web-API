@@ -147,8 +147,8 @@ def train(modelID):
     persephone_model.train(
         early_stopping_steps=current_model.early_stopping_steps,
         min_epochs=current_model.min_epochs,
-        max_valid_ler = 1.0, # TODO: handle parameter here by adding to TranscriptionModel
-        max_train_ler = 0.3, # TODO: handle parameter here by adding to TranscriptionModel
+        max_valid_ler=current_model.max_valid_LER,
+        max_train_ler=current_model.max_train_LER,
         max_epochs=epochs,
     )
     # TODO: Save all this information somewhere so it can be easily used in the
