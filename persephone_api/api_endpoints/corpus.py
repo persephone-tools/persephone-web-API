@@ -70,6 +70,16 @@ def create_prefixes(audio_uploads_path: Path, transcription_uploads_path: Path, 
             pf.write(os.linesep)
     return prefixes
 
+def labels_set(corpus: DBcorpus) -> set:
+    """Retrieve the set of labels associated with a corpus.
+    
+    Given a corpus stored in the DB this will fetch the label set defined by that corpus."""
+    labels_query = db.session.query(CorpusLabelSet).filter_by(corpus_id=corpus.id)
+    labels = set()
+    for l in labels_query.all():
+        labels.add(l.label.label)
+    return labels
+
 def create_corpus_file_structure(audio_uploads_path: Path, transcription_uploads_path: Path,
                                  corpus: DBcorpus, corpus_path: Path) -> None:
     """Create the needed file structure on disk for a persephone.Corpus
@@ -197,12 +207,8 @@ def post(corpusInfo):
 def get_label_set(corpusID):
     """Get the label set for a corpus with the given ID"""
     existing_corpus = DBcorpus.query.get_or_404(corpusID)
-    labels_query = db.session.query(CorpusLabelSet).filter_by(corpus_id=existing_corpus.id)
-
     corpus_data = CorpusSchema().dump(existing_corpus).data
-    labels = []
-    for l in labels_query.all():
-        labels.append(l.label.label)
+    labels = labels_set(existing_corpus)
 
     return {"corpus": corpus_data, "labels": list(labels) }, 200
 
