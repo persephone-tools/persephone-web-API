@@ -67,6 +67,35 @@ def test_invalid_early_stopping(client, create_corpus):
     )
     assert response.status_code == 400
 
+def test_invalid_LER(client, create_corpus):
+    """Tests that bogus values for maximum error rates are rejected"""
+    corpus_id = create_corpus()
+    import json
+
+    data = {
+        "corpusID": corpus_id,
+        "maxTrainingLER": -1,
+        "name": "Bad maximum epoch"
+    }
+
+    response = client.post(
+        '/v0.1/model',
+        data=json.dumps(data),
+        headers={'Content-Type': 'application/json'}
+    )
+    assert response.status_code == 400
+
+    data = {
+        "corpusID": corpus_id,
+        "maxValidationLER": -1,
+        "name": "Bad maximum epoch"
+    }
+    response = client.post(
+        '/v0.1/model',
+        data=json.dumps(data),
+        headers={'Content-Type': 'application/json'}
+    )
+    assert response.status_code == 400
 
 def test_create_model(client, create_corpus):
     """Test that we can create a model from the API"""
