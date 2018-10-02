@@ -144,15 +144,22 @@ def train(modelID):
     else:
         epochs = MAX_EPOCHS
 
-    persephone_model.train(
-        early_stopping_steps=current_model.early_stopping_steps,
-        min_epochs=current_model.min_epochs,
-        max_valid_ler=current_model.max_valid_LER,
-        max_train_ler=current_model.max_train_LER,
-        max_epochs=epochs,
-    )
-    # TODO: Save all this information somewhere so it can be easily used in the
-    # transcribe step
+    # we construct the parameters here so that the call to the model training
+    # respects the default value for arguments as found in the Persephone library
+    parameters = {
+        "min_epochs": current_model.min_epochs,
+        "max_epochs": epochs,
+    }
+    if current_model.early_stopping_steps is not None:
+        parameters["early_stopping_steps"] = current_model.early_stopping_steps
+    if current_model.max_valid_LER is not None:
+        parameters["max_valid_ler"] = current_model.max_valid_LER
+    if current_model.max_train_LER is not None:
+        parameters["max_train_ler"] = current_model.max_train_LER
+
+    persephone_model.train(**parameters)
+    # TODO: Save this information about the network topology of tensorflow with the names
+    # somewhere so it can be easily used in the transcribe step
     #print("persephone_model.batch_x: ", persephone_model.batch_x)
     #print("persephone_model.batch_x_lens: ", persephone_model.batch_x_lens)
     #print("persephone_model.dense_decoded: ", persephone_model.dense_decoded)
