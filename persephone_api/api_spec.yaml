@@ -251,6 +251,25 @@ paths:
             $ref: "#/definitions/modelInformation"
         400:
           description: "Invalid model specification"
+  /model/{modelID}:
+    get:
+      summary: "Get information about an uploaded model"
+      produces:
+        - application/json
+      parameters:
+        - name: modelID
+          in: path
+          description: "ID of model to return information about"
+          required: true
+          type: integer
+          format: "int64"
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/modelInformation"
+        404:
+          description: "Model not found"
   /model/train/{modelID}:
     post:
       operationId: persephone_api.api_endpoints.model.train
