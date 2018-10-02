@@ -121,3 +121,38 @@ def test_create_model(client, create_corpus):
     )
     assert response.status_code == 201
 
+def test_get_model(client, create_corpus):
+    """Test that we can create a model from the API and then retrieve it"""
+    import json
+    corpus_id = create_corpus()
+
+    model_data = {
+        "name": "Test model",
+        "beamWidth": 1,
+        "corpusID": corpus_id,
+        "decodingMergeRepeated": True,
+        "earlyStoppingSteps": 1,
+        "numberLayers": 2,
+        "hiddenSize": 2,
+        "maximumEpochs": 2,
+        "minimumEpochs": 1,
+        "maxTrainingLER": 0.4,
+        "maxValidationLER": 0.8,
+    }
+
+    response = client.post(
+        '/v0.1/model',
+        data=json.dumps(model_data),
+        headers={'Content-Type': 'application/json'}
+    )
+    assert response.status_code == 201
+    model_response_data = json.loads(response.data.decode('utf8'))
+    model_id = model_response_data['id']
+
+    assert model_response_data['max_train_LER'] == 0.4
+    assert model_response_data['max_valid_LER'] == 0.8
+
+    response = client.get(
+        '/v0.1/model/{}'.format(model_id),
+    )
+    assert response.status_code == 200
