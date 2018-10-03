@@ -39,7 +39,10 @@ def client(tmpdir, init_database):
 
 @pytest.fixture
 def upload_audio(client):
-    """Fixture for convenience in sending requests to the audio endpoint"""
+    """Fixture for convenience in sending requests to the audio endpoint
+    This does not make any assumptions about loading files from disk and is fast
+    use this if possible, if you need to upload a file use the audio file upload fixture
+    """
     import wave
     import struct
     import io
@@ -84,9 +87,12 @@ def upload_audio(client):
 
 @pytest.fixture
 def upload_transcription(client):
-    """Fixture for convenience in sending requests to the transcription endpoint"""
+    """Fixture for convenience in sending requests to the transcription endpoint
+    This does not make any assumptions about loading files from disk and is fast
+    use this if possible, if you need to upload a file use the  transcription file upload fixture
+    """
     import io
-    def _make_transcription(transcription_data, filename):
+    def _make_transcription(transcription_data, filename: str):
         """Create a file with appropriate encoding"""
         data = {'transcriptionFile': (io.BytesIO(transcription_data.encode('utf-8')), filename)}
         return client.post(
