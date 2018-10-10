@@ -74,3 +74,6 @@ def test_corpus_creation(client, upload_audio, upload_transcription, create_utte
     )
 
     assert response.status_code == 201
+
+    corpus_response_data = json.loads(response.data.decode('utf8'))
+    assert corpus_response_data['partition']
