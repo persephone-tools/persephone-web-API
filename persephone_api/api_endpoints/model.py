@@ -187,7 +187,6 @@ def transcribe(modelID, audioID):
         model_checkpoint_path, [audio_path],
         labels,
         feature_type=current_model.corpus.feature_type,
-        preprocessed_output_path=(corpus_path / "feat"),
         batch_x_name="batch_x:0",
         batch_x_lens_name="batch_x_lens:0",
         output_name="hyp_dense_decoded:0"
