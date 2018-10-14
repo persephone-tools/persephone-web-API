@@ -113,11 +113,30 @@ def create_corpus_file_structure(audio_uploads_path: Path, transcription_uploads
     if validation_prefixes & testing_prefixes:
         raise ValueError("Overlapping prefixes detected with validation and testing: {}".format(validation_prefixes & testing_prefixes))
 
+def fix_corpus_format(corpus):
+    """Fix serialization issue from Schema in quick manner
+    TODO: Fix the serialization schema
+    """
+    import copy
+    fixed_format = copy.copy(corpus)
+    testing = corpus['testing']
+    training = corpus['training']
+    validation = corpus['validation']
+    del fixed_format['testing']
+    del fixed_format['training']
+    del fixed_format['validation']
+    fixed_format['partition'] = {
+        "testing": testing,
+        "training": training,
+        "validation": validation,
+    }
+    return fixed_format
+
 def search():
     """Handle request for all available DBcorpus"""
     results = []
     for row in db.session.query(DBcorpus):
-        serialized = CorpusSchema().dump(row).data
+        serialized = fix_corpus_format(CorpusSchema().dump(row).data)
         results.append(serialized)
     return results, 200
 
@@ -125,7 +144,7 @@ def search():
 def get(corpusID):
     """Get a DBcorpus by its ID"""
     existing_corpus = DBcorpus.query.get_or_404(corpusID)
-    result = CorpusSchema().dump(existing_corpus).data
+    result = fix_corpus_format(CorpusSchema().dump(existing_corpus).data)
     return result, 200
 
 
@@ -201,13 +220,13 @@ def post(corpusInfo):
     except sqlalchemy.exc.IntegrityError:
         return "Invalid corpus provided", 400
     else:
-        result = CorpusSchema().dump(current_corpus).data
+        result = fix_corpus_format(CorpusSchema().dump(current_corpus).data)
         return result, 201
 
 def get_label_set(corpusID):
     """Get the label set for a corpus with the given ID"""
     existing_corpus = DBcorpus.query.get_or_404(corpusID)
-    corpus_data = CorpusSchema().dump(existing_corpus).data
+    corpus_data = fix_corpus_format(CorpusSchema().dump(existing_corpus).data)
     labels = labels_set(existing_corpus)
 
     return {"corpus": corpus_data, "labels": list(labels) }, 200
