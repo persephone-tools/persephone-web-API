@@ -13,6 +13,93 @@ This file will show you all the endpoints that are supported but an easier way t
 Installation
 ------------
 
+You can install this package directly or use Docker.
+
+Docker
+~~~~~~
+First make sure that you have docker installed on your machine.
+Here's some steps to do that on Ubuntu:
+
+.. code:: bash
+
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    sudo apt-get update
+
+This will add the docker repository to your package manager lists.
+Make sure that the package that is the candidate to be installed is the newly added one and not the ubuntu package via this command:
+
+.. code:: bash
+
+    apt-cache policy docker-ce
+
+If this has worked correctly you'll see an output such as this:
+
+.. code::
+
+    docker-ce:
+      Installed: (none)
+      Candidate: 18.06.1~ce~3-0~ubuntu
+      Version table:
+     *** 18.06.1~ce~3-0~ubuntu 500
+            500 https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages
+            100 /var/lib/dpkg/status
+         18.06.0~ce~3-0~ubuntu 500
+            500 https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages
+         18.03.1~ce-0~ubuntu 500
+            500 https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages
+
+
+Note that there is no package installed but the candidate for installation is from the Docker repository which is what we want.
+
+Now install Docker with this command:
+
+.. code:: bash
+
+    sudo apt-get install -y docker-ce
+
+
+If the install has been successful then you should be able to see the Docker process running.
+Check with this command
+
+.. code:: bash
+
+    sudo systemctl status docker
+
+In a successful case the output should look like this:
+
+.. code::
+
+    ● docker.service - Docker Application Container Engine
+       Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled)
+       Active: active (running) since Mon 2018-10-15 16:52:50 AEDT; 25min ago
+         Docs: https://docs.docker.com
+     Main PID: 9841 (dockerd)
+        Tasks: 41
+       Memory: 52.4M
+          CPU: 9.557s
+       CGroup: /system.slice/docker.service
+               ├─9841 /usr/bin/dockerd -H fd://
+               └─9868 docker-containerd --config /var/run/docker/containerd/containerd.toml
+
+If you wish to not use `sudo` to invoke docker, add your user to the Docker group with the following command:
+
+.. code:: bash
+
+    sudo usermod -aG docker ${USER}
+
+Note that you may have to log out and back in again for this to work
+
+Then verify that the install has been successful via running a real container:
+
+.. code:: bash
+
+    docker run hello-world
+
+
+Direct install
+~~~~~~~~~~~~~~
+
 This package requires Python 3.5 or higher.
 
 Currently you will need to set up a virtualenvironment and install package requirements.
@@ -25,6 +112,8 @@ You can do this as follows:
     pip install -r requirements.txt
 
 At this point you should have the packages required to run this API server.
+
+(Note that the Docker image is just an automated version of this direct install)
 
 Usage
 -----
