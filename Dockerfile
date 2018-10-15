@@ -26,6 +26,7 @@ RUN pipenv install --deploy --system
 
 COPY . /app
 
+EXPOSE 8080
 
 ENTRYPOINT [ "python3" ]
 
