@@ -97,6 +97,18 @@ Then verify that the install has been successful via running a real container:
     docker run hello-world
 
 
+Build the container:
+
+.. code:: bash
+
+    docker build -t persephone-web-api:dev .
+
+Run it:
+
+.. code:: bash
+
+    docker run -p 8080:8080/tcp persephone-web-api:dev
+
 Direct install
 ~~~~~~~~~~~~~~
 
