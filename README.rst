@@ -109,6 +109,28 @@ Run it:
 
     docker run -p 8080:8080/tcp persephone-web-api:dev
 
+
+Development
+~~~~~~~~~~~
+
+There is a Vagrantfile for automating the build and install of the development environment.
+This is recommended as it is likely the easiest way to get set up with a development environment as packages will be correctly installed.
+
+To get Vagrant: https://www.vagrantup.com/
+
+To start and provisions the vagrant environment:
+
+.. code:: sh
+
+    vagrant up
+
+Once that has installed you can access via ssh:
+
+.. code:: sh
+
+    vagrant ssh
+
+
 Direct install
 ~~~~~~~~~~~~~~
 
