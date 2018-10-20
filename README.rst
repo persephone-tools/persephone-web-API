@@ -136,6 +136,8 @@ Direct install
 
 This package requires Python 3.5 or higher.
 
+There are some 3rd party requirements that have to be installed in order to use this, these can be found in the file "bootstrap.sh".
+
 Currently you will need to set up a virtualenvironment and install package requirements.
 You can do this as follows:
 
