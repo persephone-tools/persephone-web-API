@@ -178,25 +178,6 @@ paths:
             $ref: "#/definitions/corpusInformation"
         404:
           description: "Corpus not found"
-  /corpus/fromZip:
-    post:
-      summary: "Create a corpus from a Zip file"
-      operationId: persephone_api.api_endpoints.corpus.create_from_zip
-      consumes:
-        - multipart/form-data
-      parameters:
-        - in: formData
-          name: zippedFile
-          type: file
-          required: true
-      responses:
-        200:
-          description: success
-          schema:
-            $ref: "#/definitions/corpusInformation"
-        415:
-          description: "Bad filetype"
-
   /label:
     get:
       summary: "Retrieve all phonetic labels that are currently available"
