@@ -4,4 +4,4 @@ apt-get update -y && apt-get -y install \
 	sox \
 	git	
 
-pip3 install --user pipenv
+pip3 install pipenv
