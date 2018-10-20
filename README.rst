@@ -139,7 +139,7 @@ The code resides at the `/vagrant` directory, set up the environment via pipenv:
     pipenv shell
     python transcription_api_server.py
 
-If all has worked you should be able to point your browser at 127.0.0.1 and see the page being served.
+If all has worked you should be able to point your browser at 127.0.0.1:8080 and you will see the page being served.
 
 Direct install
 ~~~~~~~~~~~~~~
