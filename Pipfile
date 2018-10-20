@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 persephone = {git = 'https://github.com/persephone-tools/persephone.git', editable = true}
-connexion = {version = ">=1.4"}
+connexion = {version = ">=1.5.3"}
 flask-uploads = {version = ">0.2.0"}
 SQLAlchemy = {version = ">1.2.0"}
 flask_sqlalchemy  = {version = ">=2.3.1"}
@@ -13,8 +13,8 @@ marshmallow-sqlalchemy = "*"
 
 [dev-packages]
 pylint = {version = ">1.8.3"}
-pytest = {version = ">=3.5.1"}
-mypy = {version = ">0.610"}
+pytest = {version = ">=3.8.1"}
+mypy = {version = ">0.620"}
 
 [requires]
 python_version = "3.5"
