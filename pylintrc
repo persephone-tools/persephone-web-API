@@ -4,3 +4,6 @@
 # and thus existing member attributes cannot be deduced by static analysis. It
 # supports qualified module names, as well as Unix pattern matching.
 ignored-modules=flask_sqlalchemy
+
+# SQLAlchemy issues due to dynamic behavior
+generated-members=db.session.add|db.session.commit|db.session.merge
