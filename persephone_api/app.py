@@ -28,7 +28,11 @@ def create_app(config_object=ProdConfig):
 
 def register_swagger_api(connexion_flask_app) -> None:
     """Take a connexion FlaskApp and register swagger API"""
-    connexion_flask_app.add_api('api_spec.yaml', resolver=RestyResolver('persephone_api.api_endpoints'))
+    connexion_flask_app.add_api(
+        'api_spec.yaml',
+        resolver=RestyResolver('persephone_api.api_endpoints'),
+        validate_responses=True
+    )
 
 def register_extensions(app) -> None:
     """Register Flask extensions."""
