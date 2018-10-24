@@ -408,13 +408,13 @@ definitions:
   audioFileInformation:
     type: "object"
     required:
-    - "name"
+    - "filename"
     - "fileURL"
     properties:
       id:
         type: "integer"
         format: "int64"
-      name:
+      filename:
         type: "string"
         example: "recording_123.wav"
       fileURL:
@@ -609,3 +609,16 @@ definitions:
     required:
     - "audio"
     - "transcription"
+  fileInformation:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "Unique ID for this file"
+      name:
+        type: "string"
+        description: "The name of this file"
+      created_at:
+        type: "string"
+        format: "date-time"
+        description: "The time this file was created at"
