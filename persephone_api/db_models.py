@@ -18,7 +18,12 @@ class FileMetaData(db.Model):
     __tablename__ = 'file_metadata'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
+    path = db.Column(db.String)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    def __repr__(self):
+        return "<FileMetaData(name={}, path={}, created_at={})>".format(
+            self.name, self.path, self.created_at)
+
 
 class Audio(db.Model):
     """Database ORM definition for Audio files"""
@@ -39,13 +44,15 @@ class Transcription(db.Model):
     __tablename__ = 'transcription'
 
     id = db.Column(db.Integer, primary_key=True)
-    filename = db.Column(db.String)
     url = db.Column(db.String)
 
     in_utterances = db.relationship("DBUtterance", cascade="all, delete-orphan")
 
+    file_info = db.relationship('FileMetaData')
+    file_info_id = db.Column(db.Integer, db.ForeignKey('file_metadata.id'))
+
     def __repr__(self):
-        return "<Transcription(filename={}, url={})>".format(self.filename, self.url)
+        return "<Transcription(file_info={}, url={})>".format(self.file_info, self.url)
 
 
 class DBUtterance(db.Model):
