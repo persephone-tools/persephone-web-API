@@ -1,3 +1,5 @@
+import datetime
+
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from sqlite3 import Connection as SQLite3Connection
@@ -10,6 +12,13 @@ def _set_sqlite_pragma(dbapi_connection, connection_record):
         cursor = dbapi_connection.cursor()
         cursor.execute("PRAGMA foreign_keys=ON;")
         cursor.close()
+
+class FileMetaData(db.Model):
+    """Database ORM definition for file metadata"""
+    __tablename__ = 'file_metadata'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
 class Audio(db.Model):
     """Database ORM definition for Audio files"""
