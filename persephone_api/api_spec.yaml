@@ -351,7 +351,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/transcriptionFileInformation"
+              $ref: "#/definitions/transcriptionInformation"
     post:
       summary: "Upload an transcription file"
       tags:
@@ -367,13 +367,13 @@ paths:
         201:
           description: success
           schema:
-            $ref: "#/definitions/transcriptionFileInformation"
+            $ref: "#/definitions/transcriptionInformation"
         415:
           description: "Bad filetype"
 
   /transcription/{transcriptionID}:
     get:
-      summary: "Get information about an uploaded transcription file"
+      summary: "Get information about a transcriptions"
       tags:
         - getObject
       produces:
@@ -389,7 +389,7 @@ paths:
         200:
           description: success
           schema:
-            $ref: "#/definitions/transcriptionFileInformation"
+            $ref: "#/definitions/transcriptionInformation"
         404:
           description: "Transcription not found"
 
@@ -632,11 +632,10 @@ definitions:
       URL:
         description: "URL path to check on task progress"
         type: "string"
-  transcriptionFileInformation:
+  transcriptionInformation:
     type: "object"
     required:
     - "name"
-    - "fileURL"
     properties:
       id:
         type: "integer"
@@ -647,9 +646,8 @@ definitions:
       manuallyGenerated:
         type: boolean
         description: "Flag if this file was generated manually. Useful for keeping track of training files"
-      fileURL:
-        type: "string"
-        example: "/path/to/file/transcription.txt"
+      file_info:
+        $ref: "#/definitions/fileInformation"
   utteranceInformation:
     type: "object"
     properties:
@@ -659,7 +657,7 @@ definitions:
       audio:
         $ref: "#/definitions/audioFileInformation"
       transcription:
-        $ref: "#/definitions/transcriptionFileInformation"
+        $ref: "#/definitions/transcriptionInformation"
     required:
     - "audio"
     - "transcription"
