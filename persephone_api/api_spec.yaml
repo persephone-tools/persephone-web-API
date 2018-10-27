@@ -352,7 +352,9 @@ paths:
             type: array
             items:
               $ref: "#/definitions/transcriptionInformation"
+  /transcription/fromFile:
     post:
+      operationId: persephone_api.api_endpoints.transcription.from_file
       summary: "Upload an transcription file"
       tags:
         - createObject
