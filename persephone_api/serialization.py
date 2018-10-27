@@ -34,6 +34,7 @@ class CorpusSchema(ModelSchema):
         model = db_models.DBcorpus
 
 class TranscriptionModelSchema(ModelSchema):
+    corpusID = fields.Int(attribute="corpus_id")
     class Meta:
         model = db_models.TranscriptionModel
 
