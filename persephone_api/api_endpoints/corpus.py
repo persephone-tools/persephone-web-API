@@ -150,7 +150,12 @@ def get(corpusID):
 
 def post(corpusInfo):
     """Create a DBcorpus"""
-    max_samples = corpusInfo.get('max_samples', None)
+    INT64_MAX =  2^63 - 1 # Largest size that the 64bit integer value for the max_samples
+                          # can contain, this exists because the API will complain if a None
+                          # is returned, so we get much the same behavior by making the default
+                          # value the integer max value
+
+    max_samples = corpusInfo.get('max_samples', INT64_MAX)
     current_corpus = DBcorpus(
         name=corpusInfo['name'],
         label_type=corpusInfo['label_type'],
