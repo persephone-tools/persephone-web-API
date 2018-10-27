@@ -41,7 +41,7 @@ def test_duplicate_utterance(client):
     phonemes = "ɖ ɯ ɕ i k v̩"
     data = {'transcriptionFile': (io.BytesIO(phonemes.encode('utf-8')), 'test_transcription_file.phonemes')}
     response = client.post(
-        ('/v0.1/transcription'),
+        ('/v0.1/transcription/fromFile'),
         data=data,
         content_type='multipart/form-data'
     )
