@@ -6,6 +6,7 @@ import logging
 import os
 from pathlib import Path
 from shutil import copyfile
+from typing import Set
 import uuid
 import zipfile
 
@@ -14,8 +15,9 @@ from persephone.corpus import Corpus
 import sqlalchemy
 
 from ..extensions import db
-from ..db_models import DBcorpus, TestingDataSet, TrainingDataSet, ValidationDataSet, Label, CorpusLabelSet
-from ..serialization import CorpusSchema
+from ..db_models import (DBcorpus, TestingDataSet, TrainingDataSet, ValidationDataSet,
+                         Label, CorpusLabelSet)
+from ..serialization import CorpusSchema, LabelSchema
 
 
 logger = logging.getLogger(__name__)
@@ -42,7 +44,7 @@ def create_prefixes(audio_uploads_path: Path, transcription_uploads_path: Path, 
     count = 0
     for data in prefix_information:
         count += 1
-        label_filename = data.utterance.transcription.filename
+        label_filename = data.utterance.transcription.file_info.name
 
         # using the prefix of the label file to specify the prefix
         prefix, extension = os.path.splitext(label_filename)
@@ -55,7 +57,7 @@ def create_prefixes(audio_uploads_path: Path, transcription_uploads_path: Path, 
         copyfile(str(label_src_path), str(label_dest_path))
 
         # copy audio to "/wav" directory
-        audio_filename = data.utterance.audio.filename
+        audio_filename = data.utterance.audio.file_info.name
         audio_src_path = audio_uploads_path / audio_filename
         audio_dest_path = base_path / "wav" / (cleaned_prefix+".wav")
         copyfile(str(audio_src_path), str(audio_dest_path))
@@ -70,14 +72,14 @@ def create_prefixes(audio_uploads_path: Path, transcription_uploads_path: Path, 
             pf.write(os.linesep)
     return prefixes
 
-def labels_set(corpus: DBcorpus) -> set:
+def labels_set(corpus: DBcorpus) -> Set[Label]:
     """Retrieve the set of labels associated with a corpus.
-    
     Given a corpus stored in the DB this will fetch the label set defined by that corpus."""
+
     labels_query = db.session.query(CorpusLabelSet).filter_by(corpus_id=corpus.id)
     labels = set()
     for l in labels_query.all():
-        labels.add(l.label.label)
+        labels.add(l.label)
     return labels
 
 def create_corpus_file_structure(audio_uploads_path: Path, transcription_uploads_path: Path,
@@ -150,7 +152,12 @@ def get(corpusID):
 
 def post(corpusInfo):
     """Create a DBcorpus"""
-    max_samples = corpusInfo.get('max_samples', None)
+    INT64_MAX =  2^63 - 1 # Largest size that the 64bit integer value for the max_samples
+                          # can contain, this exists because the API will complain if a None
+                          # is returned, so we get much the same behavior by making the default
+                          # value the integer max value
+
+    max_samples = corpusInfo.get('max_samples', INT64_MAX)
     current_corpus = DBcorpus(
         name=corpusInfo['name'],
         label_type=corpusInfo['label_type'],
@@ -227,9 +234,12 @@ def get_label_set(corpusID):
     """Get the label set for a corpus with the given ID"""
     existing_corpus = DBcorpus.query.get_or_404(corpusID)
     corpus_data = fix_corpus_format(CorpusSchema().dump(existing_corpus).data)
-    labels = labels_set(existing_corpus)
 
-    return {"corpus": corpus_data, "labels": list(labels) }, 200
+    results = []
+    for label in labels_set(existing_corpus):
+        results.append(LabelSchema().dump(label).data)
+
+    return {"corpus": corpus_data, "labels": results }, 200
 
 def preprocess(corpusID):
     """Preprocess a corpus"""

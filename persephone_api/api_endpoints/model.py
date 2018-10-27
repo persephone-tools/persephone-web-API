@@ -179,9 +179,9 @@ def transcribe(modelID, audioID):
 
     # putting features into the existing corpus path for now
     corpus_path = Path(flask.current_app.config['CORPUS_PATH']) / current_model.corpus.filesystem_path
-    audio_path = audio_uploads_path / audio_info.filename
+    audio_path = audio_uploads_path / audio_info.file_info.name
 
-    labels = labels_set(current_model.corpus)
+    labels = [item.label for item in labels_set(current_model.corpus)]
 
     results = model.decode(
         model_checkpoint_path, [audio_path],

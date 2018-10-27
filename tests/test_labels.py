@@ -131,4 +131,6 @@ def test_corpus_labels(client, create_corpus):
     assert response.status_code == 200
     label_response_data = json.loads(response.data.decode('utf8'))
     assert label_response_data['corpus']['id'] == corpus_id
-    assert set(label_response_data['labels']) == expected_labels
+    assert len(label_response_data['labels']) == 3
+    labels_found = set([item["label"] for item in label_response_data['labels']])
+    assert labels_found == expected_labels

@@ -1,3 +1,5 @@
+import datetime
+
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from sqlite3 import Connection as SQLite3Connection
@@ -11,18 +13,32 @@ def _set_sqlite_pragma(dbapi_connection, connection_record):
         cursor.execute("PRAGMA foreign_keys=ON;")
         cursor.close()
 
+class FileMetaData(db.Model):
+    """Database ORM definition for file metadata"""
+    __tablename__ = 'file_metadata'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    path = db.Column(db.String)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    def __repr__(self):
+        return "<FileMetaData(name={}, path={}, created_at={})>".format(
+            self.name, self.path, self.created_at)
+
+
 class Audio(db.Model):
     """Database ORM definition for Audio files"""
     __tablename__ = 'audio'
 
     id = db.Column(db.Integer, primary_key=True)
-    filename = db.Column(db.String)
     url = db.Column(db.String)
+
+    file_info = db.relationship('FileMetaData')
+    file_info_id = db.Column(db.Integer, db.ForeignKey('file_metadata.id'))
 
     in_utterances = db.relationship("DBUtterance", cascade="all, delete-orphan")
 
     def __repr__(self):
-        return "<Audio(filename={}, url={})>".format(self.filename, self.url)
+        return "<Audio(file_info={}, url={})>".format(self.file_info, self.url)
 
 
 class Transcription(db.Model):
@@ -30,13 +46,16 @@ class Transcription(db.Model):
     __tablename__ = 'transcription'
 
     id = db.Column(db.Integer, primary_key=True)
-    filename = db.Column(db.String)
     url = db.Column(db.String)
+    name = db.Column(db.String)
 
     in_utterances = db.relationship("DBUtterance", cascade="all, delete-orphan")
 
+    file_info = db.relationship('FileMetaData')
+    file_info_id = db.Column(db.Integer, db.ForeignKey('file_metadata.id'))
+
     def __repr__(self):
-        return "<Transcription(filename={}, url={})>".format(self.filename, self.url)
+        return "<Transcription(file_info={}, url={})>".format(self.file_info, self.url)
 
 
 class DBUtterance(db.Model):

@@ -27,7 +27,7 @@ def test_tiny(client):
         with open(os.path.join(path, filename), "rb") as transcription_file:
             data = {'transcriptionFile': (transcription_file, filename)}
             response = client.post(
-                ('/v0.1/transcription'),
+                ('/v0.1/transcription/fromFile'),
                 data=data,
                 content_type='multipart/form-data'
             )

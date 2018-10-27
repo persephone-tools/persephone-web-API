@@ -93,6 +93,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+pipfileenv/
 
 # Spyder project settings
 .spyderproject
@@ -109,3 +110,10 @@ venv.bak/
 
 # Vim files
 *.swp
+
+# Vagrant VM
+.vagrant/
+
+
+# Database
+dev.db

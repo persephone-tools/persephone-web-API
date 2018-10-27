@@ -3,15 +3,23 @@ Serialization for data defined in ORM/DB
 """
 
 from marshmallow_sqlalchemy import ModelSchema
+from marshmallow import fields
 
 from . import db_models
 
+class FileInfoSchema(ModelSchema):
+    """Serialization for file information"""
+    class Meta:
+        model = db_models.FileMetaData
+
 class AudioSchema(ModelSchema):
+    file_info = fields.Nested("FileInfoSchema")
     class Meta:
         model = db_models.Audio
         exclude = ("utterances",)
 
 class TranscriptionSchema(ModelSchema):
+    file_info = fields.Nested("FileInfoSchema")
     class Meta:
         model = db_models.Transcription
         exclude = ("utterances",)
@@ -26,6 +34,7 @@ class CorpusSchema(ModelSchema):
         model = db_models.DBcorpus
 
 class TranscriptionModelSchema(ModelSchema):
+    corpusID = fields.Int(attribute="corpus_id")
     class Meta:
         model = db_models.TranscriptionModel
 
