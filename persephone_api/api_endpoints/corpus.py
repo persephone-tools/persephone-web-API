@@ -42,7 +42,7 @@ def create_prefixes(audio_uploads_path: Path, transcription_uploads_path: Path, 
     count = 0
     for data in prefix_information:
         count += 1
-        label_filename = data.utterance.transcription.filename
+        label_filename = data.utterance.transcription.file_info.name
 
         # using the prefix of the label file to specify the prefix
         prefix, extension = os.path.splitext(label_filename)
@@ -55,7 +55,7 @@ def create_prefixes(audio_uploads_path: Path, transcription_uploads_path: Path, 
         copyfile(str(label_src_path), str(label_dest_path))
 
         # copy audio to "/wav" directory
-        audio_filename = data.utterance.audio.filename
+        audio_filename = data.utterance.audio.file_info.name
         audio_src_path = audio_uploads_path / audio_filename
         audio_dest_path = base_path / "wav" / (cleaned_prefix+".wav")
         copyfile(str(audio_src_path), str(audio_dest_path))
