@@ -463,19 +463,12 @@ paths:
 definitions:
   audioFileInformation:
     type: "object"
-    required:
-    - "filename"
-    - "fileURL"
     properties:
       id:
         type: "integer"
         format: "int64"
-      filename:
-        type: "string"
-        example: "recording_123.wav"
-      fileURL:
-        type: "string"
-        example: "/path/to/file/recording_123.wav"
+      file_info:
+        $ref: "#/definitions/fileInformation"
   backendInformation:
     type: "object"
     required:
