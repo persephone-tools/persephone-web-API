@@ -667,7 +667,8 @@ definitions:
     type: "object"
     properties:
       id:
-        type: "string"
+        type: "integer"
+        format: "int64"
         description: "Unique ID for this file"
       name:
         type: "string"
