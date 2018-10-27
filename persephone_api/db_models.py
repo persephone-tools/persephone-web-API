@@ -45,6 +45,7 @@ class Transcription(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String)
+    name = db.Column(db.String)
 
     in_utterances = db.relationship("DBUtterance", cascade="all, delete-orphan")
 
