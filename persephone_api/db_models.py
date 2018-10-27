@@ -30,13 +30,15 @@ class Audio(db.Model):
     __tablename__ = 'audio'
 
     id = db.Column(db.Integer, primary_key=True)
-    filename = db.Column(db.String)
     url = db.Column(db.String)
+
+    file_info = db.relationship('FileMetaData')
+    file_info_id = db.Column(db.Integer, db.ForeignKey('file_metadata.id'))
 
     in_utterances = db.relationship("DBUtterance", cascade="all, delete-orphan")
 
     def __repr__(self):
-        return "<Audio(filename={}, url={})>".format(self.filename, self.url)
+        return "<Audio(file_info={}, url={})>".format(self.file_info, self.url)
 
 
 class Transcription(db.Model):

@@ -13,6 +13,7 @@ class FileInfoSchema(ModelSchema):
         model = db_models.FileMetaData
 
 class AudioSchema(ModelSchema):
+    file_info = fields.Nested("FileInfoSchema")
     class Meta:
         model = db_models.Audio
         exclude = ("utterances",)
