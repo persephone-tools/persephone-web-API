@@ -525,14 +525,24 @@ definitions:
           testing:
             $ref: "#/definitions/utteranceGroup"
             description: "Utterances in testing set"
-  labelType:
-    type: "string"
-    description: "The type of the labels"
-    example: "phonemes"
   featureType:
     type: "string"
     description: "The type of the features"
     example: "fbank"
+  fileInformation:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "Unique ID for this file"
+      name:
+        type: "string"
+        description: "The name of this file"
+      created_at:
+        type: "string"
+        format: "date-time"
+        description: "The time this file was created at"
   IDarray:
     type: "array"
     items:
@@ -557,6 +567,10 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/label"
+  labelType:
+    type: "string"
+    description: "The type of the labels"
+    example: "phonemes"
 
   modelInformation:
     type: "object"
@@ -664,17 +678,3 @@ definitions:
     description: "URI for utterance objects"
     type: "integer"
     format: "int64"
-  fileInformation:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-        description: "Unique ID for this file"
-      name:
-        type: "string"
-        description: "The name of this file"
-      created_at:
-        type: "string"
-        format: "date-time"
-        description: "The time this file was created at"
