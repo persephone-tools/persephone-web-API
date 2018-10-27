@@ -5,7 +5,7 @@ This deals with the API access for audio files uploading/downloading.
 import flask_uploads
 
 from ..extensions import db
-from ..db_models import Audio
+from ..db_models import Audio, FileMetaData
 from ..upload_config import audio_files, uploads_url_base
 from ..serialization import AudioSchema
 
@@ -17,7 +17,8 @@ def post(audioFile):
         return "Invalid upload format, must be an audio file", 415
     else:
         file_url = uploads_url_base + 'audio_uploads/' + filename
-        current_file = Audio(filename=filename, url=file_url)
+        metadata = FileMetaData(path=file_url, name=filename)
+        current_file = Audio(file_info=metadata, url=file_url)
         db.session.add(current_file)
         db.session.commit()
 
