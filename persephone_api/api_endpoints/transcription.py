@@ -5,7 +5,7 @@ This deals with the API access for transcription files uploading/downloading.
 import flask_uploads
 
 from ..extensions import db
-from ..db_models import Transcription
+from ..db_models import Transcription, FileMetaData
 from ..upload_config import text_files, uploads_url_base
 from ..serialization import TranscriptionSchema
 
@@ -18,7 +18,8 @@ def post(transcriptionFile):
         return "Invalid upload format, must be a text file", 415
     else:
         file_url = uploads_url_base + 'text_uploads/' + filename
-        current_file = Transcription(filename=filename, url=file_url)
+        metadata = FileMetaData(path=file_url, name=filename)
+        current_file = Transcription(file_info=metadata, url=file_url)
         db.session.add(current_file)
         db.session.commit()
 
