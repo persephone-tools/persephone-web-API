@@ -517,19 +517,13 @@ definitions:
         description: "How utterances are assigned to datasets for use in training the model"
         properties:
           training:
-            type: array
-            items:
-              $ref: "#/definitions/utteranceInformation"
+            $ref: "#/definitions/utteranceGroup"
             description: "Utterances in training set"
           validation:
-            type: array
-            items:
-              $ref: "#/definitions/utteranceInformation"
+            $ref: "#/definitions/utteranceGroup"
             description: "Utterances in validation set"
           testing:
-            type: array
-            items:
-              $ref: "#/definitions/utteranceInformation"
+            $ref: "#/definitions/utteranceGroup"
             description: "Utterances in testing set"
   labelType:
     type: "string"
@@ -649,12 +643,16 @@ definitions:
     description: "URI for transcription objects"
     type: "integer"
     format: "int64"
+  utteranceGroup:
+    description: "Specify a group of utterances. This is needed to define a partition of test/train/valid data sets for model training."
+    type: "array"
+    items:
+      $ref: "#/definitions/utteranceURI"
   utteranceInformation:
     type: "object"
     properties:
       id:
-        type: "integer"
-        format: "int64"
+        $ref: "#/definitions/utteranceURI"
       audio:
         $ref: "#/definitions/audioURI"
       transcription:
@@ -662,6 +660,10 @@ definitions:
     required:
     - "audio"
     - "transcription"
+  utteranceURI:
+    description: "URI for utterance objects"
+    type: "integer"
+    format: "int64"
   fileInformation:
     type: "object"
     properties:
