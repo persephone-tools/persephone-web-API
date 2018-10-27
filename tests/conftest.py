@@ -96,7 +96,7 @@ def upload_transcription(client):
         """Create a file with appropriate encoding"""
         data = {'transcriptionFile': (io.BytesIO(transcription_data.encode('utf-8')), filename)}
         return client.post(
-            ('/{}/transcription'.format(API_VERSION)),
+            ('/{}/transcription/fromFile'.format(API_VERSION)),
             data=data,
             content_type='multipart/form-data'
         )
