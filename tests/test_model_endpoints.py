@@ -74,7 +74,7 @@ def test_invalid_LER(client, create_corpus):
 
     data = {
         "corpusID": corpus_id,
-        "maxTrainingLER": -1,
+        "maximumTrainingLER": -1,
         "name": "Bad maximum epoch"
     }
 
@@ -87,7 +87,7 @@ def test_invalid_LER(client, create_corpus):
 
     data = {
         "corpusID": corpus_id,
-        "maxValidationLER": -1,
+        "maximumValidationLER": -1,
         "name": "Bad maximum epoch"
     }
     response = client.post(
@@ -136,8 +136,8 @@ def test_get_model(client, create_corpus):
         "hiddenSize": 2,
         "maximumEpochs": 2,
         "minimumEpochs": 1,
-        "maxTrainingLER": 0.4,
-        "maxValidationLER": 0.8,
+        "maximumTrainingLER": 0.4,
+        "maximumValidationLER": 0.8,
     }
 
     response = client.post(

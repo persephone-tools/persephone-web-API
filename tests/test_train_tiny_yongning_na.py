@@ -103,8 +103,8 @@ def test_tiny(client):
 
     data = {
         "name": "Test Na tiny corpus",
-        "label_type": "phonemes",
-        "feature_type": "fbank",
+        "labelType": "phonemes",
+        "featureType": "fbank",
         "preprocessed": "false",
         "testing": test_utterances,
         "training": training_utterances,
