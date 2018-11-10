@@ -113,8 +113,8 @@ def post(modelInfo):
         decoding_merge_repeated=decoding_merge_repeated,
         early_stopping_steps=early_stopping_steps,
         filesystem_path=str(model_uuid),
-        max_train_LER=modelInfo.get('maxTrainingLER', None),
-        max_valid_LER=modelInfo.get('maxValidationLER', None)
+        max_train_LER=modelInfo.get('maximumTrainingLER', None),
+        max_valid_LER=modelInfo.get('maximumValidationLER', None)
     )
 
     db.session.add(current_model)
@@ -186,7 +186,7 @@ def transcribe(modelID, audioID):
     results = model.decode(
         model_checkpoint_path, [audio_path],
         labels,
-        feature_type=current_model.corpus.feature_type,
+        feature_type=current_model.corpus.featureType,
         batch_x_name="batch_x:0",
         batch_x_lens_name="batch_x_lens:0",
         output_name="hyp_dense_decoded:0"
