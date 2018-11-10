@@ -105,18 +105,18 @@ class DBcorpus(db.Model):
     preprocessed = db.Column(db.Boolean, unique=False, default=False)
 
     # the type of the feature files in this corpus
-    feature_type = db.Column(db.String)
+    featureType = db.Column(db.String)
 
     # A string describing the transcription labels.
     # For example, “phonemes” or “tones”.
-    label_type = db.Column(db.String)
+    labelType = db.Column(db.String)
 
     # The maximum number of samples an utterance in the corpus may have.
     # If an utterance is longer than this, it is not included in the corpus.
     max_samples = db.Column(db.Integer)
 
     def __repr__(self):
-        return '<DBcorpus(name="{}", label_type="{}", feature_type="{}", max_samples="{}")>'.format(self.name, self.label_type, self.feature_type, self.max_samples)
+        return '<DBcorpus(name="{}", labelType="{}", featureType="{}", max_samples="{}")>'.format(self.name, self.labelType, self.featureType, self.max_samples)
 
 
 class TrainingDataSet(db.Model):
