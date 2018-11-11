@@ -219,10 +219,10 @@ class TranscriptionModel(db.Model):
     decoding_merge_repeated = db.Column(db.Boolean, unique=False, default=True, nullable=False)
 
     # Maximum Label Error Rate on validation data set
-    max_valid_LER = db.Column(db.Float)
+    max_valid_LER = db.Column(db.Float, nullable=False)
 
     # Maximum Label Error Rate on validation training set
-    max_train_LER = db.Column(db.Float)
+    max_train_LER = db.Column(db.Float, nullable=False)
 
     filesystem_path = db.Column(db.String, nullable=False)
 
