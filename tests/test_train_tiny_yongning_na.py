@@ -27,7 +27,7 @@ def test_tiny(client):
         with open(os.path.join(path, filename), "rb") as transcription_file:
             data = {'transcriptionFile': (transcription_file, filename)}
             response = client.post(
-                ('/v0.1/transcription'),
+                ('/v0.1/transcription/fromFile'),
                 data=data,
                 content_type='multipart/form-data'
             )
@@ -103,8 +103,8 @@ def test_tiny(client):
 
     data = {
         "name": "Test Na tiny corpus",
-        "label_type": "phonemes",
-        "feature_type": "fbank",
+        "labelType": "phonemes",
+        "featureType": "fbank",
         "preprocessed": "false",
         "testing": test_utterances,
         "training": training_utterances,

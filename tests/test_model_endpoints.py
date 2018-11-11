@@ -1,6 +1,9 @@
-def test_invalid_min_max_steps(client):
+"""Tests for model related endpoints"""
+
+def test_invalid_min_max_steps(client, create_corpus):
+    corpus_id = create_corpus()
     data = {
-        "corpusID": 1,
+        "corpusID": corpus_id,
         "maximumEpochs": 10,
         "minimumEpochs": 100,
         "name": "Bad mix max model"
@@ -15,10 +18,11 @@ def test_invalid_min_max_steps(client):
 
     assert response.status_code == 400
 
-def test_invalid_epoch_steps(client):
+def test_invalid_epoch_steps(client, create_corpus):
     import json
+    corpus_id = create_corpus()
     data = {
-        "corpusID": 1,
+        "corpusID": corpus_id,
         "maximumEpochs": 5,
         "minimumEpochs": -1,
         "name": "Bad minimum epoch"
@@ -33,12 +37,11 @@ def test_invalid_epoch_steps(client):
     assert response.status_code == 400
 
     data = {
-        "corpusID": 1,
+        "corpusID": corpus_id,
         "maximumEpochs": -10,
         "minimumEpochs": 5,
         "name": "Bad maximum epoch"
     }
-
 
     response = client.post(
         '/v0.1/model',
@@ -48,10 +51,11 @@ def test_invalid_epoch_steps(client):
     assert response.status_code == 400
 
 
-def test_invalid_early_stopping(client):
+def test_invalid_early_stopping(client, create_corpus):
+    corpus_id = create_corpus()
     import json
     data = {
-        "corpusID": 1,
+        "corpusID": corpus_id,
         "earlyStoppingSteps": -1,
         "name": "Bad maximum epoch"
     }
@@ -63,84 +67,40 @@ def test_invalid_early_stopping(client):
     )
     assert response.status_code == 400
 
-
-def test_create_model(client, upload_audio, upload_transcription, create_utterance, create_sine):
-    """Test that we can create a model from the API"""
-    # Create mock audio uploads
+def test_invalid_LER(client, create_corpus):
+    """Tests that bogus values for maximum error rates are rejected"""
+    corpus_id = create_corpus()
     import json
-    response = upload_audio(create_sine(note="A"), filename="a.wav")
-    assert response.status_code == 201
-    wav_response_data = json.loads(response.data.decode('utf8'))
-    wav_id_a = wav_response_data['id']
 
-    response = upload_audio(create_sine(note="B"), filename="b.wav")
-    assert response.status_code == 201
-    wav_response_data = json.loads(response.data.decode('utf8'))
-    wav_id_b = wav_response_data['id']
-
-    response = upload_audio(create_sine(note="C"), filename="c.wav")
-    assert response.status_code == 201
-    wav_response_data = json.loads(response.data.decode('utf8'))
-    wav_id_c = wav_response_data['id']
-
-    # Create mock transcription uploads
-    response = upload_transcription("A", filename="a.phonemes")
-    assert response.status_code == 201
-    transcription_response_data = json.loads(response.data.decode('utf8'))
-    transcription_id_a = transcription_response_data['id']
-
-    response = upload_transcription("B", filename="b.phonemes")
-    assert response.status_code == 201
-    transcription_response_data = json.loads(response.data.decode('utf8'))
-    transcription_id_b = transcription_response_data['id']
-
-    response = upload_transcription("C", filename="c.phonemes")
-    assert response.status_code == 201
-    transcription_response_data = json.loads(response.data.decode('utf8'))
-    transcription_id_c = transcription_response_data['id']
-
-
-    response = create_utterance(wav_id_a, transcription_id_a)
-    assert response.status_code == 201
-    utterance_response_data = json.loads(response.data.decode('utf8'))
-    utterance_id_a = utterance_response_data['id']
-
-    response = create_utterance(wav_id_b, transcription_id_b)
-    assert response.status_code == 201
-    utterance_response_data = json.loads(response.data.decode('utf8'))
-    utterance_id_b = utterance_response_data['id']
-
-    response = create_utterance(wav_id_c, transcription_id_c)
-    assert response.status_code == 201
-    utterance_response_data = json.loads(response.data.decode('utf8'))
-    utterance_id_c = utterance_response_data['id']
-
-    corpus_data = {
-        "name": "Test Corpus",
-        "label_type": "phonemes",
-        "feature_type": "fbank",
-        "preprocessed": "false",
-        "testing": [
-            utterance_id_a
-        ],
-        "training": [
-            utterance_id_b
-        ],
-        "validation": [
-            utterance_id_c
-        ]
+    data = {
+        "corpusID": corpus_id,
+        "maximumTrainingLER": -1,
+        "name": "Bad maximum epoch"
     }
 
     response = client.post(
-        '/v0.1/corpus',
-        data=json.dumps(corpus_data),
+        '/v0.1/model',
+        data=json.dumps(data),
         headers={'Content-Type': 'application/json'}
     )
+    assert response.status_code == 400
 
-    assert response.status_code == 201
+    data = {
+        "corpusID": corpus_id,
+        "maximumValidationLER": -1,
+        "name": "Bad maximum epoch"
+    }
+    response = client.post(
+        '/v0.1/model',
+        data=json.dumps(data),
+        headers={'Content-Type': 'application/json'}
+    )
+    assert response.status_code == 400
 
-    corpus_response_data = json.loads(response.data.decode('utf8'))
-    corpus_id = corpus_response_data['id']
+def test_create_model(client, create_corpus):
+    """Test that we can create a model from the API"""
+    import json
+    corpus_id = create_corpus()
 
     model_data = {
         "name": "Test model",
@@ -161,3 +121,69 @@ def test_create_model(client, upload_audio, upload_transcription, create_utteran
     )
     assert response.status_code == 201
 
+def test_create_model_no_corpus(client):
+    """Test that we creation of a model from the API with an invalid corpus produces a 400 error"""
+    import json
+    corpus_id = 9999999 # shouldn't exist
+
+    model_data = {
+        "name": "Test model",
+        "beamWidth": 1,
+        "corpusID": corpus_id,
+        "decodingMergeRepeated": True,
+        "earlyStoppingSteps": 1,
+        "numberLayers": 2,
+        "hiddenSize": 2,
+        "maximumEpochs": 2,
+        "minimumEpochs": 1,
+    }
+
+    response = client.post(
+        '/v0.1/model',
+        data=json.dumps(model_data),
+        headers={'Content-Type': 'application/json'}
+    )
+    assert response.status_code == 400
+
+def test_get_model(client, create_corpus):
+    """Test that we can create a model from the API and then retrieve it"""
+    import json
+    corpus_id = create_corpus()
+
+    model_data = {
+        "name": "Test model",
+        "beamWidth": 1,
+        "corpusID": corpus_id,
+        "decodingMergeRepeated": True,
+        "earlyStoppingSteps": 1,
+        "numberLayers": 2,
+        "hiddenSize": 2,
+        "maximumEpochs": 2,
+        "minimumEpochs": 1,
+        "maximumTrainingLER": 0.4,
+        "maximumValidationLER": 0.8,
+    }
+
+    response = client.post(
+        '/v0.1/model',
+        data=json.dumps(model_data),
+        headers={'Content-Type': 'application/json'}
+    )
+    assert response.status_code == 201
+    model_response_data = json.loads(response.data.decode('utf8'))
+    model_id = model_response_data['id']
+
+    assert 'maximumTrainingLER' in model_response_data, model_response_data
+    assert model_response_data['maximumTrainingLER'] == 0.4
+    assert model_response_data['maximumValidationLER'] == 0.8
+
+    response = client.get(
+        '/v0.1/model/{}'.format(model_id),
+    )
+    assert response.status_code == 200
+    model_get_data = json.loads(response.data.decode('utf8'))
+
+    assert model_get_data["minimumEpochs"] == 1
+    assert model_get_data["maximumEpochs"] == 2
+    assert model_get_data["maximumTrainingLER"] == 0.4
+    assert model_get_data["maximumValidationLER"] == 0.8

@@ -94,6 +94,8 @@ paths:
             type: object
             required:
               - name
+              - labelType
+              - featureType
               - training
               - validation
               - testing
@@ -102,6 +104,10 @@ paths:
                 type: string
                 description: "The name of this corpus"
                 example: "ExampleLang Corpus 3"
+              labelType:
+                $ref: "#/definitions/labelType"
+              featureType:
+                $ref: "#/definitions/featureType"
               training:
                 $ref: "#/definitions/IDarray"
               validation:
@@ -132,45 +138,74 @@ paths:
             $ref: "#/definitions/corpusInformation"
         404:
           description: "Corpus not found"
-  /corpus/preprocess/{corpusID}:
-      post:
-        operationId: persephone_api.api_endpoints.corpus.preprocess
-        summary: "Preprocess a corpus for use with persephone"
-        produces:
-          - application/json
-        parameters:
-          - name: corpusID
-            in: path
-            description: "ID of corpus to preprocess"
-            required: true
-            type: integer
-            format: "int64"
-        responses:
-          200:
-            description: success
-            schema:
-              $ref: "#/definitions/corpusInformation"
-          404:
-            description: "Corpus not found"
-  /corpus/fromZip:
-    post:
-      summary: "Create a corpus from a Zip file"
-      operationId: persephone_api.api_endpoints.corpus.create_from_zip
-      consumes:
-        - multipart/form-data
+  /corpus/labels/{corpusID}:
+    get:
+      operationId: persephone_api.api_endpoints.corpus.get_label_set
+      summary: "Get the set of labels as defined by the corpus"
+      produces:
+        - application/json
       parameters:
-        - in: formData
-          name: zippedFile
-          type: file
+        - name: corpusID
+          in: path
+          description: "ID of corpus to return label set for"
           required: true
+          type: integer
+          format: "int64"
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/labelSetInformation"
+        404:
+          description: "Corpus not found"
+  /corpus/preprocess/{corpusID}:
+    post:
+      operationId: persephone_api.api_endpoints.corpus.preprocess
+      summary: "Preprocess a corpus for use with persephone"
+      produces:
+        - application/json
+      parameters:
+        - name: corpusID
+          in: path
+          description: "ID of corpus to preprocess"
+          required: true
+          type: integer
+          format: "int64"
       responses:
         200:
           description: success
           schema:
             $ref: "#/definitions/corpusInformation"
-        415:
-          description: "Bad filetype"
-
+        404:
+          description: "Corpus not found"
+  /label:
+    get:
+      summary: "Retrieve all phonetic labels that are currently available"
+      responses:
+        200:
+          description: success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/label"
+    post:
+      summary: "Create a phonetic label that can be used in transcriptions"
+      consumes:
+        - application/json
+      parameters:
+        - name: labelInfo
+          in: body
+          schema:
+            type: object
+            required:
+              - phoneticLabel
+            properties:
+              phoneticLabel:
+                type: string
+                description: "The phonetic label"
+      responses:
+        201:
+          description: "label created"
   /model:
     get:
       summary: "Retrieve all models that are currently available"
@@ -197,6 +232,25 @@ paths:
             $ref: "#/definitions/modelInformation"
         400:
           description: "Invalid model specification"
+  /model/{modelID}:
+    get:
+      summary: "Get information about an uploaded model"
+      produces:
+        - application/json
+      parameters:
+        - name: modelID
+          in: path
+          description: "ID of model to return information about"
+          required: true
+          type: integer
+          format: "int64"
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/modelInformation"
+        404:
+          description: "Model not found"
   /model/train/{modelID}:
     post:
       operationId: persephone_api.api_endpoints.model.train
@@ -244,7 +298,6 @@ paths:
         404:
           description: "Not found"
 
-
   /transcription:
     get:
       summary: "Retrieve all transcriptions that are currently available"
@@ -254,8 +307,10 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/transcriptionFileInformation"
+              $ref: "#/definitions/transcriptionInformation"
+  /transcription/fromFile:
     post:
+      operationId: persephone_api.api_endpoints.transcription.from_file
       summary: "Upload an transcription file"
       consumes:
         - multipart/form-data
@@ -268,7 +323,7 @@ paths:
         201:
           description: success
           schema:
-            $ref: "#/definitions/transcriptionFileInformation"
+            $ref: "#/definitions/transcriptionInformation"
         415:
           description: "Bad filetype"
 
@@ -288,7 +343,7 @@ paths:
         200:
           description: success
           schema:
-            $ref: "#/definitions/transcriptionFileInformation"
+            $ref: "#/definitions/transcriptionInformation"
         404:
           description: "Transcription not found"
 
@@ -354,19 +409,15 @@ paths:
 definitions:
   audioFileInformation:
     type: "object"
-    required:
-    - "name"
-    - "fileURL"
     properties:
       id:
-        type: "integer"
-        format: "int64"
-      name:
-        type: "string"
-        example: "recording_123.wav"
-      fileURL:
-        type: "string"
-        example: "/path/to/file/recording_123.wav"
+        $ref: "#/definitions/audioURI"
+      fileInfo:
+        $ref: "#/definitions/fileInformation"
+  audioURI:
+    description: "URI for audio objects"
+    type: "integer"
+    format: "int64"
   backendInformation:
     type: "object"
     required:
@@ -397,15 +448,11 @@ definitions:
         type: "string"
         description: "The name of this corpus"
         example: "ExampleLang Corpus"
-      label_type:
-        type: "string"
-        description: "The type of labels"
-        example: "phonemes"
-      feature_type:
-        type: "string"
-        description: "The type of the features"
-        example: "fbank"
-      max_samples:
+      labelType:
+        $ref: "#/definitions/labelType"
+      featureType:
+        $ref: "#/definitions/featureType"
+      maximumSamples:
         type: "integer"
         format: "int64"
         minimum: 0
@@ -416,26 +463,61 @@ definitions:
         description: "How utterances are assigned to datasets for use in training the model"
         properties:
           training:
-            type: array
-            items:
-              $ref: "#/definitions/utteranceInformation"
+            $ref: "#/definitions/utteranceGroup"
             description: "Utterances in training set"
           validation:
-            type: array
-            items:
-              $ref: "#/definitions/utteranceInformation"
+            $ref: "#/definitions/utteranceGroup"
             description: "Utterances in validation set"
           testing:
-            type: array
-            items:
-              $ref: "#/definitions/utteranceInformation"
+            $ref: "#/definitions/utteranceGroup"
             description: "Utterances in testing set"
+  featureType:
+    type: "string"
+    description: "The type of the features"
+    example: "fbank"
+  fileInformation:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "Unique ID for this file"
+      name:
+        type: "string"
+        description: "The name of this file"
+      createdAt:
+        type: "string"
+        format: "date-time"
+        description: "The time this file was created at"
   IDarray:
     type: "array"
     items:
       type: "integer"
       format: "int64"
       minimum: 0
+  label:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      label:
+        type: "string"
+        description: "An atomic phonetic label as used in speech models"
+  labelSetInformation:
+    type: "object"
+    properties:
+      corpus:
+        $ref: "#/definitions/corpusInformation"
+      labels:
+        type: "array"
+        items:
+          $ref: "#/definitions/label"
+  labelType:
+    type: "string"
+    description: "The type of the labels"
+    example: "phonemes"
+
   modelInformation:
     type: "object"
     required:
@@ -486,6 +568,14 @@ definitions:
         type: integer
         format: "int64"
         minimum: 0
+      maximumTrainingLER:
+        description: "Maximum Label Error Rate (LER) on training data"
+        type: number
+        minimum: 0
+      maximumValidationLER:
+        description: "Maximum Label Error Rate (LER) on validation data"
+        type: number
+        minimum: 0
   task:
     type: "object"
     required:
@@ -494,34 +584,43 @@ definitions:
       URL:
         description: "URL path to check on task progress"
         type: "string"
-  transcriptionFileInformation:
+  transcriptionInformation:
     type: "object"
     required:
     - "name"
-    - "fileURL"
     properties:
       id:
-        type: "integer"
-        format: "int64"
+        $ref: "#/definitions/transcriptionURI"
       name:
         type: "string"
         example: "transcription.txt"
       manuallyGenerated:
         type: boolean
         description: "Flag if this file was generated manually. Useful for keeping track of training files"
-      fileURL:
-        type: "string"
-        example: "/path/to/file/transcription.txt"
+      fileInfo:
+        $ref: "#/definitions/fileInformation"
+  transcriptionURI:
+    description: "URI for transcription objects"
+    type: "integer"
+    format: "int64"
+  utteranceGroup:
+    description: "Specify a group of utterances. This is needed to define a partition of test/train/valid data sets for model training."
+    type: "array"
+    items:
+      $ref: "#/definitions/utteranceURI"
   utteranceInformation:
     type: "object"
     properties:
       id:
-        type: "integer"
-        format: "int64"
+        $ref: "#/definitions/utteranceURI"
       audio:
-        $ref: "#/definitions/audioFileInformation"
+        $ref: "#/definitions/audioURI"
       transcription:
-        $ref: "#/definitions/transcriptionFileInformation"
+        $ref: "#/definitions/transcriptionURI"
     required:
     - "audio"
     - "transcription"
+  utteranceURI:
+    description: "URI for utterance objects"
+    type: "integer"
+    format: "int64"

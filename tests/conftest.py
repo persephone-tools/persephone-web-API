@@ -10,16 +10,20 @@ app = create_app(TestConfig)
 # API version prefix
 API_VERSION = "v0.1"
 
-# create DB tables
-with app.app_context():
-    db.create_all()
-
 # configure upload paths
 app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024 #max 64 MB file upload
 
+@pytest.fixture
+def init_database():
+    """Create the database tables"""
+    with app.app_context():
+        db.create_all()
+        yield db
+        db.drop_all()
+
 
 @pytest.fixture
-def client(tmpdir):
+def client(tmpdir, init_database):
     """Create a test client to send requests to"""
     uploads_path = tmpdir.mkdir('test_uploads')
     app.config['BASE_UPLOAD_DIRECTORY'] = str(uploads_path)
@@ -35,7 +39,10 @@ def client(tmpdir):
 
 @pytest.fixture
 def upload_audio(client):
-    """Fixture for convenience in sending requests to the audio endpoint"""
+    """Fixture for convenience in sending requests to the audio endpoint
+    This does not make any assumptions about loading files from disk and is fast
+    use this if possible, if you need to upload a file use the audio file upload fixture
+    """
     import wave
     import struct
     import io
@@ -80,13 +87,16 @@ def upload_audio(client):
 
 @pytest.fixture
 def upload_transcription(client):
-    """Fixture for convenience in sending requests to the transcription endpoint"""
+    """Fixture for convenience in sending requests to the transcription endpoint
+    This does not make any assumptions about loading files from disk and is fast
+    use this if possible, if you need to upload a file use the  transcription file upload fixture
+    """
     import io
-    def _make_transcription(transcription_data, filename):
+    def _make_transcription(transcription_data, filename: str):
         """Create a file with appropriate encoding"""
         data = {'transcriptionFile': (io.BytesIO(transcription_data.encode('utf-8')), filename)}
         return client.post(
-            ('/{}/transcription'.format(API_VERSION)),
+            ('/{}/transcription/fromFile'.format(API_VERSION)),
             data=data,
             content_type='multipart/form-data'
         )
@@ -141,3 +151,84 @@ def create_sine():
             sine_list.append(math.sin(2*math.pi * freq * ( x/framerate)))
         return sine_list
     return _create_sine
+
+
+@pytest.fixture
+def create_corpus(client, upload_audio, upload_transcription, create_utterance, create_sine):
+    """Create a corpus object via the API"""
+    def _create_corpus() -> int:
+        """Create a corpus and return the ID of the created corpus"""
+        import json
+
+        # Create mock audio uploads
+        response = upload_audio(create_sine(note="A"), filename="a.wav")
+        assert response.status_code == 201
+        wav_response_data = json.loads(response.data.decode('utf8'))
+        wav_id_a = wav_response_data['id']
+
+        response = upload_audio(create_sine(note="B"), filename="b.wav")
+        assert response.status_code == 201
+        wav_response_data = json.loads(response.data.decode('utf8'))
+        wav_id_b = wav_response_data['id']
+
+        response = upload_audio(create_sine(note="C"), filename="c.wav")
+        assert response.status_code == 201
+        wav_response_data = json.loads(response.data.decode('utf8'))
+        wav_id_c = wav_response_data['id']
+
+        # Create mock transcription uploads
+        response = upload_transcription("A", filename="a.phonemes")
+        assert response.status_code == 201
+        transcription_response_data = json.loads(response.data.decode('utf8'))
+        transcription_id_a = transcription_response_data['id']
+
+        response = upload_transcription("B", filename="b.phonemes")
+        assert response.status_code == 201
+        transcription_response_data = json.loads(response.data.decode('utf8'))
+        transcription_id_b = transcription_response_data['id']
+
+        response = upload_transcription("C", filename="c.phonemes")
+        assert response.status_code == 201
+        transcription_response_data = json.loads(response.data.decode('utf8'))
+        transcription_id_c = transcription_response_data['id']
+
+        response = create_utterance(wav_id_a, transcription_id_a)
+        assert response.status_code == 201
+        utterance_response_data = json.loads(response.data.decode('utf8'))
+        utterance_id_a = utterance_response_data['id']
+
+        response = create_utterance(wav_id_b, transcription_id_b)
+        assert response.status_code == 201
+        utterance_response_data = json.loads(response.data.decode('utf8'))
+        utterance_id_b = utterance_response_data['id']
+
+        response = create_utterance(wav_id_c, transcription_id_c)
+        assert response.status_code == 201
+        utterance_response_data = json.loads(response.data.decode('utf8'))
+        utterance_id_c = utterance_response_data['id']
+
+        data = {
+            "name": "Test Corpus",
+            "labelType": "phonemes",
+            "featureType": "fbank",
+            "testing": [
+                utterance_id_a
+            ],
+            "training": [
+                utterance_id_b
+            ],
+            "validation": [
+                utterance_id_c
+            ]
+        }
+
+        response = client.post(
+            '/v0.1/corpus',
+            data=json.dumps(data),
+            headers={'Content-Type': 'application/json'}
+        )
+
+        assert response.status_code == 201
+        response_data = json.loads(response.data.decode('utf8'))
+        return response_data['id']
+    return _create_corpus

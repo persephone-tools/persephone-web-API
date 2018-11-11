@@ -2,21 +2,22 @@
 API endpoints for /model
 This deals with the API access for model definitions and metadata
 """
-import os
 from pathlib import Path
 import pickle
 import uuid
 
 import flask
+import sqlalchemy
+
 from persephone import experiment
 from persephone import rnn_ctc
-import persephone.rnn_ctc
 from persephone.corpus_reader import CorpusReader
 from persephone import model
 
 from ..extensions import db
 from ..db_models import DBcorpus, TranscriptionModel, Audio
 from ..serialization import TranscriptionModelSchema
+from .corpus import labels_set
 
 # quick and dirty way of persisting models, most certainly not fit for production
 # in a multi user environment
@@ -30,7 +31,7 @@ def register_transcription_model(model_id: int, model_object: model.Model) -> No
     """Register a python object containing the transcription model"""
     available_models[model_id] = model_object
 
-def decide_batch_size(num_train: int):
+def decide_batch_size(num_train: int) -> int:
     """Determine size of batches for use in training"""
     if num_train >= 512:
         batch_size = 16
@@ -44,8 +45,8 @@ def decide_batch_size(num_train: int):
 
     return batch_size
 
-def create_RNN_CTC_model(model: TranscriptionModel, corpus_storage_path: Path,
-                         models_storage_path: Path) -> persephone.rnn_ctc.Model:
+def create_RNN_CTC_model(model_db: TranscriptionModel, corpus_storage_path: Path,
+                         models_storage_path: Path) -> rnn_ctc.Model:
     """Create a persephone RNN CTC model
 
     :model: The database entry contaning the information about the model attempting
@@ -53,9 +54,9 @@ def create_RNN_CTC_model(model: TranscriptionModel, corpus_storage_path: Path,
     :corpus_storage_path: The path the corpuses are stored at.
     :models_storage_path: The path the models are stored at.
     """
-    model_path = models_storage_path / model.filesystem_path
+    model_path = models_storage_path / model_db.filesystem_path
     exp_dir = experiment.prep_exp_dir(directory=str(model_path))
-    corpus_db_entry = model.corpus
+    corpus_db_entry = model_db.corpus
     pickled_corpus_path = corpus_storage_path / corpus_db_entry.filesystem_path / "corpus.p"
     with pickled_corpus_path.open('rb') as pickle_file:
         corpus = pickle.load(pickle_file)
@@ -64,10 +65,10 @@ def create_RNN_CTC_model(model: TranscriptionModel, corpus_storage_path: Path,
     return rnn_ctc.Model(
         exp_dir,
         corpus_reader,
-        num_layers=model.num_layers,
-        hidden_size=model.hidden_size,
-        beam_width=model.beam_width,
-        decoding_merge_repeated=model.decoding_merge_repeated
+        num_layers=model_db.num_layers,
+        hidden_size=model_db.hidden_size,
+        beam_width=model_db.beam_width,
+        decoding_merge_repeated=model_db.decoding_merge_repeated
         )
 
 def search():
@@ -86,7 +87,9 @@ def get(modelID):
 
 def post(modelInfo):
     """Create a new transcription model"""
-    current_corpus = DBcorpus.query.get_or_404(modelInfo['corpusID'])
+    current_corpus = DBcorpus.query.get(modelInfo['corpusID'])
+    if current_corpus is None:
+        return "Invalid corpus ID provided", 400
 
     min_epochs = modelInfo.get('minimumEpochs', 0)
     max_epochs = modelInfo.get('maximumEpochs', None)
@@ -111,7 +114,9 @@ def post(modelInfo):
         beam_width=beam_width,
         decoding_merge_repeated=decoding_merge_repeated,
         early_stopping_steps=early_stopping_steps,
-        filesystem_path=str(model_uuid)
+        filesystem_path=str(model_uuid),
+        max_train_LER=modelInfo.get('maximumTrainingLER', 0.3),
+        max_valid_LER=modelInfo.get('maximumValidationLER', 1.0)
     )
 
     db.session.add(current_model)
@@ -141,15 +146,22 @@ def train(modelID):
     else:
         epochs = MAX_EPOCHS
 
-    persephone_model.train(
-        early_stopping_steps=current_model.early_stopping_steps,
-        min_epochs=current_model.min_epochs,
-        max_valid_ler = 1.0, # TODO: handle parameter here by adding to TranscriptionModel
-        max_train_ler = 0.3, # TODO: handle parameter here by adding to TranscriptionModel
-        max_epochs=epochs,
-    )
-    # TODO: Save all this information somewhere so it can be easily used in the
-    # transcribe step
+    # we construct the parameters here so that the call to the model training
+    # respects the default value for arguments as found in the Persephone library
+    parameters = {
+        "min_epochs": current_model.min_epochs,
+        "max_epochs": epochs,
+    }
+    if current_model.early_stopping_steps is not None:
+        parameters["early_stopping_steps"] = current_model.early_stopping_steps
+    if current_model.max_valid_LER is not None:
+        parameters["max_valid_ler"] = current_model.max_valid_LER
+    if current_model.max_train_LER is not None:
+        parameters["max_train_ler"] = current_model.max_train_LER
+
+    persephone_model.train(**parameters)
+    # TODO: Save this information about the network topology of tensorflow with the names
+    # somewhere so it can be easily used in the transcribe step
     #print("persephone_model.batch_x: ", persephone_model.batch_x)
     #print("persephone_model.batch_x_lens: ", persephone_model.batch_x_lens)
     #print("persephone_model.dense_decoded: ", persephone_model.dense_decoded)
@@ -169,15 +181,14 @@ def transcribe(modelID, audioID):
 
     # putting features into the existing corpus path for now
     corpus_path = Path(flask.current_app.config['CORPUS_PATH']) / current_model.corpus.filesystem_path
-    audio_path = audio_uploads_path / audio_info.filename
+    audio_path = audio_uploads_path / audio_info.file_info.name
 
-    labels_set = {'ʂ', 'i', 'qʰ', 'ɯ', 'wɤ', 'ŋ', 'tsʰ', 'ʐ', 'v̩'}  #TODO pass real set of labels
+    labels = [item.label for item in labels_set(current_model.corpus)]
 
     results = model.decode(
         model_checkpoint_path, [audio_path],
-        labels_set,
-        feature_type=current_model.corpus.feature_type,
-        preprocessed_output_path=(corpus_path / "feat"),
+        labels,
+        feature_type=current_model.corpus.featureType,
         batch_x_name="batch_x:0",
         batch_x_lens_name="batch_x_lens:0",
         output_name="hyp_dense_decoded:0"

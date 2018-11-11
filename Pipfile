@@ -4,18 +4,20 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-persephone = {version = ">0.3.1"}
-connexion = {version = ">=1.4"}
+persephone = {git = 'https://github.com/persephone-tools/persephone.git', editable = true}
+connexion = {version = "==1.5.3"}
 flask-uploads = {version = ">0.2.0"}
-SQLAlchemy = {version = ">1.2.0"}
+SQLAlchemy = {version = ">=1.2.14"}
 flask_sqlalchemy  = {version = ">=2.3.1"}
-marshmallow-sqlalchemy = "*"
 flask_cors = "*"
+marshmallow-sqlalchemy = {version = "==0.15.0"}
+requests = {version = ">=2.20.0"}
+
 
 [dev-packages]
 pylint = {version = ">1.8.3"}
-pytest = {version = ">=3.5.1"}
-mypy = {version = ">0.610"}
+pytest = {version = ">=3.8.1"}
+mypy = {version = ">=0.641"}
 
 [requires]
 python_version = "3.5"
