@@ -15,7 +15,7 @@ requests = {version = ">=2.20.0"}
 [dev-packages]
 pylint = {version = ">1.8.3"}
 pytest = {version = ">=3.8.1"}
-mypy = {version = ">0.620"}
+mypy = {version = ">=0.641"}
 
 [requires]
 python_version = "3.5"
