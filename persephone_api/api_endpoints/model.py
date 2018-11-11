@@ -113,8 +113,8 @@ def post(modelInfo):
         decoding_merge_repeated=decoding_merge_repeated,
         early_stopping_steps=early_stopping_steps,
         filesystem_path=str(model_uuid),
-        max_train_LER=modelInfo.get('maximumTrainingLER', None),
-        max_valid_LER=modelInfo.get('maximumValidationLER', None)
+        max_train_LER=modelInfo.get('maximumTrainingLER', 0.3),
+        max_valid_LER=modelInfo.get('maximumValidationLER', 1.0)
     )
 
     db.session.add(current_model)
