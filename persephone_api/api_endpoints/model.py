@@ -87,7 +87,9 @@ def get(modelID):
 
 def post(modelInfo):
     """Create a new transcription model"""
-    current_corpus = DBcorpus.query.get_or_404(modelInfo['corpusID'])
+    current_corpus = DBcorpus.query.get(modelInfo['corpusID'])
+    if current_corpus is None:
+        return "Invalid corpus ID provided", 400
 
     min_epochs = modelInfo.get('minimumEpochs', 0)
     max_epochs = modelInfo.get('maximumEpochs', None)

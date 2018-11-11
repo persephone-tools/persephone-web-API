@@ -121,6 +121,30 @@ def test_create_model(client, create_corpus):
     )
     assert response.status_code == 201
 
+def test_create_model_no_corpus(client):
+    """Test that we creation of a model from the API with an invalid corpus produces a 400 error"""
+    import json
+    corpus_id = 9999999 # shouldn't exist
+
+    model_data = {
+        "name": "Test model",
+        "beamWidth": 1,
+        "corpusID": corpus_id,
+        "decodingMergeRepeated": True,
+        "earlyStoppingSteps": 1,
+        "numberLayers": 2,
+        "hiddenSize": 2,
+        "maximumEpochs": 2,
+        "minimumEpochs": 1,
+    }
+
+    response = client.post(
+        '/v0.1/model',
+        data=json.dumps(model_data),
+        headers={'Content-Type': 'application/json'}
+    )
+    assert response.status_code == 400
+
 def test_get_model(client, create_corpus):
     """Test that we can create a model from the API and then retrieve it"""
     import json
