@@ -149,8 +149,8 @@ def test_get_model(client, create_corpus):
     model_response_data = json.loads(response.data.decode('utf8'))
     model_id = model_response_data['id']
 
-    assert model_response_data['max_train_LER'] == 0.4
-    assert model_response_data['max_valid_LER'] == 0.8
+    assert model_response_data['maximumTrainingLER'] == 0.4
+    assert model_response_data['maximumValidationLER'] == 0.8
 
     response = client.get(
         '/v0.1/model/{}'.format(model_id),
