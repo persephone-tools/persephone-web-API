@@ -160,8 +160,8 @@ def post(corpusInfo):
     max_samples = corpusInfo.get('max_samples', INT64_MAX)
     current_corpus = DBcorpus(
         name=corpusInfo['name'],
-        label_type=corpusInfo['label_type'],
-        feature_type=corpusInfo['feature_type']
+        labelType=corpusInfo['labelType'],
+        featureType=corpusInfo['featureType']
     )
     current_corpus.max_samples = max_samples
     db.session.add(current_corpus)
@@ -205,8 +205,8 @@ def post(corpusInfo):
     # Creating the corpus object has the side-effect of creating a directory located at the path
     # given to `tgt_dir`
     persephone_corpus = Corpus(
-        feat_type=current_corpus.feature_type,
-        label_type=current_corpus.label_type,
+        feat_type=current_corpus.featureType,
+        label_type=current_corpus.labelType,
         tgt_dir=corpus_path,
     )
     labels = persephone_corpus.labels

@@ -94,8 +94,8 @@ paths:
             type: object
             required:
               - name
-              - label_type
-              - feature_type
+              - labelType
+              - featureType
               - training
               - validation
               - testing
@@ -104,9 +104,9 @@ paths:
                 type: string
                 description: "The name of this corpus"
                 example: "ExampleLang Corpus 3"
-              label_type:
+              labelType:
                 $ref: "#/definitions/labelType"
-              feature_type:
+              featureType:
                 $ref: "#/definitions/featureType"
               training:
                 $ref: "#/definitions/IDarray"
@@ -412,7 +412,7 @@ definitions:
     properties:
       id:
         $ref: "#/definitions/audioURI"
-      file_info:
+      fileInfo:
         $ref: "#/definitions/fileInformation"
   audioURI:
     description: "URI for audio objects"
@@ -448,11 +448,11 @@ definitions:
         type: "string"
         description: "The name of this corpus"
         example: "ExampleLang Corpus"
-      label_type:
+      labelType:
         $ref: "#/definitions/labelType"
-      feature_type:
+      featureType:
         $ref: "#/definitions/featureType"
-      max_samples:
+      maximumSamples:
         type: "integer"
         format: "int64"
         minimum: 0
@@ -485,7 +485,7 @@ definitions:
       name:
         type: "string"
         description: "The name of this file"
-      created_at:
+      createdAt:
         type: "string"
         format: "date-time"
         description: "The time this file was created at"
@@ -568,11 +568,11 @@ definitions:
         type: integer
         format: "int64"
         minimum: 0
-      maxTrainingLER:
+      maximumTrainingLER:
         description: "Maximum Label Error Rate (LER) on training data"
         type: number
         minimum: 0
-      maxValidationLER:
+      maximumValidationLER:
         description: "Maximum Label Error Rate (LER) on validation data"
         type: number
         minimum: 0
@@ -597,7 +597,7 @@ definitions:
       manuallyGenerated:
         type: boolean
         description: "Flag if this file was generated manually. Useful for keeping track of training files"
-      file_info:
+      fileInfo:
         $ref: "#/definitions/fileInformation"
   transcriptionURI:
     description: "URI for transcription objects"
