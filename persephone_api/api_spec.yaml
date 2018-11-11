@@ -19,22 +19,10 @@ consumes:
 produces:
   - application/json
 
-tags:
-  - name: getObjects
-    description: Retrieve a list of objects
-  - name: createObject
-    description: Create an object
-  - name: getObject
-    description: Retrieve a single object
-  - name: doOperation
-    description: Start an operation
-
 paths:
   /audio:
     get:
       summary: "Retrieve all audio files that are currently available"
-      tags:
-        - getObjects
       responses:
         200:
           description: success
@@ -44,8 +32,6 @@ paths:
               $ref: "#/definitions/audioFileInformation"
     post:
       summary: "Upload an audio file"
-      tags:
-        - createObject
       consumes:
         - multipart/form-data
       parameters:
@@ -63,8 +49,6 @@ paths:
   /audio/{audioID}:
     get:
       summary: "Get information about an uploaded audio file"
-      tags:
-        - getObject
       produces:
         - application/json
       parameters:
@@ -84,8 +68,6 @@ paths:
   /backend:
     get:
       summary: "Get information about the backend package processing transcriptions"
-      tags:
-        - getObject
       responses:
         200:
           description: success
@@ -94,8 +76,6 @@ paths:
   /corpus:
     get:
       summary: "Retrieve all models that are currently available"
-      tags:
-        - getObjects
       responses:
         200:
           description: success
@@ -105,8 +85,6 @@ paths:
               $ref: "#/definitions/corpusInformation"
     post:
       summary: "Create a new corpus"
-      tags:
-        - createObject
       consumes:
         - application/json
       parameters:
@@ -144,8 +122,6 @@ paths:
   /corpus/{corpusID}:
     get:
       summary: "Get information about an uploaded corpus"
-      tags:
-        - getObject
       produces:
         - application/json
       parameters:
@@ -166,8 +142,6 @@ paths:
     get:
       operationId: persephone_api.api_endpoints.corpus.get_label_set
       summary: "Get the set of labels as defined by the corpus"
-      tags:
-        - getObjects
       produces:
         - application/json
       parameters:
@@ -188,8 +162,6 @@ paths:
     post:
       operationId: persephone_api.api_endpoints.corpus.preprocess
       summary: "Preprocess a corpus for use with persephone"
-      tags:
-        - doOperation
       produces:
         - application/json
       parameters:
@@ -209,8 +181,6 @@ paths:
   /label:
     get:
       summary: "Retrieve all phonetic labels that are currently available"
-      tags:
-        - getObjects
       responses:
         200:
           description: success
@@ -220,8 +190,6 @@ paths:
               $ref: "#/definitions/label"
     post:
       summary: "Create a phonetic label that can be used in transcriptions"
-      tags:
-        - createObject
       consumes:
         - application/json
       parameters:
@@ -241,8 +209,6 @@ paths:
   /model:
     get:
       summary: "Retrieve all models that are currently available"
-      tags:
-        - getObjects
       responses:
         200:
           description: success
@@ -252,8 +218,6 @@ paths:
               $ref: "#/definitions/modelInformation"
     post:
       summary: "Create a new RNN CTC model"
-      tags:
-        - createObject
       consumes:
         - application/json
       parameters:
@@ -271,8 +235,6 @@ paths:
   /model/{modelID}:
     get:
       summary: "Get information about an uploaded model"
-      tags:
-        - getObject
       produces:
         - application/json
       parameters:
@@ -293,8 +255,6 @@ paths:
     post:
       operationId: persephone_api.api_endpoints.model.train
       summary: "Submit a request to train a model"
-      tags:
-        - doOperation
       produces:
         - application/json
       parameters:
@@ -315,8 +275,6 @@ paths:
     post:
       operationId: persephone_api.api_endpoints.model.transcribe
       summary: "Submit a request to transcribe an audio file using a model"
-      tags:
-        - doOperation
       produces:
         - application/json
       parameters:
@@ -343,8 +301,6 @@ paths:
   /transcription:
     get:
       summary: "Retrieve all transcriptions that are currently available"
-      tags:
-        - getObjects
       responses:
         200:
           description: success
@@ -356,8 +312,6 @@ paths:
     post:
       operationId: persephone_api.api_endpoints.transcription.from_file
       summary: "Upload an transcription file"
-      tags:
-        - createObject
       consumes:
         - multipart/form-data
       parameters:
@@ -375,9 +329,7 @@ paths:
 
   /transcription/{transcriptionID}:
     get:
-      summary: "Get information about a transcriptions"
-      tags:
-        - getObject
+      summary: "Get information about an uploaded transcription file"
       produces:
         - application/json
       parameters:
@@ -398,8 +350,6 @@ paths:
   /utterance:
     get:
       summary: "Retrieve all utterances that are currently available"
-      tags:
-        - getObjects
       responses:
         200:
           description: success
@@ -409,8 +359,6 @@ paths:
               $ref: "#/definitions/utteranceInformation"
     post:
       summary: "Create a new utterance"
-      tags:
-        - createObject
       consumes:
         - application/json
       parameters:
@@ -440,8 +388,6 @@ paths:
   /utterance/{utteranceID}:
     get:
       summary: "Get information about an an utterance"
-      tags:
-        - getObject
       produces:
         - application/json
       parameters:
