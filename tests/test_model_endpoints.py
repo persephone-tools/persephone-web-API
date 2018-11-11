@@ -149,6 +149,7 @@ def test_get_model(client, create_corpus):
     model_response_data = json.loads(response.data.decode('utf8'))
     model_id = model_response_data['id']
 
+    assert 'maximumTrainingLER' in model_response_data, model_response_data
     assert model_response_data['maximumTrainingLER'] == 0.4
     assert model_response_data['maximumValidationLER'] == 0.8
 
