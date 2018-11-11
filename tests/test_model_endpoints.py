@@ -156,3 +156,9 @@ def test_get_model(client, create_corpus):
         '/v0.1/model/{}'.format(model_id),
     )
     assert response.status_code == 200
+    model_get_data = json.loads(response.data.decode('utf8'))
+
+    assert model_get_data["minimumEpochs"] == 1
+    assert model_get_data["maximumEpochs"] == 2
+    assert model_get_data["maximumTrainingLER"] == 0.4
+    assert model_get_data["maximumValidationLER"] == 0.8
