@@ -73,6 +73,17 @@ paths:
           description: success
           schema:
             $ref: "#/definitions/backendInformation"
+  /backend/labelTypes:
+    get:
+      operationId: persephone_api.api_endpoints.backend.supported_labels
+      summary: "Get information about which label types are supported by the backend"
+      responses:
+        200:
+          description: success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/labelTypeInformation"
   /corpus:
     get:
       summary: "Retrieve all models that are currently available"
@@ -517,7 +528,24 @@ definitions:
     type: "string"
     description: "The type of the labels"
     example: "phonemes"
-
+  labelTypeInformation:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        description: "Unique ID for this label type"
+      name:
+        type: "string"
+        description: "The type of the labels"
+        example: "phonemes"
+      description:
+        type: "string"
+        description: "A short description of the label type"
+        example: "phoneme labels"
+      explanation:
+        type: "string"
+        description: "A user friendly description of the label type"
+        example: "Phonemes and tones labels contain information about phonemes as well as tonal information."
   modelInformation:
     type: "object"
     required:
