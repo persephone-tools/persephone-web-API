@@ -84,6 +84,17 @@ paths:
             type: array
             items:
               $ref: "#/definitions/labelTypeInformation"
+  /backend/featureTypes:
+    get:
+      operationId: persephone_api.api_endpoints.backend.supported_features
+      summary: "Get information about which feature types are supported by the backend"
+      responses:
+        200:
+          description: success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/featureTypeInformation"
   /corpus:
     get:
       summary: "Retrieve all models that are currently available"
