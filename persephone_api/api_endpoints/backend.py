@@ -40,3 +40,7 @@ def search():
 def supported_labels():
     """Return info about supported label types"""
     return AVAILABLE_LABEL_TYPES, 200
+
+def supported_features():
+    """Return info about supported features types"""
+    raise NotImplementedError
