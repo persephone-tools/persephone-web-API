@@ -26,6 +26,16 @@ AVAILABLE_LABEL_TYPES = [
     },
 ]
 
+AVAILABLE_FEATURE_TYPES = [
+    {
+        "id": 1,
+        "name": "fbank",
+        "description": "Filterbank features",
+        "explanation": "Create features from preprocessing the audio using log Mel filter banks. "
+                       "See https://en.wikipedia.org/wiki/Mel_scale for more information about the Mel scale used here."
+    }
+]
+
 def search():
     """
     Handle a get request for the backend information
@@ -43,4 +53,4 @@ def supported_labels():
 
 def supported_features():
     """Return info about supported features types"""
-    raise NotImplementedError
+    return AVAILABLE_FEATURE_TYPES, 200
