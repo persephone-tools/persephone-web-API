@@ -14,3 +14,7 @@ def search():
         "projectURL": "https://persephone.readthedocs.io/en/latest/",
     }
     return persephone_information, 200
+
+def supported_labels():
+    """Return info about supported label types"""
+    raise NotImplementedError
