@@ -9,8 +9,10 @@ connexion = {version = "==1.5.3"}
 flask-uploads = {version = ">0.2.0"}
 SQLAlchemy = {version = ">=1.2.14"}
 flask_sqlalchemy  = {version = ">=2.3.1"}
+flask_cors = "*"
 marshmallow-sqlalchemy = {version = "==0.15.0"}
 requests = {version = ">=2.20.0"}
+
 
 [dev-packages]
 pylint = {version = ">1.8.3"}

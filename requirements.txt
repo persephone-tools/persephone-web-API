@@ -4,3 +4,4 @@ flask-uploads
 sqlalchemy>1.2
 flask_sqlalchemy
 marshmallow-sqlalchemy
+flask_cors

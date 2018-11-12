@@ -10,6 +10,9 @@ class Config:
     PROJECT_ROOT = os.path.abspath(os.path.join(APP_DIR, os.pardir))
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    # Enable Cross-Origin Resource Sharing headers
+    ENABLE_CORS = False
+
 
 class ProdConfig(Config):
     """Production configuration."""

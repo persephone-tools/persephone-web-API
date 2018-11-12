@@ -10,6 +10,8 @@ from .extensions import db
 from .settings import ProdConfig
 from .upload_config import configure_uploads
 
+from flask_cors import CORS
+
 def create_app(config_object=ProdConfig):
     """An application factory, as explained here: http://flask.pocoo.org/docs/patterns/appfactories/.
     :param config_object: The configuration object to use.
@@ -24,6 +26,10 @@ def create_app(config_object=ProdConfig):
 
     register_extensions(app)
     configure_uploads(app, base_upload_path=os.path.join(os.getcwd(), 'user_uploads'))
+
+    if config_object.ENABLE_CORS:
+        CORS(app)
+
     return app
 
 def register_swagger_api(connexion_flask_app) -> None:
