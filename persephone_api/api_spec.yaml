@@ -486,6 +486,24 @@ definitions:
     type: "string"
     description: "The type of the features"
     example: "fbank"
+  featureTypeInformation:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        description: "Unique ID for this feature type"
+      name:
+        type: "string"
+        description: "The type of the features"
+        example: "phonemes"
+      description:
+        type: "string"
+        description: "A short description of the feature type"
+        example: "fbank features are created via preprocessing with filter banks."
+      explanation:
+        type: "string"
+        description: "A user friendly description of the feature type"
+        example: "These features are created by processing using a log Mel filter bank. Mel units are used here instead of raw frequency (see https://en.wikipedia.org/wiki/Mel_scale)"
   fileInformation:
     type: "object"
     properties:
