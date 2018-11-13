@@ -46,6 +46,8 @@ paths:
             $ref: "#/definitions/audioFileInformation"
         415:
           description: "Bad filetype"
+          schema:
+            $ref: "#/definitions/errorMessage"
   /audio/{audioID}:
     get:
       summary: "Get information about an uploaded audio file"
@@ -254,6 +256,8 @@ paths:
             $ref: "#/definitions/modelInformation"
         400:
           description: "Invalid model specification"
+          schema:
+            $ref: "#/definitions/errorMessage"
   /model/{modelID}:
     get:
       summary: "Get information about an uploaded model"
@@ -348,6 +352,8 @@ paths:
             $ref: "#/definitions/transcriptionInformation"
         415:
           description: "Bad filetype"
+          schema:
+            $ref: "#/definitions/errorMessage"
 
   /transcription/{transcriptionID}:
     get:
@@ -405,8 +411,12 @@ paths:
             $ref: "#/definitions/utteranceInformation"
         400:
           description: "Invalid utterance"
+          schema:
+            $ref: "#/definitions/errorMessage"
         409:
           description: "Already exists"
+          schema:
+            $ref: "#/definitions/errorMessage"
   /utterance/{utteranceID}:
     get:
       summary: "Get information about an an utterance"
@@ -493,6 +503,25 @@ definitions:
           testing:
             $ref: "#/definitions/utteranceGroup"
             description: "Utterances in testing set"
+  errorMessage:
+    type: "object"
+    required:
+      - "status"
+      - "reason"
+    properties:
+      status:
+        type: "integer"
+        format: "int32"
+        description: "HTTP response status code"
+      reason:
+        type: "string"
+        description: "Reason"
+      errorMessage:
+        type: "string"
+        description: "error message for developers"
+      userErrorMessage:
+        type: "string"
+        description: "error message to show end users"
   featureType:
     type: "string"
     description: "The type of the features"

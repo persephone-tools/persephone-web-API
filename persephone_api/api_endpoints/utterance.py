@@ -19,13 +19,27 @@ def post(utteranceInfo):
     transcriptionId = utteranceInfo['transcriptionId']
     existing_utterance = DBUtterance.query.filter_by(audio_id=audioId, transcription_id=transcriptionId).first()
     if existing_utterance:
-        return "Utterance already exists", 409
+        error = {
+            "status": 409,
+            "reason": "This utterance already exists",
+            "errorMessage": "This utterance with audio id {} and transcription ID of {}"
+                            " already exists and has id {}".format(audioId, transcriptionId, existing_utterance),
+            "userErrorMessage": "This utterance with audio id {} and transcription ID of {}"
+                                " already exists and has id {}".format(audioId, transcriptionId, existing_utterance),
+        }
+        return error, 409
     try:
         current_utterance = DBUtterance(audio_id=audioId, transcription_id=transcriptionId)
         db.session.add(current_utterance)
         db.session.commit()
     except sqlalchemy.exc.IntegrityError:
-        return "Invalid ID provided", 400
+        error = {
+            "status": 400,
+            "reason": "Database error",
+            "errorMessage": "Database error",
+            "userErrorMessage": "Database error",
+        }
+        return error, 400
     else:
         result = UtteranceSchema().dump(current_utterance).data
         return result, 201

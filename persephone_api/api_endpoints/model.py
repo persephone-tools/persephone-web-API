@@ -89,12 +89,27 @@ def post(modelInfo):
     """Create a new transcription model"""
     current_corpus = DBcorpus.query.get(modelInfo['corpusID'])
     if current_corpus is None:
-        return "Invalid corpus ID provided", 400
+        error = {
+            "status": 400,
+            "reason": "The corpus ID provided is not available",
+            "errorMessage": "The corpus ID provided is not available",
+            "userErrorMessage": "The corpus ID provided is not available, "
+                                "make sure the corpus your model is using exists first.",
+        }
+        return error, 400
 
     min_epochs = modelInfo.get('minimumEpochs', 0)
     max_epochs = modelInfo.get('maximumEpochs', None)
     if max_epochs and min_epochs > max_epochs:
-        return "minimum number of epochs must be smaller than maximum", 400
+        error = {
+            "status": 400,
+            "reason": "Minimum epochs must be smaller than the maximum.",
+            "errorMessage": "Minimum epochs must be smaller than the maximum."
+                            "Got max: {} min: {}".format(max_epochs, min_epochs),
+            "userErrorMessage": "Minimum epochs must be smaller than the maximum."
+                                "Got max: {} min: {}. Check your parameters".format(max_epochs, min_epochs),
+        }
+        return error, 400
 
     early_stopping_steps = modelInfo.get('earlyStoppingSteps', None)
     num_layers = modelInfo.get('numberLayers', 3)
@@ -124,7 +139,13 @@ def post(modelInfo):
     try:
         db.session.commit()
     except sqlalchemy.exc.IntegrityError:
-        return "Invalid model provided", 400
+        error = {
+            "status": 400,
+            "reason": "Database error",
+            "errorMessage": "Database error",
+            "userErrorMessage": "Database error",
+        }
+        return error, 400
     else:
         result = TranscriptionModelSchema().dump(current_model).data
         return result, 201

@@ -14,7 +14,15 @@ def post(audioFile):
     try:
         filename = audio_files.save(audioFile)
     except flask_uploads.UploadNotAllowed:
-        return "Invalid upload format, must be an audio file", 415
+        error = {
+            "status": 415,
+            "reason": "Invalid file format for upload",
+            "errorMessage": "Invalid file format for audio upload, must be an audio file."
+                            " Got filename {} , allowed extensions are {}".format(audioFile.filename, audio_files.extensions),
+            "userErrorMessage": "Invalid file format for audion upload, must be an audio file."
+                                " Got filename {} , allowed extensions are {}".format(audioFile.filename, audio_files.extensions),
+        }
+        return error, 415
     else:
         file_url = uploads_url_base + 'audio_uploads/' + filename
         metadata = FileMetaData(path=file_url, name=filename)
