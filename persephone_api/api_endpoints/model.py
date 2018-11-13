@@ -94,7 +94,15 @@ def post(modelInfo):
     min_epochs = modelInfo.get('minimumEpochs', 0)
     max_epochs = modelInfo.get('maximumEpochs', None)
     if max_epochs and min_epochs > max_epochs:
-        return "minimum number of epochs must be smaller than maximum", 400
+        error = {
+            "status": 400,
+            "reason": "Minimum epochs must be smaller than the maximum.",
+            "errorMessage": "Minimum epochs must be smaller than the maximum."
+                            "Got max: {} min: {}".format(max_epochs, min_epochs),
+            "userErrorMessage": "Minimum epochs must be smaller than the maximum."
+                                "Got max: {} min: {}".format(max_epochs, min_epochs),
+        }
+        return error, 400
 
     early_stopping_steps = modelInfo.get('earlyStoppingSteps', None)
     num_layers = modelInfo.get('numberLayers', 3)
