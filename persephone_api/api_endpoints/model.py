@@ -139,7 +139,13 @@ def post(modelInfo):
     try:
         db.session.commit()
     except sqlalchemy.exc.IntegrityError:
-        return "Invalid model provided", 400
+        error = {
+            "status": 400,
+            "reason": "Database error",
+            "errorMessage": "Database error",
+            "userErrorMessage": "Database error",
+        }
+        return error, 400
     else:
         result = TranscriptionModelSchema().dump(current_model).data
         return result, 201
