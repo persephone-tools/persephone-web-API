@@ -19,6 +19,14 @@ def post(utteranceInfo):
     transcriptionId = utteranceInfo['transcriptionId']
     existing_utterance = DBUtterance.query.filter_by(audio_id=audioId, transcription_id=transcriptionId).first()
     if existing_utterance:
+        error = {
+            "status": 409,
+            "reason": "This utterance already exists",
+            "errorMessage": "This utterance with audio id {} and transcription ID of {}"
+                            " already exists and has id {}".format(audio_id, transcription_id, existing_utterance),
+            "userErrorMessage": "This utterance with audio id {} and transcription ID of {}"
+                                " already exists and has id {}".format(audio_id, transcription_id, existing_utterance),
+        }
         return "Utterance already exists", 409
     try:
         current_utterance = DBUtterance(audio_id=audioId, transcription_id=transcriptionId)
