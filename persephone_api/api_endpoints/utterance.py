@@ -27,7 +27,7 @@ def post(utteranceInfo):
             "userErrorMessage": "This utterance with audio id {} and transcription ID of {}"
                                 " already exists and has id {}".format(audioId, transcriptionId, existing_utterance),
         }
-        return "Utterance already exists", 409
+        return error, 409
     try:
         current_utterance = DBUtterance(audio_id=audioId, transcription_id=transcriptionId)
         db.session.add(current_utterance)
