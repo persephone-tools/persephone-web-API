@@ -493,6 +493,25 @@ definitions:
           testing:
             $ref: "#/definitions/utteranceGroup"
             description: "Utterances in testing set"
+  errorMessage:
+    type: "object"
+    required:
+      - "status"
+      - "reason"
+    properties:
+      status:
+        type: "integer"
+        format: "int32"
+        description: "HTTP response status code"
+      reason:
+        type: "string"
+        description: "Reason"
+      errorMessage:
+        type: "string"
+        description: "error message for developers"
+      userErrorMessage:
+        type: "string"
+        description: "error message to show end users"
   featureType:
     type: "string"
     description: "The type of the features"
