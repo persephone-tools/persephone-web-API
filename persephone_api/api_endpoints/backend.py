@@ -12,7 +12,7 @@ AVAILABLE_LABEL_TYPES = [
         "name": "phonemes",
         "description": "Phoneme labels",
         "explanation": "Labels that correspond to phonemes. Note there can be more than one character per label, "
-                       "for exmaple in Na texts, a 'mmm...' (nasal filled pause) and 'əəə...' (oral filled pause) can be used to "
+                       "for example in Na texts, a 'mmm...' (nasal filled pause) and 'əəə...' (oral filled pause) can be used to "
                        "indicate pauses. These units are declared as such, i.e. 'əəə...' is not a sequence of three vowels but one object.",
     },
     {
@@ -21,7 +21,7 @@ AVAILABLE_LABEL_TYPES = [
         "description": "Phonemes labels with additional information about tones.",
         "explanation": "Labels that correspond to phonemes and tones. Tones can be represented by characters such as \"˩\", \"˥\", \"˧\" "
                        "Note there can be more than one character per label, "
-                       "for exmaple in Na texts, a 'mmm...' (nasal filled pause) and 'əəə...' (oral filled pause) can be used to "
+                       "for example in Na texts, a 'mmm...' (nasal filled pause) and 'əəə...' (oral filled pause) can be used to "
                        "indicate pauses. These units are declared as such, i.e. 'əəə...' is not a sequence of three vowels but one object.",
     },
 ]
