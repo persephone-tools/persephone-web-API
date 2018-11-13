@@ -19,7 +19,13 @@ def from_file(transcriptionFile):
     try:
         filename = text_files.save(transcriptionFile)
     except flask_uploads.UploadNotAllowed:
-        return "Invalid upload format, must be a text file", 415
+        error = {
+            "status": 415,
+            "reason": "Invalid file format for transcription upload",
+            "errorMessage": "Invalid file format for transcription upload, must be a text file",
+            "userErrorMessage": "Invalid file format for transcription upload, must be a text file",
+        }
+        return error, 415
     else:
         file_url = uploads_url_base + 'text_uploads/' + filename
         metadata = FileMetaData(path=file_url, name=filename)
