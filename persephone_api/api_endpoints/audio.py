@@ -17,8 +17,10 @@ def post(audioFile):
         error = {
             "status": 415,
             "reason": "Invalid file format for upload",
-            "errorMessage": "Invalid file format for upload, must be an audio file",
-            "userErrorMessage": "Invalid file format for upload, must be an audio file",
+            "errorMessage": "Invalid file format for audio upload, must be an audio file."
+                            " Got filename {} , allowed extensions are {}".format(audioFile.filename, audio_files.extensions),
+            "userErrorMessage": "Invalid file format for audion upload, must be an audio file."
+                                " Got filename {} , allowed extensions are {}".format(audioFile.filename, audio_files.extensions),
         }
         return error, 415
     else:
