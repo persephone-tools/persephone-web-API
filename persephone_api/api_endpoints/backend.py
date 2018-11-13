@@ -36,6 +36,12 @@ AVAILABLE_FEATURE_TYPES = [
     }
 ]
 
+# TODO build this from the backend capabilities directly
+ACCEPTED_UPLOAD_TYPES = {
+    "audio": ["wav", "wave"],
+    "transcription": ["txt", "phonemes", "phonemes_and_tones"],
+}
+
 def search():
     """
     Handle a get request for the backend information
@@ -57,4 +63,4 @@ def supported_features():
 
 def accepted_filetypes():
     """Return information about file types that are accepted for uploads"""
-    raise NotImplementedError
+    return ACCEPTED_UPLOAD_TYPES, 200
