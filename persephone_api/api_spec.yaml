@@ -75,6 +75,14 @@ paths:
           description: success
           schema:
             $ref: "#/definitions/backendInformation"
+  /backend/acceptedFiles:
+    get:
+      operationId: persephone_api.api_endpoints.backend.accepted_filetypes
+      summary: "Get information about which file types are accepted by the backend"
+      responses:
+        200:
+          description: success
+
   /backend/labelTypes:
     get:
       operationId: persephone_api.api_endpoints.backend.supported_labels

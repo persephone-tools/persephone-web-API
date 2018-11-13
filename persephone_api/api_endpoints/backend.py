@@ -12,7 +12,7 @@ AVAILABLE_LABEL_TYPES = [
         "name": "phonemes",
         "description": "Phoneme labels",
         "explanation": "Labels that correspond to phonemes. Note there can be more than one character per label, "
-                       "for exmaple in Na texts, a 'mmm...' (nasal filled pause) and 'əəə...' (oral filled pause) can be used to "
+                       "for example in Na texts, a 'mmm...' (nasal filled pause) and 'əəə...' (oral filled pause) can be used to "
                        "indicate pauses. These units are declared as such, i.e. 'əəə...' is not a sequence of three vowels but one object.",
     },
     {
@@ -21,7 +21,7 @@ AVAILABLE_LABEL_TYPES = [
         "description": "Phonemes labels with additional information about tones.",
         "explanation": "Labels that correspond to phonemes and tones. Tones can be represented by characters such as \"˩\", \"˥\", \"˧\" "
                        "Note there can be more than one character per label, "
-                       "for exmaple in Na texts, a 'mmm...' (nasal filled pause) and 'əəə...' (oral filled pause) can be used to "
+                       "for example in Na texts, a 'mmm...' (nasal filled pause) and 'əəə...' (oral filled pause) can be used to "
                        "indicate pauses. These units are declared as such, i.e. 'əəə...' is not a sequence of three vowels but one object.",
     },
 ]
@@ -35,6 +35,12 @@ AVAILABLE_FEATURE_TYPES = [
                        "See https://en.wikipedia.org/wiki/Mel_scale for more information about the Mel scale used here."
     }
 ]
+
+# TODO build this from the backend capabilities directly
+ACCEPTED_UPLOAD_TYPES = {
+    "audio": ["wav", "wave"],
+    "transcription": ["txt", "phonemes", "phonemes_and_tones"],
+}
 
 def search():
     """
@@ -54,3 +60,7 @@ def supported_labels():
 def supported_features():
     """Return info about supported features types"""
     return AVAILABLE_FEATURE_TYPES, 200
+
+def accepted_filetypes():
+    """Return information about file types that are accepted for uploads"""
+    return ACCEPTED_UPLOAD_TYPES, 200
