@@ -1,9 +1,8 @@
-def test_invalid_file_upload(client):
+def test_transcription_invalid_file_upload(client):
     """Test that accidentally uploading a non-text file (such as a wav file)
     triggers an error"""
     import io
-    WAV_MAGIC_BYTES = b'RIFF....WAVE'
-    data = {'audioFile': (io.BytesIO(WAV_MAGIC_BYTES), 'accidental_wav_file.wav')}
+    data = {'transcriptionFile': (io.BytesIO(b"Wrong extension/format"), 'badFileFormat.xyz')}
     response = client.post(
         ('/v0.1/transcription/fromFile'),
         data=data,
@@ -14,6 +13,25 @@ def test_invalid_file_upload(client):
     import json
     wav_response_data = json.loads(response.data.decode('utf8'))
     assert wav_response_data['status'] == 415
+
+def test_transcription_invalid_wav_file_upload(client):
+    """Test that accidentally uploading a non-text file (such as a wav file)
+    triggers an error"""
+    import io
+    WAV_MAGIC_BYTES = b'RIFF....WAVE'
+    data = {'transcriptionFile': (io.BytesIO(WAV_MAGIC_BYTES), 'accidental_wav_file.wav')}
+    response = client.post(
+        ('/v0.1/transcription/fromFile'),
+        data=data,
+        content_type='multipart/form-data'
+    )
+    assert response.status_code == 415
+
+    import json
+    wav_response_data = json.loads(response.data.decode('utf8'))
+    assert wav_response_data['status'] == 415
+
+
 
 def test_transcription_uploads_endpoint(client):
     """Test transcription upload endpoint works"""
