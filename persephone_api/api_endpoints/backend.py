@@ -54,3 +54,7 @@ def supported_labels():
 def supported_features():
     """Return info about supported features types"""
     return AVAILABLE_FEATURE_TYPES, 200
+
+def accepted_filetypes():
+    """Return information about file types that are accepted for uploads"""
+    raise NotImplementedError
