@@ -33,7 +33,13 @@ def post(utteranceInfo):
         db.session.add(current_utterance)
         db.session.commit()
     except sqlalchemy.exc.IntegrityError:
-        return "Invalid ID provided", 400
+        error = {
+            "status": 400,
+            "reason": "Database error",
+            "errorMessage": "Database error",
+            "userErrorMessage": "Database error",
+        }
+        return error, 400
     else:
         result = UtteranceSchema().dump(current_utterance).data
         return result, 201
