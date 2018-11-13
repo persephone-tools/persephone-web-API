@@ -22,8 +22,10 @@ def from_file(transcriptionFile):
         error = {
             "status": 415,
             "reason": "Invalid file format for transcription upload",
-            "errorMessage": "Invalid file format for transcription upload, must be a text file",
-            "userErrorMessage": "Invalid file format for transcription upload, must be a text file",
+            "errorMessage": "Invalid file format for transcription upload, must be a text file."
+                             " Got filename {} , allowed extensions are {}".format(transcriptionFile.filename, text_files.extensions),
+            "userErrorMessage": "Invalid file format for transcription upload, must be a text file"
+                                " Got filename {} , allowed extensions are {}".format(transcriptionFile.filename, text_files.extensions),
         }
         return error, 415
     else:
