@@ -184,3 +184,9 @@ This tooling creates and hosts a web frontend that shows you the various API end
 Load up the API explorer page by navigating to `/v0.1/ui/` (Note that the version prefix will depend on the version of the API being served).
 
 If you find yourself needing to construct more complex web requests we would recommend you look into a tool such as `Postman <https://www.getpostman.com/>`_ for ease of API testing.
+
+Support
+-------
+
+If you find an issue or bug with this code please open an issue on the `issues tracker <https://github.com/aapeliv/persephone-web-API/issues>`_.
+Please use the `discussion mailing list <https://lists.persephone-asr.org/postorius/lists/discuss.lists.persephone-asr.org/`_ to discuss other questions regarding this project.
