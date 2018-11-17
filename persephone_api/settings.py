@@ -11,7 +11,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # Enable Cross-Origin Resource Sharing headers
-    ENABLE_CORS = False
+    ENABLE_CORS = True
 
 
 class ProdConfig(Config):
