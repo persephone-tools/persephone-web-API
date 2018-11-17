@@ -14,6 +14,7 @@ from persephone import rnn_ctc
 from persephone.corpus_reader import CorpusReader
 from persephone import model
 
+from ..error_response import error_information
 from ..extensions import db
 from ..db_models import DBcorpus, TranscriptionModel, Audio
 from ..serialization import TranscriptionModelSchema
@@ -89,27 +90,22 @@ def post(modelInfo):
     """Create a new transcription model"""
     current_corpus = DBcorpus.query.get(modelInfo['corpusID'])
     if current_corpus is None:
-        error = {
-            "status": 400,
-            "reason": "The corpus ID provided is not available",
-            "errorMessage": "The corpus ID provided is not available",
-            "userErrorMessage": "The corpus ID provided is not available, "
-                                "make sure the corpus your model is using exists first.",
-        }
-        return error, 400
+        return error_information(
+            status=400,
+            title="The corpus ID provided is not available",
+            detail="The corpus ID provided is not available, "
+                   "make sure the corpus your model is using exists first.",
+        )
 
     min_epochs = modelInfo.get('minimumEpochs', 0)
     max_epochs = modelInfo.get('maximumEpochs', None)
     if max_epochs and min_epochs > max_epochs:
-        error = {
-            "status": 400,
-            "reason": "Minimum epochs must be smaller than the maximum.",
-            "errorMessage": "Minimum epochs must be smaller than the maximum."
-                            "Got max: {} min: {}".format(max_epochs, min_epochs),
-            "userErrorMessage": "Minimum epochs must be smaller than the maximum."
-                                "Got max: {} min: {}. Check your parameters".format(max_epochs, min_epochs),
-        }
-        return error, 400
+        return error_information(
+            status=400,
+            title="Minimum epochs must be smaller than the maximum.",
+            detail="Minimum epochs must be smaller than the maximum."
+                   "Got max: {} min: {}. Check your parameters".format(max_epochs, min_epochs),
+        )
 
     early_stopping_steps = modelInfo.get('earlyStoppingSteps', None)
     num_layers = modelInfo.get('numberLayers', 3)
@@ -139,13 +135,11 @@ def post(modelInfo):
     try:
         db.session.commit()
     except sqlalchemy.exc.IntegrityError:
-        error = {
-            "status": 400,
-            "reason": "Database error",
-            "errorMessage": "Database error",
-            "userErrorMessage": "Database error",
-        }
-        return error, 400
+        return error_information(
+            status=400,
+            title="Database error",
+            detail="Database error",
+        )
     else:
         result = TranscriptionModelSchema().dump(current_model).data
         return result, 201

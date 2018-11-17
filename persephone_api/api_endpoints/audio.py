@@ -4,25 +4,24 @@ This deals with the API access for audio files uploading/downloading.
 """
 import flask_uploads
 
+from ..error_response import error_information
 from ..extensions import db
 from ..db_models import Audio, FileMetaData
 from ..upload_config import audio_files, uploads_url_base
 from ..serialization import AudioSchema
+
 
 def post(audioFile):
     """handle POST request for audio file"""
     try:
         filename = audio_files.save(audioFile)
     except flask_uploads.UploadNotAllowed:
-        error = {
-            "status": 415,
-            "reason": "Invalid file format for upload",
-            "errorMessage": "Invalid file format for audio upload, must be an audio file."
-                            " Got filename {} , allowed extensions are {}".format(audioFile.filename, audio_files.extensions),
-            "userErrorMessage": "Invalid file format for audion upload, must be an audio file."
-                                " Got filename {} , allowed extensions are {}".format(audioFile.filename, audio_files.extensions),
-        }
-        return error, 415
+        return error_information(
+            status=415,
+            title="Invalid file format for audio upload",
+            detail="Invalid file format for audio upload, must be an audio file."
+                   " Got filename {} , allowed extensions are {}".format(audioFile.filename, audio_files.extensions),
+        )
     else:
         file_url = uploads_url_base + 'audio_uploads/' + filename
         metadata = FileMetaData(path=file_url, name=filename)

@@ -4,6 +4,7 @@ This deals with the API access for transcription files uploading/downloading.
 """
 import flask_uploads
 
+from ..error_response import error_information
 from ..extensions import db
 from ..db_models import Transcription, FileMetaData
 from ..upload_config import text_files, uploads_url_base
@@ -19,15 +20,12 @@ def from_file(transcriptionFile):
     try:
         filename = text_files.save(transcriptionFile)
     except flask_uploads.UploadNotAllowed:
-        error = {
-            "status": 415,
-            "reason": "Invalid file format for transcription upload",
-            "errorMessage": "Invalid file format for transcription upload, must be a text file."
-                             " Got filename {} , allowed extensions are {}".format(transcriptionFile.filename, text_files.extensions),
-            "userErrorMessage": "Invalid file format for transcription upload, must be a text file"
-                                " Got filename {} , allowed extensions are {}".format(transcriptionFile.filename, text_files.extensions),
-        }
-        return error, 415
+        return error_information(
+            status=415,
+            title="Invalid file format for transcription upload",
+            detail="Invalid file format for transcription upload, must be a text file"
+                   " Got filename {} , allowed extensions are {}".format(transcriptionFile.filename, text_files.extensions),
+        )
     else:
         file_url = uploads_url_base + 'text_uploads/' + filename
         metadata = FileMetaData(path=file_url, name=filename)

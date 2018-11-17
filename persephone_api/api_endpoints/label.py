@@ -3,6 +3,7 @@ import unicodedata
 
 import sqlalchemy
 
+from ..error_response import error_information
 from ..extensions import db
 from ..db_models import Label
 from ..serialization import LabelSchema
@@ -30,18 +31,13 @@ def post(labelInfo):
     try:
         db.session.commit()
     except sqlalchemy.exc.IntegrityError:
-        error = {
-            "status": 400,
-            "reason": "Duplicate label provided",
-            "errorMessage": "Can't create the label {} as it already exists in the database. "
-                            "Note that because we use NFC Unicode normalization 2 identical labels can come up as duplicates "
-                            "if specified with different unicode codepoints".format(raw_label),
-            "userErrorMessage": "Can't create the label {} as it already exists in the database. "
-                                "Note that because we use NFC Unicode normalization 2 identical labels can come up as duplicates "
-                                "if specified with different unicode codepoints".format(raw_label),
-        }
-
-        return error, 400
+        return error_information(
+            status=400,
+            title="Duplicate label provided",
+            detail="Can't create the label {} as it already exists in the database. "
+                    "Note that because we use NFC Unicode normalization 2 identical labels can come up as duplicates "
+                    "if specified with different unicode codepoints".format(raw_label),
+        )
     else:
         result = LabelSchema().dump(current_label).data
         return result, 201
