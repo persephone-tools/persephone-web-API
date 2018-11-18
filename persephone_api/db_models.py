@@ -49,6 +49,7 @@ class Transcription(db.Model):
     url = db.Column(db.String)
     name = db.Column(db.String)
 
+    text = db.Column(db.UnicodeText)
     in_utterances = db.relationship("DBUtterance", cascade="all, delete-orphan")
 
     file_info = db.relationship('FileMetaData')
