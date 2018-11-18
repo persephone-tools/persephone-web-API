@@ -334,7 +334,11 @@ paths:
 
   /transcription:
     get:
-      summary: "Retrieve all transcriptions that are currently available"
+      description: "Get available transcriptions"
+      summary: "Retrieve all transcriptions that are currently available. Paging is supported."
+      parameters:
+        - $ref: "#/parameters/pageSize"
+        - $ref: "#/parameters/pageNumber"
       responses:
         200:
           description: success
@@ -362,7 +366,6 @@ paths:
           description: "Bad filetype"
           schema:
             $ref: "#/definitions/errorMessage"
-
   /transcription/{transcriptionID}:
     get:
       summary: "Get information about an uploaded transcription file"
@@ -733,8 +736,10 @@ parameters:
     in: query
     description: Number of results returned
     type: integer
+    format: int32
   pageNumber:
     name: pageNumber
     in: query
     description: Page number
     type: integer
+    format: int32
