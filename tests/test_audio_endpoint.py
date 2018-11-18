@@ -30,3 +30,26 @@ def test_audio_uploads_endpoint(client):
     import json
     wav_response_data = json.loads(response.data.decode('utf8'))
     assert wav_response_data['id']
+
+def test_audio_search_endpoint(client):
+    """Test that the audio search endpoint works with no parameters provided"""
+    import io
+    WAV_MAGIC_BYTES = b'RIFF....WAVE'
+    data = {'audioFile': (io.BytesIO(WAV_MAGIC_BYTES), 'test_wav_file.wav')}
+    response = client.post(
+        ('/v0.1/audio'),
+        data=data,
+        content_type='multipart/form-data'
+    )
+    assert response.status_code == 201
+
+    import json
+    wav_response_data = json.loads(response.data.decode('utf8'))
+    assert wav_response_data['id']
+    wav_id = wav_response_data['id']
+    response = client.get(
+        '/v0.1/audio',
+    )
+    assert response.status_code == 200
+    response_data = json.loads(response.data.decode('utf8'))
+    assert response_data[0]['id'] == wav_id
