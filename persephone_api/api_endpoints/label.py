@@ -1,12 +1,11 @@
 """Handlers for phonetic label functionality"""
-import unicodedata
-
 import sqlalchemy
 
 from ..error_response import error_information
 from ..extensions import db
 from ..db_models import Label
 from ..serialization import LabelSchema
+from ..unicode_handling import normalize
 
 def search():
     """Handle request for all available labels"""
@@ -22,9 +21,8 @@ def post(labelInfo):
     """
 
     raw_label = labelInfo['phoneticLabel']
-    NFC_normalized_label = unicodedata.normalize("NFC", raw_label)
     current_label = Label(
-        label=NFC_normalized_label
+        label=normalize(raw_label)
     )
 
     db.session.add(current_label)
