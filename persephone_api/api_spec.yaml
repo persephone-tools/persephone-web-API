@@ -726,3 +726,15 @@ definitions:
     description: "URI for utterance objects"
     type: "integer"
     format: "int64"
+
+parameters:
+  pageSize:
+    name: pageSize
+    in: query
+    description: Number of results returned
+    type: integer
+  pageNumber:
+    name: pageNumber
+    in: query
+    description: Page number
+    type: integer
