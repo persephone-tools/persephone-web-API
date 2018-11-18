@@ -391,7 +391,10 @@ paths:
 
   /utterance:
     get:
-      summary: "Retrieve all utterances that are currently available"
+      summary: "Retrieve utterances that are currently available"
+      parameters:
+        - $ref: "#/parameters/pageSize"
+        - $ref: "#/parameters/pageNumber"
       responses:
         200:
           description: success
