@@ -53,3 +53,33 @@ def test_audio_search_endpoint(client):
     assert response.status_code == 200
     response_data = json.loads(response.data.decode('utf8'))
     assert response_data[0]['id'] == wav_id
+
+
+def test_audio_pagination(client):
+    """Test that we can get pagination of results"""
+    import io
+    WAV_MAGIC_BYTES = b'RIFF....WAVE'
+    for t in range(10):
+        filename = 'test_wav_file_{}.wav'.format(t)
+        data = {'audioFile': (io.BytesIO(WAV_MAGIC_BYTES), filename)}
+        response = client.post(
+            ('/v0.1/audio'),
+            data=data,
+            content_type='multipart/form-data'
+        )
+        assert response.status_code == 201
+
+    response = client.get(
+        '/v0.1/audio?pageSize=6&pageNumber=1',
+    )
+    assert response.status_code == 200
+    import json
+    response_data = json.loads(response.data.decode('utf8'))
+    assert len(response_data) == 6
+
+    response = client.get(
+        '/v0.1/audio?pageSize=6&pageNumber=2',
+    )
+    assert response.status_code == 200
+    response_data = json.loads(response.data.decode('utf8'))
+    assert len(response_data) == 4 # only 4 items remaining
