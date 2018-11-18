@@ -81,7 +81,7 @@ def search(pageNumber=1, pageSize=20):
         page=pageNumber, per_page=pageSize, error_out=True
     )
     json_results = [TranscriptionModelSchema().dump(model).data for model in paginated_results.items]
-    return results, 200
+    return json_results, 200
 
 def get(modelID):
     """ Get a model by its ID"""
