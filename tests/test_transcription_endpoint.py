@@ -68,6 +68,7 @@ def test_search_endpoint(client):
     )
     assert response.status_code == 200
     response_data = json.loads(response.data.decode('utf8'))
+    assert response_data[0]['id'] == transcription_id
 
 def test_transcription_pagination(client):
     """Test that we can get pagination of results"""
