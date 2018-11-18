@@ -75,12 +75,12 @@ def create_RNN_CTC_model(model_db: TranscriptionModel, corpus_storage_path: Path
         decoding_merge_repeated=model_db.decoding_merge_repeated
         )
 
-def search():
+def search(pageNumber=1, pageSize=20):
     """Handle request to search over all models"""
-    results = []
-    for row in db.session.query(TranscriptionModel):
-        serialized = TranscriptionModelSchema().dump(row).data
-        results.append(serialized)
+    paginated_results = TranscriptionModel.query.paginate(
+        page=pageNumber, per_page=pageSize, error_out=True
+    )
+    json_results = [TranscriptionModelSchema().dump(model).data for model in paginated_results.items]
     return results, 200
 
 def get(modelID):

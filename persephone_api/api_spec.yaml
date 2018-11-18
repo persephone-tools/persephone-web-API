@@ -246,7 +246,10 @@ paths:
           description: "label created"
   /model:
     get:
-      summary: "Retrieve all models that are currently available"
+      summary: "Retrieve models that are currently available"
+      parameters:
+        - $ref: "#/parameters/pageSize"
+        - $ref: "#/parameters/pageNumber"
       responses:
         200:
           description: success
