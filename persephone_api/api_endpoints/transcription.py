@@ -54,8 +54,8 @@ def get(transcriptionID):
     return result, 200
 
 
-def search():
+def search(pageNumber=1, pageSize=20):
     """Search transcription files"""
-    results = Transcription.query.all()
+    results = Transcription.query.paginate(page=pageNumber, per_page=pageSize, error_out=True)
     json_results = [TranscriptionSchema().dump(transcription).data for transcription in results]
     return json_results, 200
