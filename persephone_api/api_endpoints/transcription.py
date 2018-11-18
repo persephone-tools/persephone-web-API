@@ -29,11 +29,11 @@ def from_file(transcriptionFile):
                    " Got filename {} , allowed extensions are {}".format(transcriptionFile.filename, text_files.extensions),
         )
     else:
-        with open(filename, 'w') as transcription_file:
-            normalized_text = normalize(transcriptionFile.stream.read().decode('utf-8'))
-            # we have to write the normalized text back to the filesystem to support
-            # the filesystem conventions of persephone
-            #transcription_file.write(normalized_text)
+        normalized_text = normalize(transcriptionFile.stream.read().decode('utf-8'))
+        #with open(filename, 'w') as transcription_file:           
+        #    # we have to write the normalized text back to the filesystem to support
+        #    # the filesystem conventions of persephone
+        #    transcription_file.write(normalized_text)
         file_url = uploads_url_base + 'text_uploads/' + filename
         metadata = FileMetaData(path=file_url, name=filename)
         current_transcription = Transcription(file_info=metadata, url=file_url, name=filename, text=normalized_text)

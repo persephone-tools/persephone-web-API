@@ -85,7 +85,6 @@ def test_transcription_pagination(client):
 
     response = client.get(
         '/v0.1/transcription?pageSize=6&pageNumber=1',
-        data=payload,
     )
     assert response.status_code == 200
     import json
@@ -94,7 +93,6 @@ def test_transcription_pagination(client):
 
     response = client.get(
         '/v0.1/transcription?pageSize=6&pageNumber=2',
-        data=payload,
     )
     assert response.status_code == 200
     response_data = json.loads(response.data.decode('utf8'))
