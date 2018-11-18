@@ -41,11 +41,11 @@ def post(utteranceInfo):
         result = UtteranceSchema().dump(current_utterance).data
         return result, 201
 
-def search():
+def search(pageNumber=1, pageSize=20):
     """Search available utterances"""
-    results = DBUtterance.query.all()
+    paginated_results = DBUtterance.query.paginate(page=pageNumber, per_page=pageSize, error_out=True)
     json_results = []
-    for ut in results:
+    for ut in paginated_results.items:
         json_results.append(
             UtteranceSchema().dump(ut).data
         )

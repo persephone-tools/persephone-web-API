@@ -22,7 +22,10 @@ produces:
 paths:
   /audio:
     get:
-      summary: "Retrieve all audio files that are currently available"
+      summary: "Retrieve audio files that are currently available"
+      parameters:
+        - $ref: "#/parameters/pageSize"
+        - $ref: "#/parameters/pageNumber"
       responses:
         200:
           description: success
@@ -107,7 +110,10 @@ paths:
               $ref: "#/definitions/featureTypeInformation"
   /corpus:
     get:
-      summary: "Retrieve all models that are currently available"
+      summary: "Retrieve models that are currently available"
+      parameters:
+        - $ref: "#/parameters/pageSize"
+        - $ref: "#/parameters/pageNumber"
       responses:
         200:
           description: success
@@ -212,7 +218,10 @@ paths:
           description: "Corpus not found"
   /label:
     get:
-      summary: "Retrieve all phonetic labels that are currently available"
+      summary: "Retrieve phonetic labels that are currently available"
+      parameters:
+        - $ref: "#/parameters/pageSize"
+        - $ref: "#/parameters/pageNumber"
       responses:
         200:
           description: success
@@ -240,7 +249,10 @@ paths:
           description: "label created"
   /model:
     get:
-      summary: "Retrieve all models that are currently available"
+      summary: "Retrieve models that are currently available"
+      parameters:
+        - $ref: "#/parameters/pageSize"
+        - $ref: "#/parameters/pageNumber"
       responses:
         200:
           description: success
@@ -334,7 +346,11 @@ paths:
 
   /transcription:
     get:
-      summary: "Retrieve all transcriptions that are currently available"
+      description: "Get available transcriptions"
+      summary: "Retrieve all transcriptions that are currently available. Paging is supported."
+      parameters:
+        - $ref: "#/parameters/pageSize"
+        - $ref: "#/parameters/pageNumber"
       responses:
         200:
           description: success
@@ -362,7 +378,6 @@ paths:
           description: "Bad filetype"
           schema:
             $ref: "#/definitions/errorMessage"
-
   /transcription/{transcriptionID}:
     get:
       summary: "Get information about an uploaded transcription file"
@@ -385,7 +400,10 @@ paths:
 
   /utterance:
     get:
-      summary: "Retrieve all utterances that are currently available"
+      summary: "Retrieve utterances that are currently available"
+      parameters:
+        - $ref: "#/parameters/pageSize"
+        - $ref: "#/parameters/pageNumber"
       responses:
         200:
           description: success
@@ -726,3 +744,17 @@ definitions:
     description: "URI for utterance objects"
     type: "integer"
     format: "int64"
+
+parameters:
+  pageSize:
+    name: pageSize
+    in: query
+    description: Number of results returned
+    type: integer
+    format: int32
+  pageNumber:
+    name: pageNumber
+    in: query
+    description: Page number
+    type: integer
+    format: int32
