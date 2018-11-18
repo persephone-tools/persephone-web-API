@@ -14,11 +14,14 @@ from persephone import rnn_ctc
 from persephone.corpus_reader import CorpusReader
 from persephone import model
 
+from .corpus import labels_set
+
+from ..db_models import Audio, DBcorpus, FileMetaData, Transcription, TranscriptionModel
 from ..error_response import error_information
 from ..extensions import db
-from ..db_models import DBcorpus, TranscriptionModel, Audio
 from ..serialization import TranscriptionModelSchema
-from .corpus import labels_set
+from ..upload_config import uploads_url_base
+
 
 # quick and dirty way of persisting models, most certainly not fit for production
 # in a multi user environment
@@ -208,5 +211,17 @@ def transcribe(modelID, audioID):
         batch_x_lens_name="batch_x_lens:0",
         output_name="hyp_dense_decoded:0"
         )
+
+    transcribed_filename = "transcribed-{}".format(audio_info.file_info.name)
+    file_url = uploads_url_base + 'text_uploads/' + transcribed_filename
+    metadata = FileMetaData(path=file_url, name=transcribed_filename)
+    current_transcription = Transcription(
+        file_info=metadata,
+        url=file_url,
+        name=transcribed_filename,
+        text=results[0][0]
+    )
+    db.session.add(current_transcription)
+    db.session.commit()
 
     return results[0], 201
