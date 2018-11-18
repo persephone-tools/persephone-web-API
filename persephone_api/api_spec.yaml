@@ -22,7 +22,7 @@ produces:
 paths:
   /audio:
     get:
-      summary: "Retrieve all audio files that are currently available"
+      summary: "Retrieve audio files that are currently available"
       parameters:
         - $ref: "#/parameters/pageSize"
         - $ref: "#/parameters/pageNumber"
