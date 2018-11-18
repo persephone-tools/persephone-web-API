@@ -43,8 +43,8 @@ def get(audioID):
     result = AudioSchema().dump(audio_info).data
     return result, 200
 
-def search():
+def search(pageNumber=1, pageSize=20):
     """Search audio files"""
-    results = Audio.query.all()
-    json_results = [AudioSchema().dump(audio).data for audio in results]
+    paginated_results = Audio.query.paginate(page=pageNumber, per_page=pageSize, error_out=True)
+    json_results = [AudioSchema().dump(audio).data for audio in paginated_results.items]
     return json_results, 200
