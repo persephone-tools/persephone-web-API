@@ -215,11 +215,15 @@ def transcribe(modelID, audioID):
     transcribed_filename = "transcribed-{}".format(audio_info.file_info.name)
     file_url = uploads_url_base + 'text_uploads/' + transcribed_filename
     metadata = FileMetaData(path=file_url, name=transcribed_filename)
+    try:
+        text = results[0][0]
+    except IndexError:
+        text = ""
     current_transcription = Transcription(
         file_info=metadata,
         url=file_url,
         name=transcribed_filename,
-        text=results[0][0]
+        text=text
     )
     db.session.add(current_transcription)
     db.session.commit()
