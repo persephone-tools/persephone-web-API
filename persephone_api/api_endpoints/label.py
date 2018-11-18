@@ -16,7 +16,7 @@ def search():
 def post(labelInfo):
     """Create a new phonetic label
 
-    We are normalizing all labels with NFC to handle the potential duplicates.
+    This will be stored in a normalized form in the database.
     Refer to https://unicode.org/reports/tr15/ for details about how this works.
     """
 
