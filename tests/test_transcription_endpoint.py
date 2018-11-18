@@ -32,7 +32,6 @@ def test_transcription_invalid_wav_file_upload(client):
     assert wav_response_data['status'] == 415
 
 
-
 def test_transcription_uploads_endpoint(client):
     """Test transcription upload endpoint works"""
     import io
@@ -65,7 +64,7 @@ def test_search_endpoint(client):
     assert transcription_response_data['id']
     transcription_id = transcription_response_data['id']
     response = client.get(
-        '/v0.1/transcription/',
+        '/v0.1/transcription',
     )
     assert response.status_code == 200
     response_data = json.loads(response.data.decode('utf8'))
@@ -84,9 +83,8 @@ def test_transcription_pagination(client):
         )
         assert response.status_code == 201
 
-    payload = {"pageSize": 6, "pageNumber": 1}
     response = client.get(
-        '/v0.1/transcription/',
+        '/v0.1/transcription?pageSize=6&pageNumber=1',
         data=payload,
     )
     assert response.status_code == 200
@@ -94,10 +92,9 @@ def test_transcription_pagination(client):
     response_data = json.loads(response.data.decode('utf8'))
     assert len(response_data) == 6
 
-    payload = {"pageSize": 6, "pageNumber": 2}
     response = client.get(
-        '/v0.1/transcription/',
-        params=payload,
+        '/v0.1/transcription?pageSize=6&pageNumber=2',
+        data=payload,
     )
     assert response.status_code == 200
     response_data = json.loads(response.data.decode('utf8'))
