@@ -134,10 +134,11 @@ def fix_corpus_format(corpus):
     }
     return fixed_format
 
-def search():
+def search(pageNumber=1, pageSize=20):
     """Handle request for all available DBcorpus"""
+    paginated_results = DBcorpus.query.paginate(page=pageNumber, per_page=pageSize, error_out=True)
     results = []
-    for row in db.session.query(DBcorpus):
+    for row in paginated_results.items:
         serialized = fix_corpus_format(CorpusSchema().dump(row).data)
         results.append(serialized)
     return results, 200
