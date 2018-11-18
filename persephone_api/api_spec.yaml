@@ -218,7 +218,10 @@ paths:
           description: "Corpus not found"
   /label:
     get:
-      summary: "Retrieve all phonetic labels that are currently available"
+      summary: "Retrieve phonetic labels that are currently available"
+      parameters:
+        - $ref: "#/parameters/pageSize"
+        - $ref: "#/parameters/pageNumber"
       responses:
         200:
           description: success

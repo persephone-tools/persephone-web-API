@@ -7,10 +7,10 @@ from ..db_models import Label
 from ..serialization import LabelSchema
 from ..unicode_handling import normalize
 
-def search():
-    """Handle request for all available labels"""
-    results = Label.query.all()
-    json_results = [LabelSchema().dump(label).data for label in results]
+def search(pageNumber=1, pageSize=20):
+    """Handle request for searching available labels"""
+    paginated_results = Label.query.paginate(page=pageNumber, per_page=pageSize, error_out=True)
+    json_results = [LabelSchema().dump(label).data for label in paginated_results.items]
     return json_results, 200
 
 def post(labelInfo):
