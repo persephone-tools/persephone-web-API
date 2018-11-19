@@ -57,12 +57,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: audioID
-          in: path
-          description: "ID of audio file to return information about"
-          required: true
-          type: integer
-          format: "int64"
+        - $ref: "#/parameters/audioID"
       responses:
         200:
           description: success
@@ -163,12 +158,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: corpusID
-          in: path
-          description: "ID of corpus to return information about"
-          required: true
-          type: integer
-          format: "int64"
+        - $ref: "#/parameters/corpusID"
       responses:
         200:
           description: success
@@ -183,12 +173,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: corpusID
-          in: path
-          description: "ID of corpus to return label set for"
-          required: true
-          type: integer
-          format: "int64"
+        - $ref: "#/parameters/corpusID"
       responses:
         200:
           description: success
@@ -203,12 +188,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: corpusID
-          in: path
-          description: "ID of corpus to preprocess"
-          required: true
-          type: integer
-          format: "int64"
+        - $ref: "#/parameters/corpusID"
       responses:
         200:
           description: success
@@ -284,12 +264,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: modelID
-          in: path
-          description: "ID of model to return information about"
-          required: true
-          type: integer
-          format: "int64"
+        - $ref: "#/parameters/modelID"
       responses:
         200:
           description: success
@@ -304,12 +279,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: modelID
-          in: path
-          description: "ID of model to train"
-          required: true
-          type: integer
-          format: "int64"
+        - $ref: "#/parameters/modelID"
       responses:
         202:
           description: "Accepted for processing"
@@ -324,18 +294,8 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: modelID
-          in: path
-          description: "ID of model being used"
-          required: true
-          type: integer
-          format: "int64"
-        - name: audioID
-          in: path
-          description: "ID of audio file being transcribed"
-          required: true
-          type: integer
-          format: "int64"
+        - $ref: "#/parameters/modelID"
+        - $ref: "#/parameters/audioID"
       responses:
         202:
           description: "Accepted for processing"
@@ -746,6 +706,27 @@ definitions:
     format: "int64"
 
 parameters:
+  audioID:
+    name: audioID
+    in: path
+    description: ID of audio file
+    required: true
+    type: integer
+    format: "int64"
+  corpusID:
+    name: corpusID
+    in: path
+    description: ID of corpus
+    required: true
+    type: integer
+    format: "int64"
+  modelID:
+    name: modelID
+    in: path
+    description: ID of model
+    required: true
+    type: integer
+    format: "int64"
   pageSize:
     name: pageSize
     in: query
