@@ -57,12 +57,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: audioID
-          in: path
-          description: "ID of audio file to return information about"
-          required: true
-          type: integer
-          format: "int64"
+        - $ref: "#/parameters/audioID"
       responses:
         200:
           description: success
@@ -315,12 +310,7 @@ paths:
         - application/json
       parameters:
         - $ref: "#/parameters/modelID"
-        - name: audioID
-          in: path
-          description: "ID of audio file being transcribed"
-          required: true
-          type: integer
-          format: "int64"
+        - $ref: "#/parameters/audioID"
       responses:
         202:
           description: "Accepted for processing"
@@ -731,6 +721,13 @@ definitions:
     format: "int64"
 
 parameters:
+  audioID:
+    name: audioID
+    in: path
+    description: ID of audio file
+    required: true
+    type: integer
+    format: "int64"
   modelID:
     name: modelID
     in: path
