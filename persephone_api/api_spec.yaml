@@ -158,12 +158,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: corpusID
-          in: path
-          description: "ID of corpus to return information about"
-          required: true
-          type: integer
-          format: "int64"
+        - $ref: "#/parameters/corpusID"
       responses:
         200:
           description: success
@@ -178,12 +173,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: corpusID
-          in: path
-          description: "ID of corpus to return label set for"
-          required: true
-          type: integer
-          format: "int64"
+        - $ref: "#/parameters/corpusID"
       responses:
         200:
           description: success
@@ -198,12 +188,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: corpusID
-          in: path
-          description: "ID of corpus to preprocess"
-          required: true
-          type: integer
-          format: "int64"
+        - $ref: "#/parameters/corpusID"
       responses:
         200:
           description: success
@@ -725,6 +710,13 @@ parameters:
     name: audioID
     in: path
     description: ID of audio file
+    required: true
+    type: integer
+    format: "int64"
+  corpusID:
+    name: corpusID
+    in: path
+    description: ID of corpus
     required: true
     type: integer
     format: "int64"
