@@ -284,12 +284,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: modelID
-          in: path
-          description: "ID of model to return information about"
-          required: true
-          type: integer
-          format: "int64"
+        - $ref: "#/parameters/modelID"
       responses:
         200:
           description: success
@@ -304,12 +299,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: modelID
-          in: path
-          description: "ID of model to train"
-          required: true
-          type: integer
-          format: "int64"
+        - $ref: "#/parameters/modelID"
       responses:
         202:
           description: "Accepted for processing"
@@ -324,12 +314,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: modelID
-          in: path
-          description: "ID of model being used"
-          required: true
-          type: integer
-          format: "int64"
+        - $ref: "#/parameters/modelID"
         - name: audioID
           in: path
           description: "ID of audio file being transcribed"
@@ -746,6 +731,13 @@ definitions:
     format: "int64"
 
 parameters:
+  modelID:
+    name: modelID
+    in: path
+    description: ID of model
+    required: true
+    type: integer
+    format: "int64"
   pageSize:
     name: pageSize
     in: query
