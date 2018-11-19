@@ -33,6 +33,8 @@ paths:
             type: array
             items:
               $ref: "#/definitions/audioFileInformation"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
     post:
       summary: "Upload an audio file"
       consumes:
@@ -51,6 +53,8 @@ paths:
           description: "Bad filetype"
           schema:
             $ref: "#/definitions/errorMessage"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
   /audio/{audioID}:
     get:
       summary: "Get information about an uploaded audio file"
@@ -65,6 +69,9 @@ paths:
             $ref: "#/definitions/audioFileInformation"
         404:
           description: "Audio file ID not found"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
+
   /backend:
     get:
       summary: "Get information about the backend package processing transcriptions"
@@ -73,6 +80,8 @@ paths:
           description: success
           schema:
             $ref: "#/definitions/backendInformation"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
   /backend/acceptedFiles:
     get:
       operationId: persephone_api.api_endpoints.backend.accepted_filetypes
@@ -80,7 +89,8 @@ paths:
       responses:
         200:
           description: success
-
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
   /backend/labelTypes:
     get:
       operationId: persephone_api.api_endpoints.backend.supported_labels
@@ -92,6 +102,8 @@ paths:
             type: array
             items:
               $ref: "#/definitions/labelTypeInformation"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
   /backend/featureTypes:
     get:
       operationId: persephone_api.api_endpoints.backend.supported_features
@@ -103,6 +115,8 @@ paths:
             type: array
             items:
               $ref: "#/definitions/featureTypeInformation"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
   /corpus:
     get:
       summary: "Retrieve models that are currently available"
@@ -116,6 +130,8 @@ paths:
             type: array
             items:
               $ref: "#/definitions/corpusInformation"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
     post:
       summary: "Create a new corpus"
       consumes:
@@ -152,6 +168,8 @@ paths:
           description: success
           schema:
             $ref: "#/definitions/corpusInformation"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
   /corpus/{corpusID}:
     get:
       summary: "Get information about an uploaded corpus"
@@ -166,6 +184,8 @@ paths:
             $ref: "#/definitions/corpusInformation"
         404:
           description: "Corpus not found"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
   /corpus/labels/{corpusID}:
     get:
       operationId: persephone_api.api_endpoints.corpus.get_label_set
@@ -181,6 +201,8 @@ paths:
             $ref: "#/definitions/labelSetInformation"
         404:
           description: "Corpus not found"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
   /corpus/preprocess/{corpusID}:
     post:
       operationId: persephone_api.api_endpoints.corpus.preprocess
@@ -196,6 +218,9 @@ paths:
             $ref: "#/definitions/corpusInformation"
         404:
           description: "Corpus not found"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
+
   /label:
     get:
       summary: "Retrieve phonetic labels that are currently available"
@@ -209,6 +234,8 @@ paths:
             type: array
             items:
               $ref: "#/definitions/label"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
     post:
       summary: "Create a phonetic label that can be used in transcriptions"
       consumes:
@@ -227,6 +254,9 @@ paths:
       responses:
         201:
           description: "label created"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
+
   /model:
     get:
       summary: "Retrieve models that are currently available"
@@ -240,6 +270,8 @@ paths:
             type: array
             items:
               $ref: "#/definitions/modelInformation"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
     post:
       summary: "Create a new RNN CTC model"
       consumes:
@@ -258,6 +290,8 @@ paths:
           description: "Invalid model specification"
           schema:
             $ref: "#/definitions/errorMessage"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
   /model/{modelID}:
     get:
       summary: "Get information about an uploaded model"
@@ -272,6 +306,8 @@ paths:
             $ref: "#/definitions/modelInformation"
         404:
           description: "Model not found"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
   /model/train/{modelID}:
     post:
       operationId: persephone_api.api_endpoints.model.train
@@ -287,6 +323,9 @@ paths:
             $ref: "#/definitions/task"
         404:
           description: "Model not found"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
+
   /model/transcribe/{modelID}/{audioID}:
     post:
       operationId: persephone_api.api_endpoints.model.transcribe
@@ -303,6 +342,8 @@ paths:
             $ref: "#/definitions/task"
         404:
           description: "Not found"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
 
   /transcription:
     get:
@@ -318,6 +359,8 @@ paths:
             type: array
             items:
               $ref: "#/definitions/transcriptionInformation"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
   /transcription/fromFile:
     post:
       operationId: persephone_api.api_endpoints.transcription.from_file
@@ -338,6 +381,8 @@ paths:
           description: "Bad filetype"
           schema:
             $ref: "#/definitions/errorMessage"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
   /transcription/{transcriptionID}:
     get:
       summary: "Get information about an uploaded transcription file"
@@ -357,6 +402,8 @@ paths:
             $ref: "#/definitions/transcriptionInformation"
         404:
           description: "Transcription not found"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
 
   /utterance:
     get:
@@ -371,6 +418,8 @@ paths:
             type: array
             items:
               $ref: "#/definitions/utteranceInformation"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
     post:
       summary: "Create a new utterance"
       consumes:
@@ -403,6 +452,9 @@ paths:
           description: "Already exists"
           schema:
             $ref: "#/definitions/errorMessage"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
+
   /utterance/{utteranceID}:
     get:
       summary: "Get information about an an utterance"
@@ -422,6 +474,8 @@ paths:
             $ref: "#/definitions/utteranceInformation"
         404:
           description: "Utterance not found"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
 
 
 definitions:
@@ -739,3 +793,9 @@ parameters:
     description: Page number
     type: integer
     format: int32
+
+responses:
+  Standard500ErrorResponse:
+    description: An unexpected error occured.
+    schema:
+      $ref: "#/definitions/errorMessage"
