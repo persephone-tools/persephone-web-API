@@ -14,9 +14,10 @@ import flask
 from persephone.corpus import Corpus
 import sqlalchemy
 
-from ..extensions import db
 from ..db_models import (DBcorpus, TestingDataSet, TrainingDataSet, ValidationDataSet,
                          Label, CorpusLabelSet)
+from ..error_response import error_information
+from ..extensions import db
 from ..serialization import CorpusSchema, LabelSchema
 
 
@@ -226,7 +227,11 @@ def post(corpusInfo):
     try:
         db.session.commit()
     except sqlalchemy.exc.IntegrityError:
-        return "Invalid corpus provided", 400
+        return error_information(
+            status=400,
+            title="Database error",
+            detail="Database error",
+        )
     else:
         result = fix_corpus_format(CorpusSchema().dump(current_corpus).data)
         return result, 201
