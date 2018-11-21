@@ -1,4 +1,4 @@
-def test_tiny(client):
+def test_tiny(init_database, client):
     """This test case mirrors the tiny_na test case in persephone,
     but done just through API calls, it uses real Yongning Na audio
     and transcriptions."""

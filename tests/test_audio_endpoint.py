@@ -1,4 +1,4 @@
-def test_invalid_file_upload(client):
+def test_invalid_file_upload(init_database, client):
     """Test that accidentally uploading a text file (such as a phonemes file)
     triggers an error"""
     import io
@@ -15,7 +15,7 @@ def test_invalid_file_upload(client):
     assert wav_response_data['status'] == 415
 
 
-def test_audio_uploads_endpoint(client):
+def test_audio_uploads_endpoint(init_database, client):
     """Test audio upload endpoint works"""
     import io
     WAV_MAGIC_BYTES = b'RIFF....WAVE'
@@ -31,7 +31,7 @@ def test_audio_uploads_endpoint(client):
     wav_response_data = json.loads(response.data.decode('utf8'))
     assert wav_response_data['id']
 
-def test_audio_search_endpoint(client):
+def test_audio_search_endpoint(init_database, client):
     """Test that the audio search endpoint works with no parameters provided"""
     import io
     WAV_MAGIC_BYTES = b'RIFF....WAVE'
@@ -55,7 +55,7 @@ def test_audio_search_endpoint(client):
     assert response_data[0]['id'] == wav_id
 
 
-def test_audio_pagination(client):
+def test_audio_pagination(init_database, client):
     """Test that we can get pagination of results"""
     import io
     WAV_MAGIC_BYTES = b'RIFF....WAVE'

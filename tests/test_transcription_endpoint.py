@@ -1,4 +1,4 @@
-def test_transcription_invalid_file_upload(client):
+def test_transcription_invalid_file_upload(init_database, client):
     """Test that accidentally uploading a non-text file (such as a wav file)
     triggers an error"""
     import io
@@ -14,7 +14,7 @@ def test_transcription_invalid_file_upload(client):
     wav_response_data = json.loads(response.data.decode('utf8'))
     assert wav_response_data['status'] == 415
 
-def test_transcription_invalid_wav_file_upload(client):
+def test_transcription_invalid_wav_file_upload(init_database, client):
     """Test that accidentally uploading a non-text file (such as a wav file)
     triggers an error"""
     import io
@@ -32,7 +32,7 @@ def test_transcription_invalid_wav_file_upload(client):
     assert wav_response_data['status'] == 415
 
 
-def test_transcription_uploads_endpoint(client):
+def test_transcription_uploads_endpoint(init_database, client):
     """Test transcription upload endpoint works"""
     import io
     phonemes = "ɖ ɯ ɕ i k v̩"
@@ -48,7 +48,7 @@ def test_transcription_uploads_endpoint(client):
     transcription_response_data = json.loads(response.data.decode('utf8'))
     assert transcription_response_data['id']
 
-def test_search_endpoint(client):
+def test_search_endpoint(init_database, client):
     import io
     phonemes = "ɖ ɯ ɕ i k v̩"
     data = {'transcriptionFile': (io.BytesIO(phonemes.encode('utf-8')), 'test_transcription_file.phonemes')}
@@ -70,7 +70,7 @@ def test_search_endpoint(client):
     response_data = json.loads(response.data.decode('utf8'))
     assert response_data[0]['id'] == transcription_id
 
-def test_transcription_pagination(client):
+def test_transcription_pagination(init_database, client):
     """Test that we can get pagination of results"""
     import io
     for t in range(10):

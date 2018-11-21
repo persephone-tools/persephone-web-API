@@ -1,6 +1,6 @@
 """Test corpus API endpoints"""
 
-def test_corpus_creation(client, upload_audio, upload_transcription, create_utterance, create_sine):
+def test_corpus_creation(init_database, client, upload_audio, upload_transcription, create_utterance, create_sine):
     """Test that we are able to create a corpus object via the API"""
     import json
 
@@ -79,7 +79,7 @@ def test_corpus_creation(client, upload_audio, upload_transcription, create_utte
     assert corpus_response_data['partition']
 
 
-def test_corpus_label_regression(client, init_database, upload_audio,
+def test_corpus_label_regression(init_database, client, upload_audio,
                                  upload_transcription, create_utterance, create_sine):
     """Test that creating a corpus will succeed even if a label contained in it
     already exists in the database."""

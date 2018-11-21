@@ -1,6 +1,6 @@
 """Tests for model related endpoints"""
 
-def test_invalid_min_max_steps(client, create_corpus):
+def test_invalid_min_max_steps(init_database, client, create_corpus):
     corpus_id = create_corpus()
     data = {
         "corpusID": corpus_id,
@@ -18,7 +18,7 @@ def test_invalid_min_max_steps(client, create_corpus):
 
     assert response.status_code == 400
 
-def test_invalid_epoch_steps(client, create_corpus):
+def test_invalid_epoch_steps(init_database, client, create_corpus):
     import json
     corpus_id = create_corpus()
     data = {
@@ -51,7 +51,7 @@ def test_invalid_epoch_steps(client, create_corpus):
     assert response.status_code == 400
 
 
-def test_invalid_early_stopping(client, create_corpus):
+def test_invalid_early_stopping(init_database, client, create_corpus):
     corpus_id = create_corpus()
     import json
     data = {
@@ -67,7 +67,7 @@ def test_invalid_early_stopping(client, create_corpus):
     )
     assert response.status_code == 400
 
-def test_invalid_LER(client, create_corpus):
+def test_invalid_LER(init_database, client, create_corpus):
     """Tests that bogus values for maximum error rates are rejected"""
     corpus_id = create_corpus()
     import json
@@ -97,7 +97,7 @@ def test_invalid_LER(client, create_corpus):
     )
     assert response.status_code == 400
 
-def test_create_model(client, create_corpus):
+def test_create_model(init_database, client, create_corpus):
     """Test that we can create a model from the API"""
     import json
     corpus_id = create_corpus()
@@ -121,7 +121,7 @@ def test_create_model(client, create_corpus):
     )
     assert response.status_code == 201
 
-def test_create_model_no_corpus(client):
+def test_create_model_no_corpus(init_database, client):
     """Test that we creation of a model from the API with an invalid corpus produces a 400 error"""
     import json
     corpus_id = 9999999 # shouldn't exist
@@ -145,7 +145,7 @@ def test_create_model_no_corpus(client):
     )
     assert response.status_code == 400
 
-def test_get_model(client, create_corpus):
+def test_get_model(init_database, client, create_corpus):
     """Test that we can create a model from the API and then retrieve it"""
     import json
     corpus_id = create_corpus()
