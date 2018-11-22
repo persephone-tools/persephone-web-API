@@ -6,7 +6,7 @@ def validate_error_fields(decoded_response_data):
     assert "type" in decoded_response_data
     assert "status" in decoded_response_data
 
-def test_audio_uploads_endpoint(client):
+def test_audio_uploads_endpoint(init_database, client):
     """Test audio upload endpoint works"""
     import io
     WAV_MAGIC_BYTES = b'RIFF....WAVE'

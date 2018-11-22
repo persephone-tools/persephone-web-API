@@ -13,6 +13,19 @@ def _set_sqlite_pragma(dbapi_connection, connection_record):
         cursor.execute("PRAGMA foreign_keys=ON;")
         cursor.close()
 
+def get_or_create(session, model, **kwargs):
+    '''
+    Creates an object or returns the object if exists
+    from: http://stackoverflow.com/questions/2546207/does-sqlalchemy-have-an-equivalent-of-djangos-get-or-create
+    '''
+    instance = session.query(model).filter_by(**kwargs).first()
+    if instance:
+        return instance
+    else:
+        instance = model(**kwargs)
+        session.add(instance)
+    return instance
+
 class FileMetaData(db.Model):
     """Database ORM definition for file metadata"""
     __tablename__ = 'file_metadata'
@@ -242,6 +255,7 @@ class Label(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     label = db.Column(db.Unicode, nullable=False, unique=True)
+
     def __repr__(self):
         return "<Label({})>".format(self.label)
 

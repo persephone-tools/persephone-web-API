@@ -1,6 +1,6 @@
 """Tests for label related functionality"""
 
-def test_label_creation(client):
+def test_label_creation(init_database, client):
     """Test that we can create a label"""
     import json
     data = {
@@ -16,7 +16,7 @@ def test_label_creation(client):
     assert response
     assert response.status_code == 201
 
-def test_label_listing(client):
+def test_label_listing(init_database, client):
     """Test that we can create some labels then list all of the available ones"""
     import json
     data = {
@@ -58,7 +58,7 @@ def test_label_listing(client):
     assert labels == {"a", "b"}
 
 
-def test_label_uniqueness(client):
+def test_label_uniqueness(init_database, client):
     """Test that adding the exact same label more than once doesn't add duplicate entries"""
     import json
     data = {
@@ -80,7 +80,7 @@ def test_label_uniqueness(client):
     )
     assert 400 <= response.status_code < 500
 
-def test_label_NFC_uniqueness(client):
+def test_label_NFC_uniqueness(init_database, client):
     """Test that unicode characters that are the same according to NFC are
     properly recognized as duplicates at the database level.
 
@@ -118,7 +118,7 @@ def test_label_NFC_uniqueness(client):
     assert 400 <= response.status_code < 500
 
 
-def test_corpus_labels(client, create_corpus):
+def test_corpus_labels(init_database, client, create_corpus):
     """test that creating a corpus creates the right set of labels"""
     import json
     corpus_id = create_corpus()

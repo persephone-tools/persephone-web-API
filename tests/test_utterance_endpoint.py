@@ -1,4 +1,4 @@
-def test_utterace_missing_IDs(client):
+def test_utterace_missing_IDs(init_database, client):
     """Test that using missing transcription/audio ID's will error out."""
     
     invalid_id = 99999
@@ -18,7 +18,7 @@ def test_utterace_missing_IDs(client):
 
     assert response.status_code == 400
 
-def test_duplicate_utterance(client):
+def test_duplicate_utterance(init_database, client):
     """Test that if the same files are used that a duplicate utterance is not created"""
     import io
     import json

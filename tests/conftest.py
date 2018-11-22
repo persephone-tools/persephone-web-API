@@ -23,7 +23,7 @@ def init_database():
 
 
 @pytest.fixture
-def client(tmpdir, init_database):
+def client(tmpdir):
     """Create a test client to send requests to"""
     uploads_path = tmpdir.mkdir('test_uploads')
     app.config['BASE_UPLOAD_DIRECTORY'] = str(uploads_path)
@@ -38,7 +38,7 @@ def client(tmpdir, init_database):
 
 
 @pytest.fixture
-def upload_audio(client):
+def upload_audio(init_database, client):
     """Fixture for convenience in sending requests to the audio endpoint
     This does not make any assumptions about loading files from disk and is fast
     use this if possible, if you need to upload a file use the audio file upload fixture
@@ -86,7 +86,7 @@ def upload_audio(client):
 
 
 @pytest.fixture
-def upload_transcription(client):
+def upload_transcription(init_database, client):
     """Fixture for convenience in sending requests to the transcription endpoint
     This does not make any assumptions about loading files from disk and is fast
     use this if possible, if you need to upload a file use the  transcription file upload fixture
@@ -105,7 +105,7 @@ def upload_transcription(client):
 
 
 @pytest.fixture
-def create_utterance(client):
+def create_utterance(init_database, client):
     """Fixture for convenience in creating an utterance via requests to the utterance specification endpoint"""
     import json
     def _create_utterance(audio_id: int, transcription_id: int):
@@ -154,7 +154,7 @@ def create_sine():
 
 
 @pytest.fixture
-def create_corpus(client, upload_audio, upload_transcription, create_utterance, create_sine):
+def create_corpus(init_database, client, upload_audio, upload_transcription, create_utterance, create_sine):
     """Create a corpus object via the API"""
     def _create_corpus() -> int:
         """Create a corpus and return the ID of the created corpus"""
