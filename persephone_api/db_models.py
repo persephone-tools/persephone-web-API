@@ -13,50 +13,18 @@ def _set_sqlite_pragma(dbapi_connection, connection_record):
         cursor.execute("PRAGMA foreign_keys=ON;")
         cursor.close()
 
-def _unique(session, cls, hashfunc, queryfunc, constructor, arg, kw):
-    """Handle ORM usage of items that have unique constraints in the database.
-    See: https://bitbucket.org/zzzeek/sqlalchemy/wiki/UsageRecipes/UniqueObject"""
-    cache = getattr(session, '_unique_cache', None)
-    if cache is None:
-        session._unique_cache = cache = {}
-
-    key = (cls, hashfunc(*arg, **kw))
-    if key in cache:
-        return cache[key]
+def get_or_create(session, model, **kwargs):
+    '''
+    Creates an object or returns the object if exists
+    from: http://stackoverflow.com/questions/2546207/does-sqlalchemy-have-an-equivalent-of-djangos-get-or-create
+    '''
+    instance = session.query(model).filter_by(**kwargs).first()
+    if instance:
+        return instance
     else:
-        with session.no_autoflush:
-            q = session.query(cls)
-            q = queryfunc(q, *arg, **kw)
-            obj = q.first()
-            if not obj:
-                obj = constructor(*arg, **kw)
-                session.add(obj)
-        cache[key] = obj
-        return obj
-
-class UniqueMixin:
-    """Mixin to enable uniqueness handling in the ORM
-    Implement `unique_hash` and `unique_filter` as classmethods according to
-    the uniqueness criterion of that ORM class
-    See: https://bitbucket.org/zzzeek/sqlalchemy/wiki/UsageRecipes/UniqueObject"""
-    @classmethod
-    def unique_hash(cls, *arg, **kw):
-        raise NotImplementedError()
-
-    @classmethod
-    def unique_filter(cls, query, *arg, **kw):
-        raise NotImplementedError()
-
-    @classmethod
-    def as_unique(cls, session, *arg, **kw):
-        return _unique(
-                    session,
-                    cls,
-                    cls.unique_hash,
-                    cls.unique_filter,
-                    cls,
-                    arg, kw
-               )
+        instance = model(**kwargs)
+        session.add(instance)
+    return instance
 
 class FileMetaData(db.Model):
     """Database ORM definition for file metadata"""
@@ -287,6 +255,7 @@ class Label(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     label = db.Column(db.Unicode, nullable=False, unique=True)
+
     def __repr__(self):
         return "<Label({})>".format(self.label)
 
