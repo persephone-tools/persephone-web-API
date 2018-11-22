@@ -15,7 +15,7 @@ from persephone.corpus import Corpus
 import sqlalchemy
 
 from ..db_models import (DBcorpus, TestingDataSet, TrainingDataSet, ValidationDataSet,
-                         Label, CorpusLabelSet)
+                         Label, CorpusLabelSet, get_or_create)
 from ..error_response import error_information
 from ..extensions import db
 from ..serialization import CorpusSchema, LabelSchema
@@ -212,12 +212,13 @@ def post(corpusInfo):
         tgt_dir=corpus_path,
     )
     labels = persephone_corpus.labels
-    # Make any labels that don't currently exist in the Label table
+    # Create database entries for any labels in the corpus that don't
+    # currently exist in the Label table
     for l in labels:
-        current_label = Label(label=l)
+        current_label = get_or_create(db.session, Label, label=l)
         db.session.add(current_label)
-        # Make CorpusLabelSet entry
 
+        # Make CorpusLabelSet entry
         db.session.add(
             CorpusLabelSet(
                 corpus=current_corpus,
