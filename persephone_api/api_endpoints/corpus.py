@@ -122,9 +122,6 @@ def fix_corpus_format(corpus):
     """
     import copy
     fixed_format = copy.copy(corpus)
-    testing = corpus['testing']
-    training = corpus['training']
-    validation = corpus['validation']
 
     testing_ids = [item.utterance_id for item in TestingDataSet.query.filter_by(corpus_id=corpus['id']).all()]
     training_ids = [item.utterance_id for item in TrainingDataSet.query.filter_by(corpus_id=corpus['id']).all()]
