@@ -125,13 +125,18 @@ def fix_corpus_format(corpus):
     testing = corpus['testing']
     training = corpus['training']
     validation = corpus['validation']
+
+    testing_ids = [item.utterance_id for item in TestingDataSet.query.filter_by(corpus_id=corpus['id']).all()]
+    training_ids = [item.utterance_id for item in TrainingDataSet.query.filter_by(corpus_id=corpus['id']).all()]
+    validation_ids = [item.utterance_id for item in ValidationDataSet.query.filter_by(corpus_id=corpus['id']).all()]
+
     del fixed_format['testing']
     del fixed_format['training']
     del fixed_format['validation']
     fixed_format['partition'] = {
-        "testing": testing,
-        "training": training,
-        "validation": validation,
+        "testing": testing_ids,
+        "training": training_ids,
+        "validation": validation_ids,
     }
     return fixed_format
 

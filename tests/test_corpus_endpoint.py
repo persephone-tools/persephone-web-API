@@ -78,6 +78,10 @@ def test_corpus_creation(init_database, client, upload_audio, upload_transcripti
     corpus_response_data = json.loads(response.data.decode('utf8'))
     assert corpus_response_data['partition']
 
+    assert corpus_response_data['partition']['testing'] == [utterance_id_a]
+    assert corpus_response_data['partition']['training'] == [utterance_id_b]
+    assert corpus_response_data['partition']['validation'] == [utterance_id_c]
+
 
 def test_corpus_label_regression(init_database, client, upload_audio,
                                  upload_transcription, create_utterance, create_sine):
@@ -168,3 +172,7 @@ def test_corpus_label_regression(init_database, client, upload_audio,
 
     corpus_response_data = json.loads(response.data.decode('utf8'))
     assert corpus_response_data['partition']
+
+    assert corpus_response_data['partition']['testing'] == [utterance_id_a]
+    assert corpus_response_data['partition']['training'] == [utterance_id_b]
+    assert corpus_response_data['partition']['validation'] == [utterance_id_c]

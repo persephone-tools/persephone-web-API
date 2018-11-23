@@ -32,6 +32,7 @@ class UtteranceSchema(ModelSchema):
 class CorpusSchema(ModelSchema):
     class Meta:
         model = db_models.DBcorpus
+        exclude= ('filesystem_path',)
 
 class TranscriptionModelSchema(ModelSchema):
     """Serialization for a transcription model
