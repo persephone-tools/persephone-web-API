@@ -14,6 +14,16 @@ As such the only URL routes that can be assumed to exist are defined in that API
 
 If there are any discrepancies between what the API specification file states and what actually happens this should be treated as a bug. We would appreciate that you open an issue on the projects `issue tracker <https://github.com/persephone-tools/persephone-web-API/issues/new>`_ including some details on the input you gave along with the exact output you got so we can more quickly identify the source of the issue.
 
+API explorer
+^^^^^^^^^^^^
+
+Since this uses `OpenAPI 2.0 <https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md>`_ (formerly known as Swagger) API specification we have tooling that will help you to explore the API.
+This tooling creates and hosts a web frontend that shows you the various API endpoints and provides you forms to test these endpoints from your browser.
+Load up the API explorer page by navigating to `/v0.1/ui/` (Note that the version prefix will depend on the version of the API being served).
+
+If you find yourself needing to construct more complex web requests we would recommend you look into a tool such as `Postman <https://www.getpostman.com/>`_ for ease of API testing.
+
+
 Code generation
 ^^^^^^^^^^^^^^^
 By providing a machine-parsable API interface we are aiming to make it easier for developers to consume this API.

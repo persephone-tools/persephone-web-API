@@ -183,15 +183,6 @@ This will start up a web server that will service the endpoints defined by the A
 
 Test that this server is functional by pointing your browser at the URL that pages are being served from.
 
-API explorer
-------------
-
-Since this uses `OpenAPI 2.0 <https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md>`_ (formerly known as Swagger) API specification we have tooling that will help you to explore the API.
-This tooling creates and hosts a web frontend that shows you the various API endpoints and provides you forms to test these endpoints from your browser.
-Load up the API explorer page by navigating to `/v0.1/ui/` (Note that the version prefix will depend on the version of the API being served).
-
-If you find yourself needing to construct more complex web requests we would recommend you look into a tool such as `Postman <https://www.getpostman.com/>`_ for ease of API testing.
-
 Support
 -------
 
