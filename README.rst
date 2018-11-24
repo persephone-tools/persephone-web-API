@@ -10,6 +10,11 @@ The API specification for this project can be found in a YAML file located in th
 
 This file will show you all the endpoints that are supported but an easier way to get familiarity with the API is to use the API explorer frontend provided by the project. See the API explorer section of this README to get started with exploring the API.
 
+Documentation
+-------------
+
+Documentation can be found `here <https://persephone-web-api.readthedocs.io/en/latest/>`_.
+
 Installation
 ------------
 
