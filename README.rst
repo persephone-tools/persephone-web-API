@@ -22,7 +22,7 @@ Installation
 
 You can install this package directly or use Docker.
 
-Because this package depends on various system binaries being installed as well Python packages we recommend using the Docker container we have created.
+Because this package depends on various system binaries (such as ffmpeg) being installed as well Python packages we recommend using the Docker container we have created.
 However you can also install this directly without a container as well if you wish, see the `installation documentation <https://persephone-web-api.readthedocs.io/en/latest/installation.html>`_ page for more information.
 
 Support
