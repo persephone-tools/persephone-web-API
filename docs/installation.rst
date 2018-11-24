@@ -107,37 +107,6 @@ Run it:
 
 If this has succeeded you should be able to access the API at the port you just specified.
 
-Development
-^^^^^^^^^^^
-
-There is a Vagrantfile for automating the build and install of the development environment.
-This is recommended as it is likely the easiest way to get set up with a development environment as packages will be correctly installed.
-
-To get Vagrant: https://www.vagrantup.com/
-
-To start and provisions the vagrant environment:
-
-.. code:: sh
-
-    vagrant up
-
-Once that has installed you can access via ssh:
-
-.. code:: sh
-
-    vagrant ssh
-
-The code resides at the `/vagrant` directory, set up the environment via pipenv:
-
-.. code:: sh
-
-    cd /vagrant
-    pipenv install
-    pipenv shell
-    python transcription_api_server.py
-
-If all has worked you should be able to point your browser at 127.0.0.1:8080 and you will see the page being served.
-
 Direct install
 ^^^^^^^^^^^^^^
 
