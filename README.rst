@@ -1,7 +1,7 @@
 Persephone-web-API v0.0.1 (beta version)
 ========================================
 
-This is a web API for the the `persephone library <https://github.com/oadams/persephone>`_
+This is a web API for the the `persephone library <https://github.com/persephone-tools/persephone>`_
 
 This is a REST API that will provide the ability to interact with the Persephone transcription tools from over the network.
 
