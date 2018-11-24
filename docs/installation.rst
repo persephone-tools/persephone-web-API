@@ -144,18 +144,3 @@ The easiest and most reliable way to do this is as follows:
 At this point you should have the packages required to run this API server.
 
 (Note that the Docker image is an automated version of this direct install along with installation of system binaries)
-
-Usage
------
-
-This server uses the Flask framework to service API endpoints.
-
-Make sure you are in the active virtualenvironment and run the transcription server as follows:
-
-.. code:: sh
-
-	python3 transcription_API_server.py
-
-This will start up a web server that will service the endpoints defined by the API.
-
-Test that this server is functional by pointing your browser at the URL that pages are being served from.
