@@ -1,8 +1,13 @@
 Installation
 ============
 
+We recommend that you use the Docker image for running this project because it handles the system binaries install in a repeatable way.
+
 Docker
-~~~~~~
+^^^^^^
+
+Installing Docker
+------------------
 First make sure that you have docker installed on your machine.
 Here's some steps to do that on Ubuntu:
 
@@ -68,7 +73,7 @@ In a successful case the output should look like this:
                ├─9841 /usr/bin/dockerd -H fd://
                └─9868 docker-containerd --config /var/run/docker/containerd/containerd.toml
 
-If you wish to not use `sudo` to invoke docker, add your user to the Docker group with the following command:
+If you wish to not use `sudo` to invoke Docker, add your user to the Docker group with the following command:
 
 .. code:: bash
 
@@ -83,6 +88,10 @@ Then verify that the install has been successful via running a real container:
     docker run hello-world
 
 
+Running this container
+-----------------------
+
+To run this project with the docker container you will have to do the following
 Build the container:
 
 .. code:: bash
@@ -96,8 +105,10 @@ Run it:
     docker run -p 8080:8080/tcp persephone-web-api:dev
 
 
+If this has succeeded you should be able to access the API at the port you just specified.
+
 Development
-~~~~~~~~~~~
+^^^^^^^^^^^
 
 There is a Vagrantfile for automating the build and install of the development environment.
 This is recommended as it is likely the easiest way to get set up with a development environment as packages will be correctly installed.
@@ -128,24 +139,22 @@ The code resides at the `/vagrant` directory, set up the environment via pipenv:
 If all has worked you should be able to point your browser at 127.0.0.1:8080 and you will see the page being served.
 
 Direct install
-~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^
 
-This package requires Python 3.5 or higher.
+This package requires Python 3.5.
 
 There are some 3rd party requirements that have to be installed in order to use this, these can be found in the file "bootstrap.sh".
 
 Currently you will need to set up a virtualenvironment and install package requirements.
-You can do this as follows:
+The easiest and most reliable way to do this is as follows:
 
 .. code:: sh
 
-    python3 -m venv venv
-    source venv/bin/activate
-    pip install -r requirements.txt
+    pipenv install
 
 At this point you should have the packages required to run this API server.
 
-(Note that the Docker image is just an automated version of this direct install)
+(Note that the Docker image is an automated version of this direct install along with installation of system binaries)
 
 Usage
 -----
