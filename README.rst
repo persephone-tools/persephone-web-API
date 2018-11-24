@@ -22,8 +22,8 @@ Installation
 
 You can install this package directly or use Docker.
 
-We recommend that you use the docker image, but you can also install this directly without a container as well.
-See the `installation documentation <https://persephone-web-api.readthedocs.io/en/latest/installation.html>`_ page for more information.
+Because this package depends on various system binaries being installed as well Python packages we recommend using the Docker container we have created.
+However you can also install this directly without a container as well if you wish, see the `installation documentation <https://persephone-web-api.readthedocs.io/en/latest/installation.html>`_ page for more information.
 
 Support
 -------
