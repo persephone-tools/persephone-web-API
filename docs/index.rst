@@ -5,8 +5,8 @@ Welcome to Persephone Web API's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-    installation.rst
-    APIspecification.rst
+    installation
+    APIspecification
 
 
 
