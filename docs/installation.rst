@@ -110,9 +110,29 @@ If this has succeeded you should be able to access the API at the port you just 
 Direct install
 ^^^^^^^^^^^^^^
 
-This package requires Python 3.5.
+The upstream Persephone package requires some binaries to be installed and available on the path.
+You will need to make sure that these are installed first.
 
-There are some 3rd party requirements that have to be installed in order to use this, these can be found in the file "bootstrap.sh".
+System packages
+---------------
+
+There are some 3rd party requirements that have to be installed in order for the upstream Persephone library to function.
+These packages can be found in the file `"bootstrap.sh" <https://github.com/persephone-tools/persephone-web-API/blob/master/bootstrap.sh>`_.
+
+Required:
+
+* `sox <https://en.wikipedia.org/wiki/SoX>`_
+* `ffmpeg <https://ffmpeg.org/>`_
+
+Optional
+
+* `Kaldi <http://kaldi-asr.org/>`_ (for pitch features support)
+
+The web API application
+-----------------------
+
+The web API itself is a python application which requires Python 3.5.
+We have not currently tested this package with other implementations such as PyPy.
 
 Currently you will need to set up a virtualenvironment and install package requirements.
 The easiest and most reliable way to do this is as follows:
