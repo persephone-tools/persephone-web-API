@@ -66,7 +66,7 @@ Please follow the following rules before you submit a pull request:
   [task list](https://github.com/blog/1375-task-lists-in-gfm-issues-pulls-comments)
   in the pull request description.
 
-- Documentation and high-coverage tests are very beneficial for enhancements to be accepted, though this is currently hypocritical on my part.
+- Documentation and coverage tests are very beneficial for enhancements to be accepted.
 
 You can also check for common programming errors with the following tools:
 
