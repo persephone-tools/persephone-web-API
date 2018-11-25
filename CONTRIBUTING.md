@@ -104,6 +104,9 @@ following rules before submitting:
   import sys; print("Python", sys.version)
   ```
 
+- Issues relating to the API not accepting or producing the correct data types are greatly aided by including the exact data that was involved.
+  By providing this you will make it much easier for the developers to fix the bug.
+
 Questions about contributing
 ----------------------------
 
