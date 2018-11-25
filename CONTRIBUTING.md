@@ -68,10 +68,10 @@ Please follow the following rules before you submit a pull request:
 
 - Documentation and coverage tests are very beneficial for enhancements to be accepted.
 
-- Any changes to the API must be reflected in the API specification document. If a
+- Any changes to the API must be consistent with the API specification document. If a
   change creates a conflict between the API specification and the API behavior in production
   it is unlikely to be accepted. Please make sure any API changes are valid as per the API
-  specification.
+  specification by updating the API specification document if necessary.
 
 You can also check for common programming errors with the following tools:
 
