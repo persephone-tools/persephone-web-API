@@ -9,6 +9,7 @@ The `Persephone Web Frontend <https://github.com/persephone-tools/persephone-fro
 
     installation
     APIspecification
+    support
     development
 
 
