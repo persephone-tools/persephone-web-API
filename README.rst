@@ -47,6 +47,7 @@ Documentation
 
 Documentation can be found `here <https://persephone-web-api.readthedocs.io/en/latest/>`_.
 
+The web based documentation is automatically built from the files found in the `./docs/ <https://github.com/persephone-tools/persephone-web-API/tree/master/docs>`_ directory in this repository.
 
 Support
 -------
