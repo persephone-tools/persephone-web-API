@@ -29,15 +29,17 @@ A Docker image for this project is available at docker hub at `"persephonetools/
 
 Alternatively you can build the image locally as follows:
 
-```sh
-docker build -t persephone-web-api:dev .
-```
+.. code:: sh
+
+    docker build -t persephone-web-api:dev .
+
 
 Then to run it:
 
-```sh
-docker run -p 8080:8080/tcp persephone-web-api:dev
-```
+.. code:: sh
+
+    docker run -p 8080:8080/tcp persephone-web-api:dev
+
 
 If you are looking to use the whole stack the easiest way to get started is to use the docker-compose setup found in the `persephone-docker repository <https://github.com/aapeliv/persephone-docker>`_ 
 as this will automate the install and setup of this API server along with the `persephone web frontend <https://github.com/persephone-tools/persephone-frontend>`_ that accesses the API.
