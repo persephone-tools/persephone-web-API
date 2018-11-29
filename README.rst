@@ -12,11 +12,6 @@ This file will show you all the endpoints that are supported but an easier way t
 
 For more information about the API specification see the `documentation page <https://persephone-web-api.readthedocs.io/en/latest/APIspecification.html>`_.
 
-Documentation
--------------
-
-Documentation can be found `here <https://persephone-web-api.readthedocs.io/en/latest/>`_.
-
 Installation
 ------------
 
@@ -24,6 +19,37 @@ You can install this package directly or use Docker.
 
 Because this package depends on various system binaries (such as ffmpeg) being installed as well Python packages we recommend using the Docker container we have created.
 However you can also install this directly without a container as well if you wish, see the `installation documentation <https://persephone-web-api.readthedocs.io/en/latest/installation.html>`_ page for more information.
+
+
+Usage
+-----
+
+We have a Docker image that will automate the install and spin up the API server.
+A Docker image for this project is available at docker hub at `"persephonetools/api:latest"`
+
+Alternatively you can build the image locally as follows:
+
+.. code:: sh
+
+    docker build -t persephone-web-api:dev .
+
+
+Then to run it:
+
+.. code:: sh
+
+    docker run -p 8080:8080/tcp persephone-web-api:dev
+
+
+If you are looking to use the whole stack the easiest way to get started is to use the docker-compose setup found in the `persephone-docker repository <https://github.com/aapeliv/persephone-docker>`_ 
+as this will automate the install and setup of this API server along with the `persephone web frontend <https://github.com/persephone-tools/persephone-frontend>`_ that accesses the API.
+
+Documentation
+-------------
+
+Documentation can be found `here <https://persephone-web-api.readthedocs.io/en/latest/>`_.
+
+The web based documentation is automatically built from the files found in the `./docs/ <https://github.com/persephone-tools/persephone-web-API/tree/master/docs>`_ directory in this repository.
 
 Support
 -------
