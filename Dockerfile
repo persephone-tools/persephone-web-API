@@ -10,7 +10,13 @@ RUN apt-get update -y && apt-get -y install \
 	python3-pip \
 	ffmpeg \
 	sox \
-	git
+	git \
+	nginx \
+	supervisor
+
+
+# Install uWSGI
+RUN pip3 install uwsgi
 
 # -- Install Application into container:
 RUN mkdir /app
