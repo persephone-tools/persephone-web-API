@@ -15,8 +15,14 @@ RUN apt-get update -y && apt-get -y install \
 	supervisor
 
 
-# Install uWSGI
+# -- Install uWSGI
 RUN pip3 install uwsgi
+
+# -- Set up config files
+RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+COPY nginx-app.conf /etc/nginx/sites-available/default
+COPY supervisor-app.conf /etc/supervisor/conf.d/
+
 
 # -- Install Application into container:
 RUN mkdir /app
