@@ -8,6 +8,9 @@ from persephone_api.extensions import db
 
 app = create_app(DevConfig)
 
+
+base_file_path = os.getcwd()
+
 @app.route('/')
 def index():
     return """Access to the API is via the API versioned path prefix
@@ -21,7 +24,7 @@ with app.app_context():
 
 # persephone paths
 # Persephone related files stored here
-app.config['FILE_STORAGE_BASE'] = os.path.join(os.getcwd(), 'persephone_file_storage')
+app.config['FILE_STORAGE_BASE'] = os.path.join(base_file_path, 'persephone_file_storage')
 # Corpus directories stored here
 app.config['CORPUS_PATH'] = os.path.join(app.config['FILE_STORAGE_BASE'], 'corpus')
 if os.path.isdir(app.config['CORPUS_PATH']):
