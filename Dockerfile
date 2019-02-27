@@ -15,20 +15,18 @@ RUN apt-get update -y && apt-get -y install \
 	supervisor
 
 
-# Install uWSGI
+# -- Install uWSGI and pipenv
 RUN pip3 install uwsgi
+RUN pip3 install pipenv
 
 # -- Install Application into container:
 RUN mkdir /app
 WORKDIR /app
 
-
 # -- Set up configuration files
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 COPY nginx-app.conf /etc/nginx/sites-available/default
 COPY supervisor-app.conf /etc/supervisor/conf.d/
-
-RUN pip3 install pipenv
 
 # -- Adding Pipfiles
 COPY Pipfile Pipfile
