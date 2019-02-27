@@ -22,6 +22,10 @@ RUN pip3 install uwsgi
 RUN mkdir /app
 WORKDIR /app
 
+
+# -- Set up configuration files
+COPY supervisor-app.conf /etc/supervisor/conf.d/
+
 RUN pip3 install pipenv
 
 # -- Adding Pipfiles
