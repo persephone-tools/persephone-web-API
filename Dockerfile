@@ -34,6 +34,4 @@ COPY . /app
 
 EXPOSE 8080
 
-ENTRYPOINT [ "python3" ]
-
-CMD [ "transcription_API_server.py" ]
+CMD [ "supervisord", "-n" ]
