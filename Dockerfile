@@ -36,6 +36,9 @@ RUN pipenv install --deploy --system
 
 COPY . /app
 
+# -- Create supervisor log directory
+RUN mkdir -p /var/log/supervisord/
+
 EXPOSE 8080
 
-CMD [ "supervisord", "-n" ]
+CMD [ "supervisord", "-c", "/etc/supervisor/conf.d/supervisor-app.conf", "-n" ]
