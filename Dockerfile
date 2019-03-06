@@ -19,6 +19,12 @@ RUN apt-get update -y && apt-get -y install \
 RUN pip3 install uwsgi
 RUN pip3 install pipenv
 
+# -- Adding Pipfiles
+COPY Pipfile Pipfile
+COPY Pipfile.lock Pipfile.lock
+# -- Install dependencies:
+RUN pipenv install --deploy --system
+
 # -- Install Application into container:
 RUN mkdir /app
 WORKDIR /app
@@ -27,12 +33,6 @@ WORKDIR /app
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 COPY nginx-app.conf /etc/nginx/sites-available/default
 COPY supervisor-app.conf /etc/supervisor/conf.d/
-
-# -- Adding Pipfiles
-COPY Pipfile Pipfile
-COPY Pipfile.lock Pipfile.lock
-# -- Install dependencies:
-RUN pipenv install --deploy --system
 
 COPY . /app
 
