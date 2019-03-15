@@ -11,5 +11,5 @@ def test_invalid_file_upload(init_database, client):
     assert response.status_code == 415
 
     import json
-    wav_response_data = json.loads(response.data.decode('utf8'))
-    assert wav_response_data['status'] == 415
+    upload_response_data = json.loads(response.data.decode('utf8'))
+    assert upload_response_data['status'] == 415
