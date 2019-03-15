@@ -19,6 +19,7 @@ def configure_uploads(flask_app, base_upload_path=None) -> None:
         flask_app.config['BASE_UPLOAD_DIRECTORY'] = os.path.join(flask_app.instance_path, 'user_uploads')
     flask_app.config['UPLOADED_AUDIO_DEST'] = os.path.join(flask_app.config['BASE_UPLOAD_DIRECTORY'], 'audio_uploads')
     flask_app.config['UPLOADED_TEXT_DEST'] = os.path.join(flask_app.config['BASE_UPLOAD_DIRECTORY'], 'text_uploads')
+    flask_app.config['UPLOADED_COMPRESSED_DEST'] = os.path.join(flask_app.config['BASE_UPLOAD_DIRECTORY'], 'compressed_uploads')
     flask_app.config['UPLOADED_FILES_URL'] = uploads_url_base
     flask_uploads.configure_uploads(
         flask_app,
