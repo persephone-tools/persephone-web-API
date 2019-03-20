@@ -3,6 +3,7 @@
 Make these endpoints be behind an auth wall if possible.
 """
 import logging
+import os
 from pathlib import Path
 from zipfile import ZipFile
 
