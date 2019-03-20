@@ -19,6 +19,10 @@ from ..upload_config import (
 
 logger = logging.getLogger(__name__)
 
+
+output_path = "zip_file_output"
+logger.info("Zip files being extracted to path %s", output_path)
+
 def utterances(utterancesFile):
     """handle POST request for bulk utterances file uploading"""
     try:
@@ -55,5 +59,6 @@ def utterances(utterancesFile):
             title="Empty zip file provided",
             detail="Empty zip file provided"
         )
-        
+    for file in to_extract:
+        zf.extract(file, path=output_path)
     raise NotImplementedError("Bulk upload not implemented yet")
