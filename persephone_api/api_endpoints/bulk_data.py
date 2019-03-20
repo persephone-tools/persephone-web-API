@@ -68,6 +68,12 @@ def utterances(utterancesFile):
         path, extension = os.path.splitext(extracted_name)
         if extension in audio_files.extensions:
             # Got an audio files
+            file_url = uploads_url_base + 'audio_uploads/' + filename
+            metadata = FileMetaData(path=file_url, name=filename)
+            current_file = Audio(file_info=metadata, url=file_url)
+            db.session.add(current_file)
+            db.session.commit()
         elif extension in text_files.extensions:
             # Got a text/transcription file
+            raise NotImplementedError("Transcriptions from Zip files not implemented yet")
     raise NotImplementedError("Bulk upload not implemented yet")
