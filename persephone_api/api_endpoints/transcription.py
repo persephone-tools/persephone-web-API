@@ -2,6 +2,8 @@
 API endpoints for /transcription
 This deals with the API access for transcription files uploading/downloading.
 """
+from pathlib import Path
+
 import flask_uploads
 
 from ..error_response import error_information
@@ -11,6 +13,21 @@ from ..serialization import TranscriptionSchema
 from ..unicode_handling import normalize
 from ..upload_config import text_files, uploads_url_base
 
+
+def create_transcription(filepath: Path, data: str):
+    """Creates the transcription rows in the database,
+    returns the ORM object that corresponds to this transcription
+    """
+    normalized_text = normalize(data)
+    with filepath.open('w') as transcription_storage:
+        transcription_storage.write(normalized_text)
+    filename = str(filepath)
+    file_url = uploads_url_base + 'text_uploads/' + filename
+    metadata = FileMetaData(path=file_url, name=filename)
+    current_transcription = Transcription(file_info=metadata, url=file_url, name=filename, text=normalized_text)
+    db.session.add(current_transcription)
+    db.session.commit()
+    return current_transcription
 
 def post():
     """Create a transcription from a POST request that contains the
@@ -29,16 +46,8 @@ def from_file(transcriptionFile):
                    " Got filename {} , allowed extensions are {}".format(transcriptionFile.filename, text_files.extensions),
         )
     else:
-        normalized_text = normalize(transcriptionFile.stream.read().decode('utf-8'))
-        #with open(filename, 'w') as transcription_file:           
-        #    # we have to write the normalized text back to the filesystem to support
-        #    # the filesystem conventions of persephone
-        #    transcription_file.write(normalized_text)
-        file_url = uploads_url_base + 'text_uploads/' + filename
-        metadata = FileMetaData(path=file_url, name=filename)
-        current_transcription = Transcription(file_info=metadata, url=file_url, name=filename, text=normalized_text)
-        db.session.add(current_transcription)
-        db.session.commit()
+        raw_data = transcriptionFile.stream.read().decode('utf-8')
+        current_transcription = create_transcription(Path(filename), raw_data)
 
     result = TranscriptionSchema().dump(current_transcription).data
     return result, 201
