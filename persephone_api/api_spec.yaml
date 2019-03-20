@@ -134,7 +134,16 @@ paths:
         201:
           description: success
           schema:
-            $ref: "#/definitions/fileInformation"
+            type: object
+            properties:
+              audios_created:
+                type: array
+                items:
+                  $ref: "#/definitions/audioFileInformation"
+              transcriptions_created:
+                type: array
+                items:
+                  $ref: "#/definitions/transcriptionInformation"
         415:
           description: "Bad filetype"
           schema:
