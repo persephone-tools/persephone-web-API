@@ -5,8 +5,10 @@ Make these endpoints be behind an auth wall if possible.
 import logging
 import os
 from pathlib import Path
+import tempfile
 from zipfile import ZipFile
 
+import flask
 import flask_uploads
 
 from .audio import create_audio
@@ -34,13 +36,15 @@ def utterances(utterancesFile):
             detail="Invalid file format for bulk utterances upload, must be a compressed file."
                    " Got filename {} , allowed extensions are {}".format(utterancesFile.filename, compressed_files.extensions),
         )
-
     try:
-        zf = ZipFile(filename, mode='r')
+        # have to read from the full path
+        base_zip_path = flask.current_app.config['UPLOADED_COMPRESSED_DEST']
+        full_path = os.path.join(base_zip_path, filename)
+        zf = ZipFile(full_path, mode='r')
     except NotImplementedError:
         # If Zip compression is not implemented
         return error_information(
-            status=415,
+            status=400,
             title="Invalid Zip files",
             detail="Invalid zip file provided"
         )
@@ -55,7 +59,7 @@ def utterances(utterancesFile):
     if not to_extract:
         # no files to extract
         return error_information(
-            status=415,
+            status=400,
             title="Empty zip file provided",
             detail="Empty zip file provided"
         )
