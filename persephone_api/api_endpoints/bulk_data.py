@@ -3,10 +3,12 @@
 Make these endpoints be behind an auth wall if possible.
 """
 import logging
+from pathlib import Path
 from zipfile import ZipFile
 
-
 import flask_uploads
+
+from .transcription import create_transcription
 
 from ..db_models import FileMetaData
 from ..error_response import error_information
@@ -64,7 +66,7 @@ def utterances(utterancesFile):
         )
 
     for file in to_extract:
-        extracted_name = zf.extract(file, path=output_path)
+        extracted_name = file.filename
         path, extension = os.path.splitext(extracted_name)
         if extension in audio_files.extensions:
             # Got an audio files
@@ -75,5 +77,6 @@ def utterances(utterancesFile):
             db.session.commit()
         elif extension in text_files.extensions:
             # Got a text/transcription file
-            raise NotImplementedError("Transcriptions from Zip files not implemented yet")
+            data = zf.open(file).read() # extract data without creating file on disk
+            result = create_transcription(filepath=Path(extracted_name), data=data)
     raise NotImplementedError("Bulk upload not implemented yet")
