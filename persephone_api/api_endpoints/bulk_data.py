@@ -8,6 +8,7 @@ from zipfile import ZipFile
 
 import flask_uploads
 
+from .audio import create_audio
 from .transcription import create_transcription
 
 from ..db_models import FileMetaData
@@ -65,18 +66,21 @@ def utterances(utterancesFile):
             detail="Empty zip file provided"
         )
 
+    audio_results = []
+    transcription_results = []
+
     for file in to_extract:
         extracted_name = file.filename
         path, extension = os.path.splitext(extracted_name)
         if extension in audio_files.extensions:
-            # Got an audio files
-            file_url = uploads_url_base + 'audio_uploads/' + filename
-            metadata = FileMetaData(path=file_url, name=filename)
-            current_file = Audio(file_info=metadata, url=file_url)
-            db.session.add(current_file)
-            db.session.commit()
+            # Got an audio file
+            data = zf.open(file).read() # extract data without creating file on disk
+            audio_result = create_audio(filepath=Path(extracted_name), data=data)
+            audio_results.append(audio_result)
         elif extension in text_files.extensions:
             # Got a text/transcription file
             data = zf.open(file).read() # extract data without creating file on disk
-            result = create_transcription(filepath=Path(extracted_name), data=data)
-    raise NotImplementedError("Bulk upload not implemented yet")
+            transcription_result = create_transcription(filepath=Path(extracted_name), data=data)
+            transcription_results.append(transcription_result)
+    #TODO return proper serialized results
+    return {'audios_created': [], 'transcriptions_created': []}, 201
