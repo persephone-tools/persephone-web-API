@@ -12,7 +12,7 @@ uploads_url_base = 'uploads/'
 
 def configure_uploads(flask_app, base_upload_path=None) -> None:
     """Configure flask_uploads and upload paths"""
-    flask_app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024 #max 64 MB file upload
+    flask_app.config['MAX_CONTENT_LENGTH'] = 512 * 1024 * 1024 #max 512 MB file upload
     if base_upload_path:
         flask_app.config['BASE_UPLOAD_DIRECTORY'] = base_upload_path
     else:
