@@ -20,7 +20,7 @@ from ..upload_config import (
 logger = logging.getLogger(__name__)
 
 
-output_path = "zip_file_output"
+output_path = "zip_file_output/"
 logger.info("Zip files being extracted to path %s", output_path)
 
 def utterances(utterancesFile):
@@ -59,6 +59,12 @@ def utterances(utterancesFile):
             title="Empty zip file provided",
             detail="Empty zip file provided"
         )
+
     for file in to_extract:
-        zf.extract(file, path=output_path)
+        extracted_name = zf.extract(file, path=output_path)
+        path, extension = os.path.splitext(extracted_name)
+        if extension in audio_files.extensions:
+            # Got an audio files
+        elif extension in text_files.extensions:
+            # Got a text/transcription file
     raise NotImplementedError("Bulk upload not implemented yet")
