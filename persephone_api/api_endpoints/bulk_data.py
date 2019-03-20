@@ -22,15 +22,8 @@ from ..upload_config import (
 
 logger = logging.getLogger(__name__)
 
-import os
-output_path = "zip_file_output/"
-logger.info("Zip files being extracted to path %s", output_path)
-
 def utterances(utterancesFile):
     """handle POST request for bulk utterances file uploading"""
-    if not os.path.isdir(output_path):
-        logger.critical("The output path for compressed files %s does not exist", output_path)
-        raise RuntimeError("Server configuration issue, contact your administrator")
     try:
         filename = compressed_files.save(utterancesFile)
     except flask_uploads.UploadNotAllowed:
