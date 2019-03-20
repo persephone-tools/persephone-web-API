@@ -14,7 +14,7 @@ from ..unicode_handling import normalize
 from ..upload_config import text_files, uploads_url_base
 
 
-def create_transcription(filepath: Path, data: str):
+def create_transcription(filepath: Path, data: str) -> Transcription:
     """Creates the transcription rows in the database,
     returns the ORM object that corresponds to this transcription
     """
