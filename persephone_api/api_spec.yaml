@@ -117,6 +117,40 @@ paths:
               $ref: "#/definitions/featureTypeInformation"
         500:
           $ref: "#/responses/Standard500ErrorResponse"
+  /bulk_data/utterances:
+    post:
+      summary: "Upload utterance data in bulk format (compressed file)"
+      description: "This endpoint allows for the bulk uploading of utterance files that comprise a corpus."
+      summary: "Upload a bulk utterances file"
+      operationId: persephone_api.api_endpoints.bulk_data.utterances
+      consumes:
+        - multipart/form-data
+      parameters:
+        - in: formData
+          name: utterancesFile
+          type: file
+          required: true
+      responses:
+        201:
+          description: success
+          schema:
+            type: object
+            properties:
+              audios_created:
+                type: array
+                items:
+                  $ref: "#/definitions/audioFileInformation"
+              transcriptions_created:
+                type: array
+                items:
+                  $ref: "#/definitions/transcriptionInformation"
+        415:
+          description: "Bad filetype"
+          schema:
+            $ref: "#/definitions/errorMessage"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
+
   /corpus:
     get:
       summary: "Retrieve models that are currently available"

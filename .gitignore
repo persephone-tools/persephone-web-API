@@ -2,6 +2,12 @@
 user_uploads/
 persephone_file_storage/
 
+# phonemes files
+*.phonemes
+
+# VS code
+.vscode/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
