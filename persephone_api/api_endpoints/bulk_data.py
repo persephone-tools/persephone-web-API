@@ -16,6 +16,7 @@ from .transcription import create_transcription
 
 from ..db_models import FileMetaData
 from ..error_response import error_information
+from ..serialization import AudioSchema, TranscriptionSchema
 from ..upload_config import (
     compressed_files,
     audio_files,
@@ -82,7 +83,7 @@ def utterances(utterancesFile):
             transcription_results.append(transcription_result)
 
     audio_created_serialized = [AudioSchema().dump(a).data for a in audio_results]
-    transcription_created_serialized = [AudioSchema().dump(t).data for t in transcription_results]
+    transcription_created_serialized = [TranscriptionSchema().dump(t).data for t in transcription_results]
 
     return ({
         'audios_created': audio_created_serialized,
