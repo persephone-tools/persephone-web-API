@@ -16,6 +16,7 @@ from .transcription import create_transcription
 
 from ..db_models import FileMetaData
 from ..error_response import error_information
+from ..serialization import AudioSchema, TranscriptionSchema
 from ..upload_config import (
     compressed_files,
     audio_files,
@@ -80,5 +81,12 @@ def utterances(utterancesFile):
             data = zf.open(file).read() # extract data without creating file on disk
             transcription_result = create_transcription(filepath=Path(extracted_name), data=data)
             transcription_results.append(transcription_result)
-    #TODO return proper serialized results
-    return {'audios_created': [], 'transcriptions_created': []}, 201
+
+    audio_created_serialized = [AudioSchema().dump(a).data for a in audio_results]
+    transcription_created_serialized = [TranscriptionSchema().dump(t).data for t in transcription_results]
+
+    return ({
+        'audios_created': audio_created_serialized,
+        'transcriptions_created': transcription_created_serialized
+        }, 201)
+
