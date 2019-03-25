@@ -30,3 +30,21 @@ def test_empty_zip_file_fails(init_database, client):
     import json
     upload_response_data = json.loads(response.data.decode('utf8'))
     assert upload_response_data['status'] == 400
+
+def test_small_zip_file(init_database, client):
+    """Test that uploading a small zipfile actually works"""
+    import io
+    import os
+    import json
+    data_path = os.path.join("tests", "na_tiny_example_files", 'na_tiny_example_files.zip')
+
+    with open(data_path, 'rb') as file:
+        na_tiny_zip_file = file.read()
+    data = {'utterancesFile': (io.BytesIO(na_tiny_zip_file), 'na_tiny_example_files.zip')}
+    response = client.post(
+        ('/v0.1/bulk_data/utterances'),
+        data=data,
+        content_type='multipart/form-data'
+    )
+    assert response.status_code == 201
+    upload_response_data = json.loads(response.data.decode('utf8'))
