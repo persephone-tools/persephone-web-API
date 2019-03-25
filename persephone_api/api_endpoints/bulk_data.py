@@ -26,6 +26,12 @@ from ..upload_config import (
 
 logger = logging.getLogger(__name__)
 
+def extension_allowed(filename, flask_upload_config):
+    """Test that the filename has an allowable configuration as per the flask upload config object"""
+    path, ext = os.path.splitext(filename)
+    ext = ext[1:] # remove dot, so '.txt' --> 'txt'
+    return ext in flask_upload_config.extensions
+
 def utterances(utterancesFile):
     """handle POST request for bulk utterances file uploading"""
     try:
@@ -52,7 +58,7 @@ def utterances(utterancesFile):
     check_against = [audio_files, text_files] # Allowed upload types
     to_extract = []
     for member in zf.infolist():
-        if any(ft.extension_allowed(member.filename) for ft in check_against):
+        if any(extension_allowed(member.filename, flask_uploadset) for flask_uploadset in check_against):
             to_extract.append(member)
         else:
             logger.info("Not allowed filetype in uploaded zip file: %s", member)
