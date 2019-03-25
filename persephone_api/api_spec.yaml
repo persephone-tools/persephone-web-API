@@ -144,6 +144,10 @@ paths:
                 type: array
                 items:
                   $ref: "#/definitions/transcriptionInformation"
+        400:
+          description: "Bad filetype"
+          schema:
+            $ref: "#/definitions/errorMessage"
         415:
           description: "Bad filetype"
           schema:
