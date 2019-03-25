@@ -53,7 +53,7 @@ def test_tiny(init_database, client):
         assert response_data['id']
         return response_data['id']
 
-    data_path = "tests/na_tiny_example_files"
+    data_path = os.path.join("tests", "na_tiny_example_files")
 
     train_prefixes = [
         "crdo-NRU_NUMPLUSCL_L2_TIMES_1TO100_F4_24SEPT2011_AUDIOPLUSEGG.53",
