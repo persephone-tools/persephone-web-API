@@ -4,6 +4,7 @@ This deals with the API access for transcription files uploading/downloading.
 """
 from pathlib import Path
 
+import flask
 import flask_uploads
 
 from ..error_response import error_information
@@ -47,7 +48,8 @@ def from_file(transcriptionFile):
         )
     else:
         raw_data = transcriptionFile.stream.read().decode('utf-8')
-        current_transcription = create_transcription(Path(filename), raw_data)
+        transcription_path = Path(flask.current_app.config['UPLOADED_TEXT_DEST']) / filename
+        current_transcription = create_transcription(transcription_path, raw_data)
 
     result = TranscriptionSchema().dump(current_transcription).data
     return result, 201
