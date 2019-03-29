@@ -415,8 +415,13 @@ paths:
             properties:
               text:
                 type: string
+                description: "The text of the transcription"
               filename:
                 type: string
+                description: "(optional) A file name for this file"
+              name:
+                type: string
+                description: "(optional) A name for this transcription"
       responses:
         201:
           description: success
