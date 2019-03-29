@@ -98,3 +98,23 @@ def test_transcription_pagination(init_database, client):
     assert response.status_code == 200
     response_data = json.loads(response.data.decode('utf8'))
     assert len(response_data) == 4 # only 4 items remaining
+
+
+def test_transcription_uploads_endpoint(init_database, client):
+    """Test transcription upload endpoint works"""
+    import io
+    phonemes = "ɖ ɯ ɕ i k v̩"
+    data = {
+        'text': phonemes,
+        'filename': 'test_transcription_file.phonemes'
+    }
+    response = client.post(
+        ('/v0.1/transcription/'),
+        data=data,
+        content_type='application/json'
+    )
+    assert response.status_code == 201
+
+    import json
+    transcription_response_data = json.loads(response.data.decode('utf8'))
+    assert transcription_response_data['id']
