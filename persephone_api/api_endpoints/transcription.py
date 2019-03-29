@@ -2,6 +2,7 @@
 API endpoints for /transcription
 This deals with the API access for transcription files uploading/downloading.
 """
+import os
 from pathlib import Path
 import uuid
 
@@ -29,6 +30,8 @@ def create_transcription(filepath: Path, data: str, base_path: Path=None) -> Tra
     """
     if not base_path:
         base_path = Path(flask.current_app.config['UPLOADED_TEXT_DEST'])
+    if not base_path.is_dir():
+        base_path.mkdir()
     normalized_text = normalize(data)
     storage_location = base_path / filepath
     with storage_location.open('w') as transcription_storage:
@@ -73,11 +76,8 @@ def from_file(transcriptionFile):
         # with this in the future
         with open(text_files.path(filename), 'r') as tf:
             raw_data = tf.read()
-        storage_path = flask.current_app.config['UPLOADED_TEXT_DEST']
         file_path = Path(filename)
-        current_transcription = create_transcription(
-            file_path, raw_data, base_path=storage_path
-        )
+        current_transcription = create_transcription(file_path, raw_data)
 
     result = TranscriptionSchema().dump(current_transcription).data
     return result, 201
