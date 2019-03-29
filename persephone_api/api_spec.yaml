@@ -399,6 +399,31 @@ paths:
               $ref: "#/definitions/transcriptionInformation"
         500:
           $ref: "#/responses/Standard500ErrorResponse"
+    post:
+      summary: "Create a transcription via a string"
+      consumes:
+        - application/json
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          description: "Transcription creation"
+          schema:
+            type: object
+            required:
+              - text
+            properties:
+              text:
+                type: string
+              filename:
+                type: string
+      responses:
+        201:
+          description: success
+          schema:
+            $ref: "#/definitions/transcriptionInformation"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
   /transcription/fromFile:
     post:
       operationId: persephone_api.api_endpoints.transcription.from_file
