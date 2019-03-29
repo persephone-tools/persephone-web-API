@@ -2,7 +2,9 @@
 API endpoints for /transcription
 This deals with the API access for transcription files uploading/downloading.
 """
+import os
 from pathlib import Path
+import uuid
 
 import flask
 import flask_uploads
@@ -15,7 +17,8 @@ from ..unicode_handling import normalize
 from ..upload_config import text_files, uploads_url_base
 
 
-def create_transcription(filepath: Path, data: str, base_path: Path=None) -> Transcription:
+def create_transcription(filepath: Path, data: str, *, base_path: Path=None,
+                         transcription_name: str=None) -> Transcription:
     """Creates the transcription rows in the database,
     returns the ORM object that corresponds to this transcription
 
@@ -28,6 +31,8 @@ def create_transcription(filepath: Path, data: str, base_path: Path=None) -> Tra
     """
     if not base_path:
         base_path = Path(flask.current_app.config['UPLOADED_TEXT_DEST'])
+    if not base_path.is_dir():
+        base_path.mkdir()
     normalized_text = normalize(data)
     storage_location = base_path / filepath
     with storage_location.open('w') as transcription_storage:
@@ -35,9 +40,15 @@ def create_transcription(filepath: Path, data: str, base_path: Path=None) -> Tra
     filename = str(filepath)
     file_url = uploads_url_base + 'text_uploads/' + filename
     file_metadata = FileMetaData(path=file_url, name=str(storage_location))
+
+    # If no optional name was provided we will just use the file name for
+    # naming this transcription
+    if not transcription_name:
+        transcription_name = filename
+
     current_transcription = Transcription(
         url=file_url,
-        name=filename,
+        name=transcription_name,
         text=normalized_text,
         file_info=file_metadata,
     )
@@ -45,10 +56,20 @@ def create_transcription(filepath: Path, data: str, base_path: Path=None) -> Tra
     db.session.commit()
     return current_transcription
 
-def post():
+def post(body):
     """Create a transcription from a POST request that contains the
     transcription information in a UTF-8 encoded string"""
-    raise NotImplementedError
+    text = body['text']
+    prefix = uuid.uuid1()
+    filename = str(prefix) + '-' + body.get('filename', '')
+    optional_args = {}
+    try:
+        optional_args['transcription_name'] = body['name']
+    except KeyError:
+        pass
+    current_transcription = create_transcription(filename, text, **optional_args)
+    result = TranscriptionSchema().dump(current_transcription).data
+    return result, 201
 
 def from_file(transcriptionFile):
     """handle POST request for transcription file"""
@@ -67,11 +88,8 @@ def from_file(transcriptionFile):
         # with this in the future
         with open(text_files.path(filename), 'r') as tf:
             raw_data = tf.read()
-        storage_path = flask.current_app.config['UPLOADED_TEXT_DEST']
         file_path = Path(filename)
-        current_transcription = create_transcription(
-            file_path, raw_data, base_path=storage_path
-        )
+        current_transcription = create_transcription(file_path, raw_data)
 
     result = TranscriptionSchema().dump(current_transcription).data
     return result, 201
