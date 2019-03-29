@@ -80,12 +80,14 @@ def utterances(utterancesFile):
         if extension in audio_files.extensions:
             # Got an audio file
             data = zf.open(file).read() # extract data without creating file on disk
-            audio_result = create_audio(filepath=Path(extracted_name), data=data)
+            audio_path = Path(flask.current_app.config['UPLOADED_AUDIO_DEST']) / extracted_name
+            audio_result = create_audio(filepath=audio_path, data=data)
             audio_results.append(audio_result)
         elif extension in text_files.extensions:
             # Got a text/transcription file
             data = zf.open(file).read() # extract data without creating file on disk
-            transcription_result = create_transcription(filepath=Path(extracted_name), data=data)
+            transcription_path = Path(flask.current_app.config['UPLOADED_TEXT_DEST']) / extracted_name
+            transcription_result = create_transcription(filepath=transcription_path, data=data)
             transcription_results.append(transcription_result)
 
     audio_created_serialized = [AudioSchema().dump(a).data for a in audio_results]
