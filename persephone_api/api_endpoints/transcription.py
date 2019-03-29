@@ -62,7 +62,12 @@ def post(body):
     text = body['text']
     prefix = uuid.uuid1()
     filename = str(prefix) + '-' + body.get('filename', '')
-    current_transcription = create_transcription(filename, text)
+    optional_args = {}
+    try:
+        optional_args['transcription_name'] = body['name']
+    except KeyError:
+        pass
+    current_transcription = create_transcription(filename, text, **optional_args)
     result = TranscriptionSchema().dump(current_transcription).data
     return result, 201
 
