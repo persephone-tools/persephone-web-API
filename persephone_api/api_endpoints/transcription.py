@@ -34,8 +34,13 @@ def create_transcription(filepath: Path, data: str, base_path: Path=None) -> Tra
         transcription_storage.write(normalized_text)
     filename = str(filepath)
     file_url = uploads_url_base + 'text_uploads/' + filename
-    metadata = FileMetaData(path=file_url, name=filename)
-    current_transcription = Transcription(file_info=metadata, url=file_url, name=filename, text=normalized_text)
+    file_metadata = FileMetaData(path=file_url, name=str(storage_location))
+    current_transcription = Transcription(
+        url=file_url,
+        name=filename,
+        text=normalized_text,
+        file_info=file_metadata,
+    )
     db.session.add(current_transcription)
     db.session.commit()
     return current_transcription
@@ -57,7 +62,11 @@ def from_file(transcriptionFile):
                    " Got filename {} , allowed extensions are {}".format(transcriptionFile.filename, text_files.extensions),
         )
     else:
-        raw_data = transcriptionFile.stream.read().decode('utf-8')
+        # We re-open here because the passed in file is a generator that
+        # is expended by the save above, there may be a better way of dealing
+        # with this in the future
+        with open(text_files.path(filename), 'r') as tf:
+            raw_data = tf.read()
         storage_path = flask.current_app.config['UPLOADED_TEXT_DEST']
         file_path = Path(filename)
         current_transcription = create_transcription(
