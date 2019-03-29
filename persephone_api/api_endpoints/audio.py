@@ -4,6 +4,7 @@ This deals with the API access for audio files uploading/downloading.
 """
 from pathlib import Path
 
+import flask
 import flask_uploads
 
 from ..error_response import error_information
@@ -12,17 +13,23 @@ from ..db_models import Audio, FileMetaData
 from ..upload_config import audio_files, uploads_url_base
 from ..serialization import AudioSchema
 
-def create_audio(filepath: Path, data: bytes) -> Audio:
+def create_audio(filepath: Path, data: bytes, base_path: Path=None) -> Audio:
     """Helper function to create the database rows and associated files
     for an Audio item
 
-    filepath: Path to the audio file on disk
+    filepath: Relative Path to the audio file on disk
     data: the data contained in this audio file, if an empty bytes array is passed in
           no data is written to `filepath` otherwise this data is written to the file
           path that was passed in as the first parameter.
+          base_path: The path to the storage for audio files, if this not provided
+          it will default to the upload file destination found in the app config
+          `config['UPLOADED_AUDIO_DEST']`
 
     Returns the ORM object that corresponds to this audio file
     """
+    if not base_path:
+        base_path = Path(flask.current_app.config['UPLOADED_AUDIO_DEST'])
+    storage_location = base_path / filepath
     if data: # We got data so we have to write this out the the filename
         with filepath.open('wb') as audio_file_data:
             audio_file_data.write(data)

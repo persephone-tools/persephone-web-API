@@ -15,12 +15,22 @@ from ..unicode_handling import normalize
 from ..upload_config import text_files, uploads_url_base
 
 
-def create_transcription(filepath: Path, data: str) -> Transcription:
+def create_transcription(filepath: Path, data: str, base_path: Path=None) -> Transcription:
     """Creates the transcription rows in the database,
     returns the ORM object that corresponds to this transcription
+
+    Args:
+        filepath: The relative path to this file
+        data: the data contained in this transcription
+        base_path: The path to the storage for transcription files, if this not provided
+          it will default to the upload file destination found in the app config
+          `config['UPLOADED_TEXT_DEST']`
     """
+    if not base_path:
+        base_path = Path(flask.current_app.config['UPLOADED_TEXT_DEST'])
     normalized_text = normalize(data)
-    with filepath.open('w') as transcription_storage:
+    storage_location = base_path / filepath
+    with storage_location.open('w') as transcription_storage:
         transcription_storage.write(normalized_text)
     filename = str(filepath)
     file_url = uploads_url_base + 'text_uploads/' + filename
@@ -48,8 +58,11 @@ def from_file(transcriptionFile):
         )
     else:
         raw_data = transcriptionFile.stream.read().decode('utf-8')
-        transcription_path = Path(flask.current_app.config['UPLOADED_TEXT_DEST']) / filename
-        current_transcription = create_transcription(transcription_path, raw_data)
+        storage_path = flask.current_app.config['UPLOADED_TEXT_DEST']
+        file_path = Path(filename)
+        current_transcription = create_transcription(
+            file_path, raw_data, base_path=storage_path
+        )
 
     result = TranscriptionSchema().dump(current_transcription).data
     return result, 201
