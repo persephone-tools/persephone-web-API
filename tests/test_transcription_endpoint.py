@@ -109,7 +109,7 @@ def test_transcription_uploads_endpoint(init_database, client):
         'filename': 'test_transcription_file.phonemes'
     }
     response = client.post(
-        ('/v0.1/transcription/'),
+        ('/v0.1/transcription'),
         data=data,
         content_type='application/json'
     )
