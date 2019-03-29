@@ -8,6 +8,7 @@ from .extensions import db
 
 @event.listens_for(Engine, "connect")
 def _set_sqlite_pragma(dbapi_connection, connection_record):
+    """This will turn foreign key integrity checking on when a SQLite3 connection is established"""
     if isinstance(dbapi_connection, SQLite3Connection):
         cursor = dbapi_connection.cursor()
         cursor.execute("PRAGMA foreign_keys=ON;")
