@@ -15,11 +15,12 @@ from persephone.corpus_reader import CorpusReader
 from persephone import model
 
 from .corpus import labels_set
+from .transcription import create_transcription
 
 from ..db_models import Audio, DBcorpus, FileMetaData, Transcription, TranscriptionModel
 from ..error_response import error_information
 from ..extensions import db
-from ..serialization import TranscriptionModelSchema
+from ..serialization import TranscriptionModelSchema, TranscriptionSchema
 from ..upload_config import uploads_url_base
 
 
@@ -212,21 +213,22 @@ def transcribe(modelID, audioID):
         output_name="hyp_dense_decoded:0"
         )
 
-    transcribed_filename = "transcribed-{}".format(audio_info.file_info.name)
-    file_url = uploads_url_base + 'text_uploads/' + transcribed_filename
-    metadata = FileMetaData(path=file_url, name=transcribed_filename)
-
+    transcription_name = "transcribed-{}-model-{}".format(
+        audio_info.file_info.name,
+        current_model.name
+    )
+    prefix = uuid.uuid1()
+    filename = str(prefix) + "TRANSCRIBED_BY_MODEL" + str(audio_info.file_info.name)
     if results[0] == []:
         text = ""
     else:
         text = " ".join(results[0])
-    current_transcription = Transcription(
-        file_info=metadata,
-        url=file_url,
-        name=transcribed_filename,
-        text=text
-    )
-    db.session.add(current_transcription)
-    db.session.commit()
 
-    return results[0], 201
+    current_transcription = create_transcription(
+        filepath=filename,
+        data=text,
+        transcription_name=transcription_name
+    )
+    result = TranscriptionSchema().dump(current_transcription).data
+
+    return result, 201
