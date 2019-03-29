@@ -8,10 +8,10 @@ Refer to https://unicode.org/reports/tr15/ for details about how this works.
 
 import unicodedata
 
-# The unicode normalization strategy used
-NORMALIZATION_TYPE = "NFC"
-
-def normalize(unicode_data):
+def normalize(unicode_data, *, normalization_strategy="NFC"):
     """Central point for normalizing all data across the whole API.
-    This helper function is used so we can ensure consistency."""
-    return unicodedata.normalize(NORMALIZATION_TYPE, unicode_data)
+    This helper function is used so we can ensure consistency.
+
+    as a default this will use the "NFC" normalization
+    """
+    return unicodedata.normalize(normalization_strategy, unicode_data)
