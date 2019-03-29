@@ -17,7 +17,8 @@ from ..unicode_handling import normalize
 from ..upload_config import text_files, uploads_url_base
 
 
-def create_transcription(filepath: Path, data: str, base_path: Path=None) -> Transcription:
+def create_transcription(filepath: Path, data: str, *, base_path: Path=None,
+                         transcription_name: str=None) -> Transcription:
     """Creates the transcription rows in the database,
     returns the ORM object that corresponds to this transcription
 
@@ -39,9 +40,15 @@ def create_transcription(filepath: Path, data: str, base_path: Path=None) -> Tra
     filename = str(filepath)
     file_url = uploads_url_base + 'text_uploads/' + filename
     file_metadata = FileMetaData(path=file_url, name=str(storage_location))
+
+    # If no optional name was provided we will just use the file name for
+    # naming this transcription
+    if not transcription_name:
+        transcription_name = filename
+
     current_transcription = Transcription(
         url=file_url,
-        name=filename,
+        name=transcription_name,
         text=normalized_text,
         file_info=file_metadata,
     )
