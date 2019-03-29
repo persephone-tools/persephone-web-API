@@ -3,6 +3,7 @@ API endpoints for /transcription
 This deals with the API access for transcription files uploading/downloading.
 """
 from pathlib import Path
+import uuid
 
 import flask
 import flask_uploads
@@ -45,10 +46,15 @@ def create_transcription(filepath: Path, data: str, base_path: Path=None) -> Tra
     db.session.commit()
     return current_transcription
 
-def post():
+def post(body):
     """Create a transcription from a POST request that contains the
     transcription information in a UTF-8 encoded string"""
-    raise NotImplementedError
+    text = body['text']
+    prefix = uuid.uuid1()
+    filename = str(prefix) + '-' + body.get('filename', '')
+    current_transcription = create_transcription(filename, text)
+    result = TranscriptionSchema().dump(current_transcription).data
+    return result, 201
 
 def from_file(transcriptionFile):
     """handle POST request for transcription file"""
