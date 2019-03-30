@@ -18,6 +18,14 @@ def index():
 <a href="/{version}/ui/">/{version}/ui/</a>, this is the best place to explore the API.
 """.format(version="v0.1")
 
+@app.errorhandler(500)
+def not_found(error):
+    return error_information(
+        status=500,
+        title="Internal server error",
+        detail="Something went wrong internally, please submit a bug report over on the issue tracker https://github.com/persephone-tools/persephone-web-API/issues"
+    )
+
 # create DB tables
 with app.app_context():
     db.create_all()
